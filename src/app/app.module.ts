@@ -6,6 +6,7 @@ import { DeveloperComponent } from './developer/developer.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -28,6 +29,7 @@ registerLocaleData(ms);
     BrowserModule,
     AppRoutingModule,
     IconsProviderModule,
+    NzIconModule,
     NzLayoutModule,
     NzMenuModule,
     FormsModule,
