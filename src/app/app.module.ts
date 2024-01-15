@@ -14,7 +14,7 @@ import { ms_MY } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import ms from '@angular/common/locales/ms';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
