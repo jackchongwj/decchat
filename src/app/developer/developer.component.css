@@ -79,3 +79,52 @@
     height: 100%;
   }
   
+  /* search bar */
+  .search-bar {
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+  }
+
+  .search-bar input {
+    border: 1px solid #001529; 
+    border-radius: 4px;
+    padding: 8px;
+    color: #fff; 
+    background-color: #001529;
+  }
+  
+  .search-bar input::placeholder {
+    color: #ccc; 
+  }
+
+  .search-bar nz-input-group-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-bar i {
+    margin-right: 8px; 
+    color: #fff; 
+  }
+
+  .search-bar input {
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  }
+  
+  .search-bar input:focus {
+    color: #001529;
+    border-color: #1890ff; 
+    background-color: #fff; 
+  }
+
+  
+
+  /* imge */
+  .circular-image {
+    border-radius: 50%;
+    width: 30px;  
+    height: 30px; 
+    object-fit: cover;
+    margin-right: 8px;  
+  }
+  

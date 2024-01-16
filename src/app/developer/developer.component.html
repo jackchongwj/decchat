@@ -1,55 +1,80 @@
 <nz-layout class="app-layout">
-    <nz-sider class="menu-sidebar"
-      nzCollapsible
-      nzWidth="256px"
-      nzBreakpoint="md"
-      [(nzCollapsed)]="isCollapsed"
-      [nzTrigger]="null">
-      <div class="sidebar-logo">
-        <a href="https://ng.ant.design/" target="_blank">
-          <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-          <h1>Ant Design Of Angular</h1>
-        </a>
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null">
+    <div class="sidebar-logo">
+      <a href="https://ng.ant.design/" target="_blank">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+        <h1>Ant Design Of Angular</h1>
+      </a>
+    </div>
+
+    <div>
+      <nz-input-group class="search-bar" nzTheme="dark">
+        <ng-container *nzPrefix  >
+          <i nz-icon nzType="search" nzTheme="outline"></i>
+        </ng-container>
+        <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" placeholder="Search..." />
+      </nz-input-group>
+    </div>
+    
+    <div *ngIf="searchValue != '' ">
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+          <li nz-submenu nzOpen nzTitle="People" nzIcon="user">
+            <div *ngIf="searchResult.length > 0">
+              <ul>
+                <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
+                  <img [src]="result.profilePicture" alt="Image" class="circular-image">
+                  {{ result.profileName }}
+                  
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="searchResult.length == 0">
+              <ul>
+                <li nz-menu-item nzMatchRouter>
+                  No Result Found !!!
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+    </div>
+
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="Create Private Conversation" nzIcon="message">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/welcome">Welcome</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a>Monitor</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a>Workplace</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzOpen nzTitle="Create Group" nzIcon="usergroup-add">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a>Basic Form</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+          <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
+        </span>
       </div>
-      <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-        <li nz-submenu nzOpen nzTitle="Create Private Conversation" nzIcon="message">
-          <ul>
-            <li nz-icon nzType="user" nzTheme="outline" nz-menu-item nzMatchRouter>
-              <a routerLink="/welcome">Welcome</a>
-            </li>
-            <li nz-menu-item nzMatchRouter>
-              <a>Monitor</a>
-            </li>
-            <li nz-menu-item nzMatchRouter>
-              <a>Workplace</a>
-            </li>
-          </ul>
-        </li>
-        <li nz-submenu nzOpen nzTitle="Create Group" nzIcon="usergroup-add">
-          <ul>
-            <li nz-menu-item nzMatchRouter>
-              <a>Basic Form</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nz-sider>
-    <nz-layout>
-      <nz-header>
-        <div class="app-header">
-          <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-              <span class="trigger"
-                 nz-icon
-                 [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-              ></span>
-          </span>
-        </div>
-      </nz-header>
-      <nz-content>
-        <div class="inner-content">
-            Developer Page reaches
-        </div>
-      </nz-content>
-    </nz-layout>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        Developer Page reaches
+      </div>
+    </nz-content>
   </nz-layout>
-  
+</nz-layout>
