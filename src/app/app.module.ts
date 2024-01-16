@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { DeveloperComponent } from './developer/developer.component';
+import { SearchbarComponent } from './Searchbar/searchbar.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
@@ -17,13 +17,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { HomepageComponent } from './Homepage/homepage.component';
 
 registerLocaleData(ms);
 
 @NgModule({
   declarations: [
     AppComponent,
-    DeveloperComponent
+    SearchbarComponent,
+    HomepageComponent
   ],
   imports: [
     BrowserModule,
