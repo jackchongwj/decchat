@@ -16,7 +16,7 @@ import ms from '@angular/common/locales/ms';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 registerLocaleData(ms);
 
@@ -30,6 +30,7 @@ registerLocaleData(ms);
     AppRoutingModule,
     IconsProviderModule,
     NzIconModule,
+    NzInputModule,
     NzLayoutModule,
     NzMenuModule,
     FormsModule,
