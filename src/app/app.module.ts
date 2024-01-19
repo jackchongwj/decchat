@@ -18,6 +18,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { HomepageComponent } from './Homepage/homepage.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
+import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
 
 registerLocaleData(ms);
 
@@ -25,7 +28,9 @@ registerLocaleData(ms);
   declarations: [
     AppComponent,
     SearchbarComponent,
-    HomepageComponent
+    HomepageComponent,
+    AddfriendComponent,
+    AddFriendDialogContentComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +42,8 @@ registerLocaleData(ms);
     NzMenuModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [
     provideClientHydration(),

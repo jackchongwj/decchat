@@ -1,0 +1,10 @@
+<button class="custom-button" (click)="openDialog()">
+    <i *ngIf="isIconVisible" class="custom-icon" nz-icon nzType="user-add" ></i>
+  </button>
+
+<div *ngIf="isDialogOpen">
+    <app-add-friend-dialog-content></app-add-friend-dialog-content>
+    <button (click)="closeDialog()">Close</button>
+</div>
+
+
