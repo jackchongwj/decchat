@@ -1,0 +1,25 @@
+  
+  
+  /* imge */
+  .circular-image {
+    border-radius: 50%;
+    width: 30px;  
+    height: 30px; 
+    object-fit: cover;
+    margin-right: 8px;  
+  }
+
+  /* addFriendButton */
+   .custom-button {
+    background-color: transparent; 
+    border: none;
+    padding: 0;
+  }
+
+  /* user-add icon */
+  .custom-icon {
+    font-size: 18px;
+    float: left;
+    margin-left:8px ;
+    color: red;
+  }

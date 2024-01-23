@@ -21,6 +21,9 @@ import { SidebarComponent } from './Sidebar/sidebar.component';
 import { MessageboxComponent } from './MessageBox/messagebox/messagebox.component';
 import { ChatmessageComponent } from './ChatMessage/chatmessage/chatmessage.component';
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
+import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
 
 registerLocaleData(ms);
 
@@ -31,7 +34,9 @@ registerLocaleData(ms);
     SidebarComponent,
     MessageboxComponent,
     ChatmessageComponent,
-    HomepageComponent
+    HomepageComponent,
+    AddfriendComponent,
+    AddFriendDialogContentComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +48,8 @@ registerLocaleData(ms);
     NzMenuModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [
     provideClientHydration(),

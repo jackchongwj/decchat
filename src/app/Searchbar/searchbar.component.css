@@ -55,3 +55,15 @@
     margin-right: 8px;  
   }
   
+  /* addressFriendButton */
+  .custom-button {
+    background-color: transparent; 
+    border: none;
+    padding: 0;
+  }
+
+  /* user-add icon */
+  .custom-icon {
+    font-size: 18px;
+    margin-left: 70px;
+  }

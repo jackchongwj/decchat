@@ -31,7 +31,7 @@
   .sidebar-logo {
     position: relative;
     height: 64px;
-    padding-left: 24px;
+    padding-left: 20px;
     overflow: hidden;
     line-height: 64px;
     background: #001529;
@@ -47,7 +47,7 @@
   
   .sidebar-logo h1 {
     display: inline-block;
-    margin: 0 0 0 20px;
+    margin: 0 0 0 13px;
     color: #fff;
     font-weight: 600;
     font-size: 14px;
@@ -93,7 +93,27 @@
     width: 15%;  /* Example: set the width to 100% of the container */
     height: 20%; /* Maintain the aspect ratio */
   }
-  
 
+
+  /* imge */
+  .circular-image {
+    border-radius: 50%;
+    width: 30px;  
+    height: 30px; 
+    object-fit: cover;
+    margin-right: 8px;  
+  }
   
+    /* addFriendButton */
+    .custom-button {
+      background-color: transparent; 
+      border: none;
+      padding: 0;
+    }
   
+    /* user-add icon */
+    .custom-icon {
+      font-size: 18px;
+      float: left;
+      margin-left:8px ;
+    }

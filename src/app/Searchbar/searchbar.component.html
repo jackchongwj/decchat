@@ -98,7 +98,9 @@
             <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
               <img [src]="result.profilePicture" alt="Image" class="circular-image">
               {{ result.profileName }}
-              
+              <button class="custom-button" (click)="OnSendFriendRequest(result.userId,'7')">
+                <i class="custom-icon" nz-icon nzType="user-add"></i>
+              </button>     
             </li>
           </ul>
         </div>
