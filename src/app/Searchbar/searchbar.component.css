@@ -31,12 +31,20 @@
   }
   
   .search-bar input:focus {
-    color: #001529;
+    /* color: #001529;
     border-color: #1890ff; 
-    background-color: #fff; 
+    background-color: #fff; */
+    color: #ffffff; /* Brighter text color for better contrast on dark backgrounds */
+    border-color: #64B5F6; /* A lighter shade of blue for the border */
+    background-color: #424242; /* A slightly lighter background to highlight the focus */
+    box-shadow: 0 0 8px 0 rgba(24, 144, 255, 0.5); /* Adding a subtle glow effect */
+    outline: none; /* Removing the default focus outline */
   }
 
-  
+  .centered-placeholder::placeholder {
+    text-align: center;
+    
+  }
 
   /* imge */
   .circular-image {
