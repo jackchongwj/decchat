@@ -85,7 +85,8 @@
     <ng-container *nzPrefix  >
       <i nz-icon nzType="search" nzTheme="outline"></i>
     </ng-container>
-    <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" placeholder="Search..." />
+    <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" 
+    placeholder="Search..." class="centered-placeholder"/>
   </nz-input-group>
 </div>
 

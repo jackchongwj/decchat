@@ -70,61 +70,30 @@
   }
   
   nz-content {
-    margin: 24px;
+    margin: 12px;
+    display: flex; /* Make nz-content a flex container */
+    flex-direction: column; /* Stack children vertically */
+    height: 100%; /* Full height */
   }
   
   .inner-content {
     padding: 24px;
     background: #fff;
-    height: 100%;
-  }
-  
-  /* search bar */
-  .search-bar {
-    margin-top: 20px; 
-    margin-bottom: 20px; 
-  }
-
-  .search-bar input {
-    border: 1px solid #001529; 
-    border-radius: 4px;
-    padding: 8px;
-    color: #fff; 
-    background-color: #001529;
-  }
-  
-  .search-bar input::placeholder {
-    color: #ccc; 
-  }
-
-  .search-bar nz-input-group-wrapper {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    height: 100%; /* Take full height of parent */
   }
   
-  .search-bar i {
-    margin-right: 8px; 
-    color: #fff; 
+  p{
+    flex-grow: 1; /* Grow to take available space */
+    overflow-y: auto; /* Add scrollbar if content overflows */
   }
 
-  .search-bar input {
-    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  img {
+    width: 15%;  /* Example: set the width to 100% of the container */
+    height: 20%; /* Maintain the aspect ratio */
   }
   
-  .search-bar input:focus {
-    color: #001529;
-    border-color: #1890ff; 
-    background-color: #fff; 
-  }
 
   
-
-  /* imge */
-  .circular-image {
-    border-radius: 50%;
-    width: 30px;  
-    height: 30px; 
-    object-fit: cover;
-    margin-right: 8px;  
-  }
   

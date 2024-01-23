@@ -17,7 +17,10 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { HomepageComponent } from './Homepage/homepage.component';
+import { SidebarComponent } from './Sidebar/sidebar.component';
+import { MessageboxComponent } from './MessageBox/messagebox/messagebox.component';
+import { ChatmessageComponent } from './ChatMessage/chatmessage/chatmessage.component';
+import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
 
 registerLocaleData(ms);
 
@@ -25,6 +28,9 @@ registerLocaleData(ms);
   declarations: [
     AppComponent,
     SearchbarComponent,
+    SidebarComponent,
+    MessageboxComponent,
+    ChatmessageComponent,
     HomepageComponent
   ],
   imports: [
