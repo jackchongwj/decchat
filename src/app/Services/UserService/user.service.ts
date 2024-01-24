@@ -14,12 +14,12 @@ export class UserService {
 
   getSearch(searchValue: string, userId: Number): Observable<any> {
     const params = new HttpParams().set('profileName', searchValue).set('userId',userId.toString());
-    return this.http.get(`${this.url}Search`, {params})
+    return this.http.get(`${UserUrl}Search`, {params})
   }
 
   getFriendRequest(userId: Number): Observable<any>
   {
     const params = new HttpParams().set('userId',userId.toString());
-    return this.http.get(`${this.url}FriendRequest`, {params})
+    return this.http.get(`${UserUrl}FriendRequest`, {params})
   }
 }

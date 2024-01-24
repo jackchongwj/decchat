@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { response } from 'express';
 import { DialogService } from '../../Services/Dialog/dialog.service';
 import { FriendsService } from '../../Services/FriendService/friends.service';
-import { GetUserService } from '../../Services/UserService/get-user.service';
+import { UserService } from '../../Services/UserService/user.service';
 
 
 @Component({
