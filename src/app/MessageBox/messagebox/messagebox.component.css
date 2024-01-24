@@ -1,0 +1,74 @@
+.message-input-container {
+  flex-shrink: 0; /* Do not shrink */
+  flex-grow: 0; /* Do not grow */
+  display: flex;
+  padding: 5px;
+  background-color: transparent; /* Or any other suitable color */
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.message-input {
+  flex-grow: 1;
+  margin-right: 10px; /* Space between input and button */
+  padding: 6px 12px;
+  border: 1px solid #d9d9d9; /* Border for input */
+  border-radius: 20px; /* Rounded corners */
+}
+
+button[nz-button] {
+  display: flex;
+  align-items: center; /* Aligns text and icon vertically */
+  padding: 8px 15px; /* Padding inside the button */
+  margin-left: 10px;
+  margin-right: -10px;
+  color: white; /* Text color */
+  background-color: #007bff; /* Button background color */
+  border: 1px solid #0069d9; /* Remove default border */
+  font-size: 16px; /* Text size */
+  font-weight: bold; /* Text weight */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Cursor to pointer to indicate it's clickable */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transition for background and transform */
+}
+
+button[nz-button]:hover, button[nz-button]:focus {
+  background-color: #0069d9; /* Lighter shade on hover/focus */
+  box-shadow: 0 2px 4px 0 rgba(0,123,255,0.5);
+  transform: translateY(-2px); /* Slight raise effect */
+}
+
+.icon-send {
+  color: #6ba8a9; /* Soft teal color */
+  margin-left: 4px;
+}
+
+button[nz-button][disabled] {
+  color: #c0c0c0; /* Gray text color to indicate it's disabled */
+  background-color: #e6e6e6; /* Lighter background */
+  border: 1px solid #d4d4d4; /* Lighter border color */
+  cursor: not-allowed; /* Cursor to indicate the button is not clickable */
+}
+
+button[nz-button][disabled]:hover {
+  background-color: #e6e6e6; /* Maintain the same background color on hover */
+  box-shadow: none; /* Remove any hover effects like box-shadow if they exist */
+}
+
+.icon-plus-circle {
+  font-size: 3em; 
+  vertical-align: middle; 
+  margin-right: 10px;
+  margin-left: -10px;
+
+  color: #333; /* Dark gray for visibility against white */
+  cursor: pointer; /* Change cursor to indicate interactivity */
+
+  /* Optional: Add a subtle shadow */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+
+}
+
+.icon-plus-circle:hover{
+  color: #555; /* Slightly lighter shade on hover */
+}

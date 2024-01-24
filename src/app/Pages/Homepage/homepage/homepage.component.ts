@@ -8,5 +8,5 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
-  isCollapsed = false;  
+
 }

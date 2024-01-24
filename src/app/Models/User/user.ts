@@ -1,6 +1,6 @@
 export class User {
     constructor(
-        public UserId:number,
+        public UserId:number| null,
         public UserName:string,
         public ProfileName:string,
         public Password: string,

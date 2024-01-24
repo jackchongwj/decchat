@@ -1,0 +1,11 @@
+<div class="message-input-container" style="flex-shrink: 0;">
+  <span nz-icon nzType="plus-circle" nzTheme="fill" class="icon-plus-circle"></span>
+  <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
+  (keydown.enter)="sendButton.click()" placeholder="Type a message..." nzSize="default"/>
+
+  <button nz-button nzType="primary" #sendButton (click)="onSendMessage()"
+  [disabled]="!messageText.trim() || sendCooldownOn">
+    Send
+    <span nz-icon nzType="send" class="icon-send"></span>
+  </button>
+</div>

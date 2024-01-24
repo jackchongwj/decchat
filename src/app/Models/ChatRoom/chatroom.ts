@@ -1,6 +1,6 @@
 export class Chatroom {
     constructor(
-        public ChatRoomId:number,
+        public ChatRoomId:number| null,
         public RoomName:string,
         public CreatedDate:string,
         public RoomType:boolean,

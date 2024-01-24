@@ -4,7 +4,7 @@ import { response } from 'express';
 import { Subject, of } from 'rxjs';
 import { debounceTime, switchMap} from 'rxjs/operators';
 import { FriendsService } from '../Services/FriendService/friends.service';
-import { GetUserService } from '../Services/UserService/get-user.service';
+import { UserService } from '../Services/UserService/user.service';
 
 @Component({
   selector: 'app-searchbar',
@@ -17,12 +17,12 @@ export class SearchbarComponent implements OnInit{
   private searchSubject: Subject<string> = new Subject<string>();
   searchResult: any[] = []; // array
   
-  constructor(private searchService: GetUserService, private friendService: FriendsService){}
+  constructor(private userService: UserService, private friendService: FriendsService){}
 
   ngOnInit(): void{
     this.searchSubject.pipe(
       debounceTime(300),
-      switchMap(searchValue => searchValue !== '' ? this.searchService.getSearch(searchValue, 7) : of([]))
+      switchMap(searchValue => searchValue !== '' ? this.userService.getSearch(searchValue, 7) : of([]))
     ).subscribe(response =>{
       this.searchResult = response;
       console.log('Backend Search Result:', response);
