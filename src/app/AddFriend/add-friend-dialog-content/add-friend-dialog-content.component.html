@@ -7,7 +7,7 @@
         <div class="user-info">
           <span class="profile-name">{{ request.profileName }}</span>
           <div class="action-buttons">
-            <button mat-icon-button class="accept-button" color="primary" (click)="acceptFriendRequest(request.userId,'7',request.profileName)">
+            <button mat-icon-button class="accept-button" color="primary" (click)="acceptFriendRequest(request.userId,'7')">
               <i class="custom-icon" nz-icon nzType="check"></i> Accept
             </button>
             <button mat-icon-button class="reject-button" color="warn" (click)="rejectFriendRequest(request.userId,'7')">
