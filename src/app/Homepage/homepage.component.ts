@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+// import {DialogBoxComponent} from '../AddFriend/addfriend/addfriend.component'
 
 @Component({
   selector: 'app-homepage',
@@ -6,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
-  isCollapsed = false;
+  isCollapsed = false;  
 }
