@@ -1,0 +1,51 @@
+  /* imge */
+  .circular-image {
+    border-radius: 50%;
+    width: 30px;  
+    height: 30px; 
+    object-fit: cover;
+    margin-right: 8px;  
+  }
+
+  /* Chat list styles */
+.chat-list {
+    border: 1px solid #001529; 
+    border-radius: 4px;
+    padding: 8px;
+    color: #fff; 
+    background-color: #001529;
+
+  }
+  
+  .chat-item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .chat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 16px;
+  }
+  
+  .user-info,
+  .group-info {
+    margin-left: 12px;
+  }
+  
+  .user-info strong,
+  .group-info strong {
+    font-weight: bold;
+  }
+  
+  .user-info p.latest-message ,
+  .group-info p.latest-message  {
+    margin: 0;
+    color: #666;
+  }
+
+  .chat-item:hover {
+    background-color: #00050a; /* Add your desired background color */
+  }
