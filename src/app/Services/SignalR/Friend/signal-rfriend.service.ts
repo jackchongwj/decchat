@@ -12,7 +12,7 @@ import { UserDetails } from '../../../Models/DTO/User/user-details';
 export class SignalRFriendService {
 
   private hubConnection: signalR.HubConnection | undefined;
-  private url: string = environment.hubBaseUrl + 'chatHub';
+  private url: string = environment.signalRUrl + 'chatHub';
 
 
   constructor(private http: HttpClient, private ngZone: NgZone) { }

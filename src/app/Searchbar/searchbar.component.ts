@@ -21,7 +21,7 @@ export class SearchbarComponent implements OnInit, OnDestroy{
   searchResult: any[] = []; // array
   private destroy$ = new Subject<void>();
   
-  constructor(private friendService: FriendsService, private search: GetUserService, private signalR: SignalRFriendService,
+  constructor(private friendService: FriendsService, private search: UserService, private signalR: SignalRFriendService,
     private ngZone: NgZone){}
 
   ngOnInit(): void{
