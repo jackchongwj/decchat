@@ -2,7 +2,7 @@ import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { FriendsService } from '../../Services/FriendService/friends.service';
-import { GetUserService } from '../../Services/UserService/get-user.service';
+import { UserService } from '../../Services/UserService/user.service';
 
 @Component({
   selector: 'app-add-friend-dialog-content',
@@ -10,7 +10,7 @@ import { GetUserService } from '../../Services/UserService/get-user.service';
   styleUrl: './add-friend-dialog-content.component.css'
 })
 export class AddFriendDialogContentComponent implements OnInit {
-  constructor(private usersService: GetUserService, private friendService: FriendsService){}
+  constructor(private usersService: UserService, private friendService: FriendsService){}
   getFriendRequest: any[] = [];
   request: FriendRequest = {ReceivedId: 0, SenderId: 0, UserName: '', Status: 0 };
 
