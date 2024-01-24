@@ -3,6 +3,7 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
+import { ChatlistComponent } from './chatlist/chatlist.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
@@ -17,7 +18,10 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { HomepageComponent } from './Homepage/homepage.component';
+import { SidebarComponent } from './Sidebar/sidebar.component';
+import { MessageboxComponent } from './MessageBox/messagebox/messagebox.component';
+import { ChatmessageComponent } from './ChatMessage/chatmessage/chatmessage.component';
+import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
 import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
@@ -28,9 +32,13 @@ registerLocaleData(ms);
   declarations: [
     AppComponent,
     SearchbarComponent,
+    SidebarComponent,
+    MessageboxComponent,
+    ChatmessageComponent,
     HomepageComponent,
     AddfriendComponent,
-    AddFriendDialogContentComponent
+    AddFriendDialogContentComponent,
+    ChatlistComponent
   ],
   imports: [
     BrowserModule,

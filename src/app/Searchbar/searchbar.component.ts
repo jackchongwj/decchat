@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { debounceTime, switchMap} from 'rxjs/operators';
 import { FriendsService } from '../Services/FriendService/friends.service';
-import { GetUserService } from '../Services/UserService/get-user.service';
+import { UserService } from '../Services/UserService/user.service';
 import { SignalRFriendService } from '../Services/SignalR/Friend/signal-rfriend.service';
 import { UserDetails } from '../Models/DTO/User/user-details';
 
