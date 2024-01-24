@@ -67,3 +67,17 @@
     font-size: 18px;
     margin-left: 70px;
   }
+
+  .st {
+    position: absolute;
+    right: 20px; 
+    top: 0; 
+    color: gray; 
+    pointer-events: none;
+  }
+
+  .add{
+    position: absolute;
+    right: 20px; 
+    top: 0; 
+  }

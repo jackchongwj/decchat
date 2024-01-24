@@ -12,7 +12,7 @@ export class SignalRService {
     this.buildConnection();
    }
 
-   https: string = environment.signalRUrl;
+   https: string = environment.signalRUrl + 'chatHub';
    //http: string = 'http://localhost:5034/chatHub';
    //IIS: string = 'https://localhost:44363/chatHub';
 
