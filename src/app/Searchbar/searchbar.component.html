@@ -1,35 +1,3 @@
-<div>
-  <nz-input-group class="search-bar" nzTheme="dark">
-    <ng-container *nzPrefix  >
-      <i nz-icon nzType="search" nzTheme="outline"></i>
-    </ng-container>
-    <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" placeholder="Search..." />
-  </nz-input-group>
-</div>
-
-<div *ngIf="searchValue != '' ">
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="People" nzIcon="user">
-        <div *ngIf="searchResult.length > 0">
-          <ul>
-            <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
-              <img [src]="result.profilePicture" alt="Image" class="circular-image">
-              {{ result.profileName }}
-              
-            </li>
-          </ul>
-        </div>
-        <div *ngIf="searchResult.length == 0">
-          <ul>
-            <li nz-menu-item nzMatchRouter>
-              No Result Found !!!
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
-</div>
-
 <!-- <nz-layout class="app-layout">
   <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null">
@@ -112,3 +80,36 @@
   </nz-layout>
 </nz-layout> -->
 
+<div>
+  <nz-input-group class="search-bar" nzTheme="dark">
+    <ng-container *nzPrefix  >
+      <i nz-icon nzType="search" nzTheme="outline"></i>
+    </ng-container>
+    <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" placeholder="Search..." />
+  </nz-input-group>
+</div>
+
+<div *ngIf="searchValue != '' ">
+    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="People" nzIcon="user">
+        <div *ngIf="searchResult.length > 0">
+          <ul>
+            <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
+              <img [src]="result.profilePicture" alt="Image" class="circular-image">
+              {{ result.profileName }}
+              <button class="custom-button" (click)="OnSendFriendRequest(result.userId,'7')">
+                <i class="custom-icon" nz-icon nzType="user-add"></i>
+              </button>     
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="searchResult.length == 0">
+          <ul>
+            <li nz-menu-item nzMatchRouter>
+              No Result Found !!!
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+</div>
