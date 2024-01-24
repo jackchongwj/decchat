@@ -1,0 +1,43 @@
+<div>
+    <!-- Private Chat -->
+    <div>
+      <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+        <li nz-submenu nzOpen nzTitle="Private Chat" nzIcon="message">
+          <div class="chat-list">
+            <ul class="chat-item-list">
+              <li *ngFor="let user of privateChat" class="chat-item">
+                <img class="circular-image" alt="Profile">
+  
+                <div class="user-info">
+                  <strong>{{ user.profileName }}</strong>
+                </div>
+
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  
+    <!-- Group Chat -->
+    <div>
+
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+            <li nz-submenu nzOpen nzTitle="Group Chat" nzIcon="usergroup-add">
+                <div class="chat-list">
+                    <ul class="chat-item-list">
+                        <li *ngFor="let user of groupChat" class="chat-item">
+                            <img class="circular-image" alt="Profile">
+                
+                            <div class="user-info">
+                                <strong>{{ user.roomName }}</strong>
+                            </div>
+            
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  

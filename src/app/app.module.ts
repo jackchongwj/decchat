@@ -3,6 +3,7 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
+import { ChatlistComponent } from './chatlist/chatlist.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
@@ -36,7 +37,8 @@ registerLocaleData(ms);
     ChatmessageComponent,
     HomepageComponent,
     AddfriendComponent,
-    AddFriendDialogContentComponent
+    AddFriendDialogContentComponent,
+    ChatlistComponent
   ],
   imports: [
     BrowserModule,
