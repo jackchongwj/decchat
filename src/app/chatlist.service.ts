@@ -13,6 +13,6 @@ export class ChatlistService {
   constructor(private http: HttpClient) {}
 
   getChatListByUserId(userID: number): Observable<any> {
-    return this.http.get(`${this.url}getChatListByUserId`,{params:{userId : userID}});
+    return this.http.get(`${this.url}GetChatListByUserId`,{params:{userId : userID}});
   }
 } 

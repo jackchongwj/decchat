@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Console } from 'console';
 import { Message } from '../../Models/Message/message';
 import { MessageService } from '../../Services/MessageService/message.service';
