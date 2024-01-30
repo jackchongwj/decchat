@@ -41,7 +41,7 @@ registerLocaleData(ms);
     ChatlistComponent,
     LoginComponent,
     RegisterComponent,
-    LogoutComponent
+    LogoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,7 +52,7 @@ registerLocaleData(ms);
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    ImportNgZorroAntdModule
+    ImportNgZorroAntdModule,
   ],
   providers: [
     provideClientHydration(),
