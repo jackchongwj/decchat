@@ -70,18 +70,19 @@
   }
   
   nz-content {
-    margin: 12px;
+    margin: 15px;
     display: flex; /* Make nz-content a flex container */
     flex-direction: column; /* Stack children vertically */
     height: 100%; /* Full height */
   }
   
   .inner-content {
-    padding: 24px;
     background: #fff;
     display: flex;
     flex-direction: column;
     height: 100%; /* Take full height of parent */
+    border-radius: 20px;
+    border: 1px solid black;
   }
   
   p{
@@ -94,26 +95,33 @@
     height: 20%; /* Maintain the aspect ratio */
   }
 
+app-chatmessage{
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+  margin-left: 5px;
+  margin-top: 5px;
+}
 
-  /* imge */
-  .circular-image {
-    border-radius: 50%;
-    width: 30px;  
-    height: 30px; 
-    object-fit: cover;
-    margin-right: 8px;  
-  }
-  
-    /* addFriendButton */
-    .custom-button {
-      background-color: transparent; 
-      border: none;
-      padding: 0;
-    }
-  
-    /* user-add icon */
-    .custom-icon {
-      font-size: 18px;
-      float: left;
-      margin-left:8px ;
-    }
+/* imge */
+.circular-image {
+border-radius: 50%;
+width: 30px;  
+height: 30px; 
+object-fit: cover;
+margin-right: 8px;  
+}
+
+/* addFriendButton */
+.custom-button {
+  background-color: transparent; 
+  border: none;
+  padding: 0;
+}
+
+/* user-add icon */
+.custom-icon {
+  font-size: 18px;
+  float: left;
+  margin-left:8px ;
+}

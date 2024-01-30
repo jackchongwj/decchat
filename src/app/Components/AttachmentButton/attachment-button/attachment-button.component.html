@@ -1,0 +1,29 @@
+<!-- <span nz-icon nzType="plus-circle" nzTheme="fill" class="icon-plus-circle"></span> -->
+
+<!-- <nz-upload nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76" [nzTransformFile]="transformFile">
+    <span nz-icon nzType="plus-circle" nzTheme="fill" class="icon-plus-circle"></span>
+</nz-upload> -->
+
+<div class="clearfix">
+    <nz-upload
+      nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+      [(nzFileList)]="fileList"
+      [nzShowButton]="fileList.length < 1"
+      [nzPreview]="handlePreview"
+    >
+
+    <span nz-icon nzType="plus-circle" nzTheme="fill" class="icon-plus-circle"></span>
+    </nz-upload>
+
+    <nz-modal
+      [nzVisible]="previewVisible"
+      [nzContent]="modalContent"
+      [nzFooter]="null"
+      (nzOnCancel)="previewVisible = false"
+    >
+
+      <ng-template #modalContent>
+        <img [src]="previewImage" [ngStyle]="{ width: '50%' }" />
+      </ng-template>
+    </nz-modal>
+</div>

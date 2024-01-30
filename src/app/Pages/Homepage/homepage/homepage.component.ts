@@ -1,19 +1,19 @@
-import { Component, OnDestroy } from '@angular/core';
-import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
-export class HomepageComponent implements OnDestroy {
+export class HomepageComponent implements OnDestroy, OnInit {
 
-  constructor(private signalRService:SignalRService) {
-    this.signalRService.startConnection();
-    this.signalRService.addTransferChartDataListener();
+  constructor() {}
+
+  ngOnInit(): void {
+    
   }
 
   ngOnDestroy() {
-    this.signalRService.stopConnection();
+    
   }
 }
