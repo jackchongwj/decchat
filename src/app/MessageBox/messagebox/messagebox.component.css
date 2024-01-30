@@ -1,11 +1,99 @@
 .message-input-container {
-  flex-shrink: 0; /* Do not shrink */
-  flex-grow: 0; /* Do not grow */
   display: flex;
-  padding: 5px;
-  background-color: transparent; /* Or any other suitable color */
-  margin-top: 15px;
+  flex-direction: column; /* Stack children vertically */
+  align-items: stretch;
+}
+
+.upload-list-container {
+  border: 1px solid #ccc;
+  margin-left: 20px;
   margin-bottom: 15px;
+  position: relative;
+  width: 20%;
+  justify-content: space-between;
+  position: relative; /* Position relative for absolute positioning inside */
+  width: 25%; /* Adjust the width as needed */
+  background-color: #f5f5f5; /* Background color for the container */
+  border-radius: 8px; /* Rounded corners for the container */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  margin: 5px 0;
+}
+
+.preview-image {
+  width: 70px; 
+  height: 70px; 
+  object-fit: cover; 
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+.preview-icon{
+  display:flex;
+  align-items: center;
+  width: 50px; 
+  height: 50px;
+  margin: 5px;
+  background-color: #f5f5f5; /* Background color for the container */
+}
+
+.file-details {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 15px;
+}
+
+.file-name {
+  font-size: 16px;
+  /* Truncate the text if it's too long */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px; /* Adjust as needed */
+}
+
+.remove-button {
+  background-color: #ff4d4f; /* Red background color */
+  color: white; /* White text color */
+  border: none; /* No border */
+  padding: 6px 12px; /* Top and bottom padding of 6px, left and right padding of 12px */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Change cursor on hover */
+  font-weight: bold; /* Make the text bold */
+  text-transform: uppercase; /* Uppercase text */
+  font-size: 14px; /* Font size */
+  outline: none; /* Remove focus outline */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.remove-button:hover {
+  background-color: #ff7875;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Additional styling for the file input itself */
+#fileInput {
+  display: none; /* Keep hidden as you have a custom upload trigger */
+}
+
+.input-button-container{
+  display: flex; 
+  align-items: center; 
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 25px;
+  padding-right: 25px;
+  background-color: beige;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .message-input {
@@ -70,5 +158,5 @@ button[nz-button][disabled]:hover {
 }
 
 .icon-plus-circle:hover{
-  color: #555; /* Slightly lighter shade on hover */
+color: #555; /* Slightly lighter shade on hover */
 }

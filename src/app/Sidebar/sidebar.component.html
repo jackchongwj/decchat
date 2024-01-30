@@ -11,33 +11,12 @@
     </div>
 
     <app-searchbar></app-searchbar>
+    <app-chatlist [isCollapsed]="isCollapsed"></app-chatlist>
     
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Private Chat" nzIcon="message">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
-          </li>
-        </ul>
-      </li>
-      <li nz-submenu nzOpen nzTitle="Group Chat" nzIcon="usergroup-add">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
   </nz-sider>
   <!-- SideBar End-->
 
-  <nz-layout>
+  <nz-layout class="message-layout">
     <!-- Header Start-->
     <nz-header>
       <div class="app-header">
@@ -48,21 +27,17 @@
     </nz-header>
     <!-- Header End-->
 
-    
+    <!-- Message Area Start-->
     <nz-content>
       <div class="inner-content">
-        <!-- <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-          Enim, ducimus possimus cumque explicabo ipsam officia,
-          optio est temporibus quas repellendus doloremque amet maxime
-          laborum expedita tenetur odio quam provident facere.
-        </p> -->
-        <img [src]="imageUrl" alt="Beagle">
 
+        <app-chatmessage></app-chatmessage>
+        
         <app-messagebox></app-messagebox>
 
       </div>
     </nz-content>
+    <!-- Message Area End-->
 
   </nz-layout>
 </nz-layout>
