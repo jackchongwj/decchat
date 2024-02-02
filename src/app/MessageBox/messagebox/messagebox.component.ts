@@ -42,16 +42,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   
   ngOnInit(): void {
     console.log("Ignore OnInit");
-    navigator.mediaDevices.enumerateDevices()
-  .then(devices => {
-    const mics = devices.filter(device => device.kind === 'audioinput');
-    if (mics.length) {
-      console.log('Microphones found:', mics);
-    } else {
-      console.log('No microphones found, or the browser is not accessing them.');
-    }
-  })
-  .catch(err => console.error('Error enumerating devices:', err));
   }
 
   ngOnDestroy(): void {
@@ -108,16 +98,16 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     }
   }
 
-  onSendMessage(event:Event): void {
-    event.preventDefault();
+  onSendMessage(event?:Event): void {
+    if (event) {
+      event.preventDefault();
+  }
 
     this.message.Content = this.messageText;
     this.message.UserChatRoomId = 1;
-    this.message.ResourceUrl = '';
+    this.message.ResourceUrl = null;
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
-
-    //console.log(this.message);
 
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
@@ -136,13 +126,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
         setTimeout(() => this.sendCooldownOn = false, 1000); 
 
         // Reset field
-        this.messageText = '';
-        this.uploadedFiles = null;
-        this.previewFile = '';
-        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-        if (fileInput) {
-            fileInput.value = ''; // Add this line
-        }
+        this.resetInputField();
       },
       error: (e) => {
         console.error(e);
@@ -224,7 +208,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   OnInputFocus(): void {
     this._sService.InformUserTyping("Alice", true);
     this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      console.log(`${status.userName} is typing: ${status.isTyping}`);
       this.userActive = status.isTyping;
     });
     
@@ -233,20 +216,15 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   OnInputBlur(): void {
     this._sService.InformUserTyping("Alice", false);
     this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      console.log(`${status.userName} is typing: ${status.isTyping}`);
       this.userActive = status.isTyping;
     });
   }
 
   // Voice Message Recording Session
   startRecording(): void {
-    console.log("Recording start");
     this.isRecording = true;
     navigator.mediaDevices.getUserMedia({audio: true})
     .then(stream => {
-      if(stream.getAudioTracks().length > 0) {
-        console.log('Audio tracks:', stream.getAudioTracks());
-      }
       this.mediaRecorder = new MediaRecorder(stream);
       this.mediaRecorder.ondataavailable = (e) => this.chunks.push(e.data);
       this.mediaRecorder.onstop = () => this.onRecordingStop();
@@ -258,39 +236,33 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   }
 
   stopRecording(): void {
-    console.log("Recording stop");
     this.isRecording = false;
     if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
       this.mediaRecorder.stop();
     }
+
+    if (this.mediaRecorder && this.mediaRecorder.stream) {
+      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+  }
   }
 
   private onRecordingStop(): void {
     const blob = new Blob(this.chunks, { type: 'audio/mp3'});
     this.chunks = [];
 
-    const url = URL.createObjectURL(blob);
+    this.uploadedFiles = new File([blob], 'voiceMessage.mp3', { type: 'audio/mp3' });
+    this.onSendMessage();
+  }
 
-    // Create a temporary anchor element and trigger a download
-    // const a = document.createElement('a');
-    // document.body.appendChild(a);
-    // a.style.display = 'none';
-    // a.href = url;
-    // a.download = 'recording.mp3'; // Specify the name of the file to be downloaded
-    // a.click();
+  private resetInputField():void{
+    this.messageText = '';
+    this.uploadedFiles = null;
+    this.previewFile = '';
 
-    // // Clean up by revoking the object URL and removing the anchor element
-    // URL.revokeObjectURL(url);
-    // a.remove();
-    
-    // Optional: If you want to keep the URL for playing it back in the UI
-    this.audioUrl = this.sanitizer.bypassSecurityTrustUrl(url);
-
-    console.log('Recording stopped and file saved.');
-    if (this.mediaRecorder && this.mediaRecorder.stream) {
-      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+        fileInput.value = '';
     }
-  
-    console.log('Recording stopped, file saved, and media stream released.');
-    }
+  }
+
 }

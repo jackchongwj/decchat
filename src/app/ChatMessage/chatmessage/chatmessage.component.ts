@@ -9,9 +9,8 @@ export class ChatmessageComponent {
 
   constructor(){}
 
-  imageUrl: string = 'https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp';
+  audioUrl: string = 'https://decchatroomb.blob.core.windows.net/chatroom/Messages/Audios/2024-02-02T14:19:21-voiceMessage.mp3';
   uploadedFiles: File | null = null;
-
 
   onDragOver(event: Event): void {
     event.stopPropagation();
@@ -45,7 +44,7 @@ export class ChatmessageComponent {
     const reader = new FileReader();
 
     reader.onload = (e) => {
-      this.imageUrl = reader.result as string;
+      this.audioUrl = reader.result as string;
     };
 
     reader.onerror = (e) => {

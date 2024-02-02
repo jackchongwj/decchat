@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
 import { ChatlistService } from '../chatlist.service';
 
@@ -14,11 +14,19 @@ export class ChatlistComponent implements OnInit{
   userId = 7;
   privateChat: any[] = [];
   groupChat: any[] = [];
-
+  
   constructor(private chatlistService: ChatlistService) {}
 
   ngOnInit(): void {
-    this.chatlistService.getChatListByUserId(this.userId).pipe(
+    //new Promise(()=> setTimeout(() => this.getChatList(), 5000));
+    //setTimeout(() => this.getChatList(), 5000);
+    this.getChatList();
+  }
+
+  getChatList(){
+    console.log("Run ngOnint");
+
+    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
       tap(chats => console.log(chats)), 
     ).subscribe((chats: any[]) => {
       
@@ -27,5 +35,9 @@ export class ChatlistComponent implements OnInit{
       this.groupChat = chats.filter(chat => chat.roomType === true);
       console.log(this.groupChat);  
     });
-  }
+  }  
+
+  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  } 
 }

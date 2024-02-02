@@ -39,7 +39,7 @@ export class SignalRService {
   public InformUserTyping(name:string, typing:boolean)
   {
     this.hubConnection.invoke("CheckUserTyping", name, typing)
-    .then(() => console.log('Message Sent Successfully'))
+    //.then(() => console.log(''))
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
@@ -49,7 +49,6 @@ export class SignalRService {
       if(this.hubConnection)
       {
         this.hubConnection.on("UserTyping", (userName:string, isTyping:boolean) => {
-          console.log("User Typing: ", userName, isTyping);
           this.ngZone.run(() => {
             observer.next({ userName, isTyping });
           })

@@ -1,28 +1,11 @@
-<div
-  class="drop-zone"
-  (dragover)="onDragOver($event)"
-  (drop)="onDrop($event)"
-  (click)="fileInput.click()"
->
-  Drag and drop your image here or click to select files
-
-    <br>
-    <br>
-    <img
-    *ngIf="imageUrl"
-    nz-image
-    width="200px"
-    height="200px"
-    [nzSrc]="imageUrl"
-    alt=""
-    />
-
-    <input
-    type="file"
-    #fileInput
-    style="display: none"
-    (change)="onFileSelected($event)"
-    >
+<div class="show-chat-room">
+  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi sequi eum delectus neque quaerat voluptatibus quam cupiditate ratione dolorem voluptatum deserunt saepe quidem, ipsum facere placeat necessitatibus assumenda nostrum ab.</p>
 </div>
 
+<div>
+  <audio controls>
+    <source [src]="audioUrl" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+</div>
 

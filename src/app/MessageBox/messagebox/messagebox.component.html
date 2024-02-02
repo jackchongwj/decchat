@@ -24,13 +24,6 @@
     </div>
   </div>
 
-  <div>
-    <audio *ngIf="audioUrl" controls>
-      <source [src]="audioUrl" type="audio/mp3">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-
   <!-- User Typing Indicator -->
   <div *ngIf="userActive" class="typing-indicator">
     User is typing
@@ -45,14 +38,18 @@
     accept="image/jpeg, image/png, image/webp,
     .mp4, .mkv, .pdf, .doc, .docx, .txt"/>
 
-    <!-- Message Input Field -->
-    <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
-    (keydown.enter)="sendButton.click()" (focus)="OnInputFocus()" (blur)="OnInputBlur()" placeholder="Type a message..." nzSize="default"/>
+    <div class="message-field-input">
+      <!-- Message Input Field -->
+      <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
+      (keydown.enter)="sendButton.click()" (focus)="OnInputFocus()" (blur)="OnInputBlur()" placeholder="Type a message..." nzSize="default"/>
 
-    <!-- Voice Message Button -->
-    <button (click)="startRecording()" *ngIf="!isRecording">Start Recording</button>
-    <button (click)="stopRecording()" *ngIf="isRecording">Stop Recording</button>
-
+      <!-- Voice Message Button -->
+      <span nz-icon nzType="audio" class="icon-voice" 
+      (click)="isRecording ? stopRecording() : startRecording()" *ngIf="!isRecording"></span>
+      <span nz-icon nzType="stop" class="icon-voice"
+      (click)="stopRecording()" *ngIf="isRecording"></span>
+    </div>
+    
     <!-- Send Message Button -->
     <button nz-button nzType="primary" #sendButton (click)="onSendMessage($event)"
     [disabled]="!messageText.trim() && uploadedFiles === null || sendCooldownOn">
