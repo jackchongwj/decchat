@@ -1,1 +1,28 @@
-<p>chatmessage works!</p>
+<div
+  class="drop-zone"
+  (dragover)="onDragOver($event)"
+  (drop)="onDrop($event)"
+  (click)="fileInput.click()"
+>
+  Drag and drop your image here or click to select files
+
+    <br>
+    <br>
+    <img
+    *ngIf="imageUrl"
+    nz-image
+    width="200px"
+    height="200px"
+    [nzSrc]="imageUrl"
+    alt=""
+    />
+
+    <input
+    type="file"
+    #fileInput
+    style="display: none"
+    (change)="onFileSelected($event)"
+    >
+</div>
+
+

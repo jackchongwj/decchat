@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 
 @Component({
   selector: 'app-homepage',
@@ -7,13 +8,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 })
 export class HomepageComponent implements OnDestroy, OnInit {
 
-  constructor() {}
+  constructor(private _sService:SignalRService) {}
 
   ngOnInit(): void {
-    
+    this._sService.startConnection();
   }
 
   ngOnDestroy() {
-    
+    this._sService.stopConnection();
   }
 }

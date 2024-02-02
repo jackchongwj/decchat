@@ -1,0 +1,30 @@
+
+.drop-zone {
+    border: 2px dashed #007bff; /* Dashed border for the drop zone */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding inside the drop zone */
+    text-align: center; /* Aligns the text to the center */
+    margin: auto; /* Centers the drop zone horizontally */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+    transition: border .3s ease-in-out, background-color .3s ease-in-out; /* Transition for hover effect */
+    width: 40%; /* Width of the drop zone is 40% of the container (e.g., body or parent div) */
+    max-width: 600px; /* Optional: Maximum width */
+    min-width: 300px; /* Optional: Minimum width */
+    margin-top: 50px;
+  }
+  
+  .drop-zone:hover {
+    border-color: #0056b3; /* Changes border color on hover */
+    background-color: #e9ecef; /* Changes background color on hover */
+  }
+  
+  .drop-zone p {
+    font-size: 16px; /* Font size for the text inside the drop zone */
+    color: #333; /* Text color */
+  }
+  
+  /* Additional styles for visual feedback when dragging files over the drop zone */
+  .drop-zone.drag-over {
+    border-color: #28a745; /* Border color when dragging files over */
+    background-color: #d4edda; /* Background color when dragging files over */
+  }

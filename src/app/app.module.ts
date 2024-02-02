@@ -10,6 +10,7 @@ import { IconsProviderModule } from './icons-provider.module';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzImageModule } from 'ng-zorro-antd/image';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { ms_MY } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
@@ -48,6 +49,7 @@ registerLocaleData(ms);
     NzInputModule,
     NzLayoutModule,
     NzMenuModule,
+    NzImageModule,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
