@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../../../Services/Auth/auth.service';
 import { Router } from '@angular/router';
 import {
   AbstractControl,
@@ -24,6 +24,22 @@ export class RegisterComponent {
     password: FormControl<string>;
     confirmPassword: FormControl<string>;
   }>;
+
+  constructor(private fb: NonNullableFormBuilder, private message: NzMessageService, private router: Router, private authService: AuthService) {
+    this.registerForm = this.fb.group({
+      username: ['', [Validators.required, this.usernameValidator]],
+      password: ['', [Validators.required, this.passwordValidator]],
+      confirmPassword: ['', [Validators.required, this.confirmationValidator]]
+    });
+
+    const passwordControl = this.registerForm.get('password');
+    
+    if (passwordControl) {
+      passwordControl.valueChanges.subscribe(() => {
+        this.updateConfirmValidator();
+      });
+    }
+  }
 
   private isLoading = false;
 
@@ -241,31 +257,21 @@ export class RegisterComponent {
 
   submitForm(): void {
     if (this.registerForm.valid) {
+      this.isLoading = true;
       const registrationData = this.registerForm.value;
-  
-      const apiUrl = 'https://localhost:7184/api/auth/register';
 
-      this.http.post(apiUrl, registrationData)
-        .pipe(
-          tap((response: any) => {
-            this.isLoading = false;
-            this.registerForm.enable();
-
-            this.message.success('Registration successful!')
-
-            this.router.navigate(['/login']);
-          }),
-          catchError((error: any) => {
-            console.error(error);
-
-            this.isLoading = true;
-            this.registerForm.disable();
-
-            this.message.error('Registration failed')
-            throw error; 
-          })
-        )
-        .subscribe();
+      this.authService.register(registrationData).subscribe(
+        response => {
+          this.isLoading = false;
+          this.message.success('Registration successful!');
+          this.router.navigate(['/login']);
+        },
+        error => {
+          this.isLoading = false;
+          console.error('Registration failed:', error);
+          this.message.error('Registration failed');
+        }
+      );
     } else {
       // Mark invalid controls as dirty to display validation errors
       Object.values(this.registerForm.controls).forEach(control => {
@@ -280,23 +286,5 @@ export class RegisterComponent {
   updateConfirmValidator(): void {
     /** wait for refresh value */
     Promise.resolve().then(() => this.registerForm.controls.confirmPassword.updateValueAndValidity());
-  }
-
-  constructor(private fb: NonNullableFormBuilder, private message: NzMessageService, private router: Router, private http: HttpClient) {
-    // Set up form builder and validator
-    this.registerForm = this.fb.group({
-      username: ['', [Validators.required, this.usernameValidator]],
-      password: ['', [Validators.required, this.passwordValidator]],
-      confirmPassword: ['', [Validators.required, this.confirmationValidator]]
-    });
-
-    // Set up event listener for password confirmation
-    const passwordControl = this.registerForm.get('password');
-    
-    if (passwordControl) {
-      passwordControl.valueChanges.subscribe(() => {
-        this.updateConfirmValidator();
-      });
-    }
   }
 }
