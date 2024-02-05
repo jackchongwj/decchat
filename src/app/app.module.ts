@@ -29,6 +29,8 @@ import { LoginComponent } from './Pages/Auth/login/login.component';
 import { RegisterComponent } from './Pages/Auth/register/register.component';
 import { LogoutComponent } from './logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
+import { CreategroupComponent } from './CreateGroup/creategroup.component';
+
 
 registerLocaleData(ms);
 
@@ -46,6 +48,7 @@ registerLocaleData(ms);
     LoginComponent,
     RegisterComponent,
     LogoutComponent,
+    CreategroupComponent
   ],
   imports: [
     BrowserModule,
@@ -60,8 +63,9 @@ registerLocaleData(ms);
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    ImportNgZorroAntdModule,
+    ImportNgZorroAntdModule
   ],
+  
   providers: [
     provideClientHydration(),
     { provide: NZ_I18N, useValue: ms_MY },

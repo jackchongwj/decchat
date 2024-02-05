@@ -1,0 +1,25 @@
+.custom-button {
+  position: absolute;
+  bottom: 25px; 
+  right: 16px; 
+  background-color: transparent; 
+  border: none;
+  padding: 0;
+}
+
+.custom-icon {
+  font-size: 18px;
+  float: left;
+  margin-left: 8px;
+  color: rgb(252, 252, 252);
+  cursor: pointer;
+}
+
+.custom-input {
+width: 200px;
+margin: 0 8px 8px 0;
+    margin-top: 10px; /* Adjust the margin as needed */
+}
+
+
+  
