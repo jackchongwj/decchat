@@ -27,8 +27,8 @@ export class AuthService {
     return this.http.post<any>(`${AuthUrl}logout`, {});
   }
 
-  setUserId(userId: Number): void {
-    this.localStorageService.setItem('userId', userId.toString());
+  setUserId(userId: string): void {
+    this.localStorageService.setItem('userId', userId);
   }
 
   setToken(token: string): void {
