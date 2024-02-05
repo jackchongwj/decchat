@@ -25,6 +25,10 @@ import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component'
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
 import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
+import { CreategroupComponent } from './CreateGroup/creategroup.component';
+import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 registerLocaleData(ms);
 
@@ -38,7 +42,8 @@ registerLocaleData(ms);
     HomepageComponent,
     AddfriendComponent,
     AddFriendDialogContentComponent,
-    ChatlistComponent
+    ChatlistComponent,
+    CreategroupComponent
   ],
   imports: [
     BrowserModule,
@@ -51,8 +56,12 @@ registerLocaleData(ms);
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule, 
+    NzSelectModule, 
+    NzModalModule,
+    NzButtonModule
   ],
+  
   providers: [
     provideClientHydration(),
     { provide: NZ_I18N, useValue: ms_MY }

@@ -1,0 +1,35 @@
+<!-- Create group button at sidebar -->
+<button class="custom-button" (click)="showModal()">
+  <i class="custom-icon" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+</button>
+    
+<!-- Modal -->
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Create Group"
+          (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Okiee'">
+  <ng-container *nzModalContent>
+
+    <div>
+      <label for="RoomName">Room Name:</label>
+      <input id="RoomName" type="text" nz-input [(ngModel)]="RoomName" />
+    </div>
+    <div style="margin-top: 16px;">
+      <label for="privateChatUsers">Select Private Chat Users:</label>
+      <nz-select id="privateChatUsers" style="width: 100%;" nzMode="multiple" [(ngModel)]="selectedUsers">
+        <nz-option *ngFor="let user of privateChat" [nzLabel]="user.profileName" [nzValue]="user.userId"></nz-option>
+      </nz-select>
+    </div>
+  </ng-container>
+
+  <div nz-row nzGutter="16">
+    <div nz-col nzSpan="12">
+      <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    </div>
+    <div nz-col nzSpan="12">
+      <button nz-button nzType="primary" (click)="handleOk()">Create Group</button>
+    </div>
+  </div>
+</nz-modal>
+
+
+ 
+
