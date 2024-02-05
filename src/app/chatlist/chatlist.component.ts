@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
 import { ChatlistService } from '../chatlist.service';
 
@@ -7,8 +7,10 @@ import { ChatlistService } from '../chatlist.service';
   templateUrl: './chatlist.component.html',
   styleUrl: './chatlist.component.css'
 })
+
 export class ChatlistComponent implements OnInit{
-  isCollapsed = false;
+  @Input() isCollapsed : boolean = false;
+  showChatList = false;
   userId = 7;
   privateChat: any[] = [];
   groupChat: any[] = [];
@@ -21,7 +23,9 @@ export class ChatlistComponent implements OnInit{
     ).subscribe((chats: any[]) => {
       
       this.privateChat = chats.filter(chat => chat.roomType === false);
-      this.groupChat = chats.filter(chat => chat.roomType === true);  
-  });
-}
+      console.log(this.privateChat);
+      this.groupChat = chats.filter(chat => chat.roomType === true);
+      console.log(this.groupChat);  
+    });
+  }
 }

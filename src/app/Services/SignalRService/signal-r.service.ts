@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
@@ -8,13 +9,11 @@ import { environment } from '../../../environments/environment.development';
 export class SignalRService {
   private hubConnection!:signalR.HubConnection 
 
-  constructor() {
+  constructor(private ngZone: NgZone) {
     this.buildConnection();
    }
 
-   https: string = environment.signalRUrl + 'chatHub';
-   //http: string = 'http://localhost:5034/chatHub';
-   //IIS: string = 'https://localhost:44363/chatHub';
+   https: string = environment.signalRUrl;
 
   private buildConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -32,10 +31,26 @@ export class SignalRService {
     return Promise.resolve();
   }
 
-  public addTransferChartDataListener = () => {
-    this.hubConnection.on('ReceiveMessage', (data) => {
-      console.log(data);
-    });
+  public sendMessageToOtherUser(message:string)
+  {
+    this.hubConnection.invoke("ReceiveIncomingMessage", message)
+    .then(() => console.log('Message Sent Successfully'))
+    .catch(error => console.error('Error invoking ReceiveIncomingMessage:', error));
+  }
+
+  public listenMessage():Observable<string>
+  {
+    return new Observable<string>(observer => {
+      if(this.hubConnection)
+      {
+        this.hubConnection.on("ReceiveMessage", (message:string) => {
+          console.log("Someone: ",message);
+          this.ngZone.run(() => {
+            observer.next(message);
+          })
+        })
+      }
+    })
   }
 
   public stopConnection(): Promise<void> {

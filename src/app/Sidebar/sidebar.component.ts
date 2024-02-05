@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 
 @Component({
@@ -8,11 +8,14 @@ import { SignalRService } from '../Services/SignalRService/signal-r.service';
 })
 export class SidebarComponent implements OnInit {
 
-  constructor(){}
+  constructor(private ngZone: NgZone){}
 
   isCollapsed = false;
-  imageUrl: string = 'https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/beagle-2024’-‘01’-‘23’T’09’:’29’:’45.webp';
+  imageUrl: string = 'https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-29T11:42:23-beagle.png';
 
+  
   ngOnInit(){
   }
+
+  
 }

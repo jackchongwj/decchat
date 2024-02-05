@@ -14,12 +14,12 @@
     </div>
 
     <app-searchbar></app-searchbar>
-    <app-chatlist></app-chatlist>
+    <app-chatlist [isCollapsed]="isCollapsed"></app-chatlist>
     
   </nz-sider>
   <!-- SideBar End-->
 
-  <nz-layout>
+  <nz-layout class="message-layout">
     <!-- Header Start-->
     <nz-header>
       <div class="app-header">
@@ -30,21 +30,17 @@
     </nz-header>
     <!-- Header End-->
 
-    
+    <!-- Message Area Start-->
     <nz-content>
       <div class="inner-content">
-        <!-- <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-          Enim, ducimus possimus cumque explicabo ipsam officia,
-          optio est temporibus quas repellendus doloremque amet maxime
-          laborum expedita tenetur odio quam provident facere.
-        </p> -->
-        <img [src]="imageUrl" alt="Beagle">
 
+        <app-chatmessage></app-chatmessage>
+        
         <app-messagebox></app-messagebox>
 
       </div>
     </nz-content>
+    <!-- Message Area End-->
 
   </nz-layout>
 </nz-layout>
