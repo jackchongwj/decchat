@@ -41,6 +41,7 @@ export class SearchbarComponent implements OnInit{
     //         console.log('Received friend request notification');
     //         this.refreshSearchResults();
     //     });
+
     this.signalR.updateSearchResultsListener()
       .subscribe((newResults: UserDetails[]) => {
         this.searchResult = newResults;
