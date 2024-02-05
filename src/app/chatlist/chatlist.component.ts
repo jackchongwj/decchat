@@ -18,26 +18,21 @@ export class ChatlistComponent implements OnInit{
   constructor(private chatlistService: ChatlistService) {}
 
   ngOnInit(): void {
-    //new Promise(()=> setTimeout(() => this.getChatList(), 5000));
-    //setTimeout(() => this.getChatList(), 5000);
-    this.getChatList();
   }
 
   getChatList(){
-    console.log("Run ngOnint");
+    if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
+    {
+      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+        tap(chats => console.log(chats)), 
+      ).subscribe((chats: any[]) => {
+        
+        this.privateChat = chats.filter(chat => chat.roomType === false);
+        console.log(this.privateChat);
+        this.groupChat = chats.filter(chat => chat.roomType === true);
+        console.log(this.groupChat);  
+      });
+    }
 
-    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-      tap(chats => console.log(chats)), 
-    ).subscribe((chats: any[]) => {
-      
-      this.privateChat = chats.filter(chat => chat.roomType === false);
-      console.log(this.privateChat);
-      this.groupChat = chats.filter(chat => chat.roomType === true);
-      console.log(this.groupChat);  
-    });
   }  
-
-  delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  } 
 }
