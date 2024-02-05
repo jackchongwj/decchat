@@ -52,7 +52,6 @@ registerLocaleData(ms);
     AppRoutingModule,
     IconsProviderModule,
     NzIconModule,
-    //NzInputModule,
     NzLayoutModule,
     NzMenuModule,
     NzImageModule,

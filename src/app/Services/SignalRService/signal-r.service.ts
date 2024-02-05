@@ -23,10 +23,7 @@ export class SignalRService {
   private buildConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https, {
-                            skipNegotiation: true,
-                            transport: signalR.HttpTransportType.WebSockets
-                          })
+                          .withUrl(this.https)
                           .build();
   }
 
