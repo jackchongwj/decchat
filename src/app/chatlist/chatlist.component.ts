@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
 import { ChatlistService } from '../chatlist.service';
+import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 
 @Component({
   selector: 'app-chatlist',
@@ -15,7 +16,7 @@ export class ChatlistComponent implements OnInit{
   privateChat: any[] = [];
   groupChat: any[] = [];
   
-  constructor(private chatlistService: ChatlistService) {}
+  constructor(private chatlistService: ChatlistService, private lsService: LocalstorageService) {}
 
   ngOnInit(): void {
   }
@@ -33,6 +34,11 @@ export class ChatlistComponent implements OnInit{
         console.log(this.groupChat);  
       });
     }
-
   }  
+
+  getSelectedChatRoom(chatRoomId:number)
+  {
+    
+    console.log(this.lsService.getItem("userId"));
+  }
 }
