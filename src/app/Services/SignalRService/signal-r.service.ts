@@ -22,7 +22,11 @@ export class SignalRService {
 
   private buildConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-                          .withUrl(this.https) // Use your server URL
+                          .configureLogging(signalR.LogLevel.Debug)
+                          .withUrl(this.https, {
+                            skipNegotiation: true,
+                            transport: signalR.HttpTransportType.WebSockets
+                          })
                           .build();
   }
 
