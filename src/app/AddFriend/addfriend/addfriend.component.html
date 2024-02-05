@@ -1,6 +1,8 @@
 <button class="custom-button" (click)="openDialog()">
-    <i *ngIf="isIconVisible" class="custom-icon" nz-icon nzType="user-add" ></i>
-  </button>
+  <i *ngIf="isIconVisible" class="custom-icon" nz-icon nzType="user-add">
+    <span>{{ CountgetFriendRequest.length }}</span>
+  </i>
+</button>
 
 <div *ngIf="isDialogOpen">
     <app-add-friend-dialog-content></app-add-friend-dialog-content>

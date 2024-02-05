@@ -1,25 +1,36 @@
-  
-  
-  /* imge */
-  .circular-image {
-    border-radius: 50%;
-    width: 30px;  
-    height: 30px; 
-    object-fit: cover;
-    margin-right: 8px;  
-  }
+/* imge */
+.circular-image {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  margin-right: 8px;
+}
 
-  /* addFriendButton */
-   .custom-button {
-    background-color: transparent; 
-    border: none;
-    padding: 0;
-  }
+/* addFriendButton */
+.custom-button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
 
-  /* user-add icon */
-  .custom-icon {
-    font-size: 18px;
-    float: left;
-    margin-left:8px ;
-    color: red;
-  }
+/* user-add icon */
+.custom-icon {
+  font-size: 18px;
+  float: left;
+  margin-left: 8px;
+  color: red;
+  position: relative;
+}
+
+/* badge */
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+}
