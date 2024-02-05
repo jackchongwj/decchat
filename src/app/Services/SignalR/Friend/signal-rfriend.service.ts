@@ -5,42 +5,16 @@ import { Friend } from '../../../Models/Friend/friend';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserDetails } from '../../../Models/DTO/User/user-details';
+import { SignalRService } from '../../SignalRService/signal-r.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRFriendService {
 
-  private hubConnection: signalR.HubConnection | undefined;
-  private url: string = environment.signalRUrl + 'chatHub';
+  constructor(private http: HttpClient, private ngZone: NgZone, private _SService: SignalRService) { }
 
-
-  constructor(private http: HttpClient, private ngZone: NgZone) { }
-
-  startConnection(): void {
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(this.url)
-      .build();
-
-    this.hubConnection.start()
-    .then(() => {
-      console.log('SignalR connection started');
-      
-    })
-      .catch(err => console.error('Error while starting SignalR connection: ' + err));
-
-      this.hubConnection.onclose(error => {
-        console.error('SignalR connection closed:', error);
-      });
-  }
-
-  stopConnection(): void {
-    if (this.hubConnection) {
-      this.hubConnection.stop()
-        .then(() => console.log('SignalR connection stopped'))
-        .catch(err => console.error('Error while stopping SignalR connection: ' + err));
-    }
-  }
+  private hubConnection = this._SService.getHubConnection();
 
   notifyFriendRequest(receiverId: number, senderId:number, profileName:string): void {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
@@ -76,4 +50,21 @@ export class SignalRFriendService {
       }
     });
   }
+
+  //accept friend request
+  acceptFriendRequest(chatRoomId: number, userId: number)
+  {
+    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      this.hubConnection.invoke('acceptFriendRequest', chatRoomId, userId)
+        .then(() => console.log('notify accept successful'))
+        .then(() => console.log(this.updateSearchResultsListener()))
+        .catch(error => console.error('Error invoking acceptFriendRequest:', error));
+    } else {
+      console.error('SignalR connection is not in the "Connected" state.');
+    }
+  }
+
+  // private friend list
+
+  // updatePrivateFriendList(): Observable
 }
