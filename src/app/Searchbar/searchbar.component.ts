@@ -25,7 +25,7 @@ export class SearchbarComponent implements OnInit, OnDestroy{
     private ngZone: NgZone){}
 
   ngOnInit(): void{
-    this.signalR.startConnection(); // connect signalR
+    //this.signalR.startConnection(); // connect signalR
 
     this.searchSubject.pipe(
       debounceTime(300),
@@ -50,9 +50,9 @@ export class SearchbarComponent implements OnInit, OnDestroy{
 
   //if end the component then the signalR will stop
   ngOnDestroy(): void {
-    this.signalR.stopConnection();
-    this.destroy$.next();
-    this.destroy$.complete();
+    // this.signalR.stopConnection();
+    // this.destroy$.next();
+    // this.destroy$.complete();
   }
 
   onSearchInputChange(): void {
