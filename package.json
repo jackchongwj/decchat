@@ -34,7 +34,7 @@
     "dagre-compound": "^0.0.13",
     "express": "^4.18.2",
     "ng-zorro-antd": "^17.1.0",
-    "ngx-cookie-service": "^17.0.1",
+    "ngx-cookie-service": "^17.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
