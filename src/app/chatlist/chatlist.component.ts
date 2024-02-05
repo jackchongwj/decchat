@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
 import { ChatlistService } from '../chatlist.service';
+import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
+import { DataShareService } from '../Services/ShareDate/data-share.service';
 
 @Component({
   selector: 'app-chatlist',
@@ -14,25 +16,41 @@ export class ChatlistComponent implements OnInit{
   userId = 7;
   privateChat: any[] = [];
   groupChat: any[] = [];
-  
-  constructor(private chatlistService: ChatlistService) {}
+
+  constructor(private chatlistService: ChatlistService, private dataShareService: DataShareService) {}
 
   ngOnInit(): void {
+  //   this.chatlistService.getChatListByUserId(this.userId).pipe(
+  //     tap(chats => console.log(chats)), 
+  //   ).subscribe((chats: ChatListVM[]) => {
+      
+  //     this.privateChat = chats.filter(chat => chat.RoomType === false);
+  //     this.groupChat = chats.filter(chat => chat.RoomType === true);  
+
+  //     // this.privateChat = chats.RoomType === false ? [chats] : [];
+  //     // this.groupChat = chats.RoomType === true ? [chats] : [];  
+
+  //     console.log("privateGrouplist", chats);
+  //     this.dataShareService.updateChatListData(chats);
+  // });
+}
+
+getChatList(){
+  if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
+  {
+    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+      tap(chats => console.log(chats)), 
+    ).subscribe((chats: ChatListVM[]) => {
+      
+      this.privateChat = chats.filter(chat => chat.RoomType === false);
+      console.log(this.privateChat);
+      this.groupChat = chats.filter(chat => chat.RoomType === true);
+      console.log(this.groupChat);  
+
+      console.log("privateGrouplist", chats);
+      this.dataShareService.updateChatListData(chats);
+    });
   }
 
-  getChatList(){
-    if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
-    {
-      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-        tap(chats => console.log(chats)), 
-      ).subscribe((chats: any[]) => {
-        
-        this.privateChat = chats.filter(chat => chat.roomType === false);
-        console.log(this.privateChat);
-        this.groupChat = chats.filter(chat => chat.roomType === true);
-        console.log(this.groupChat);  
-      });
-    }
-
-  }  
+}  
 }

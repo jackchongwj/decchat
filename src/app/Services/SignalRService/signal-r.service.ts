@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 
 interface TypingStatus{
   userName:string;
@@ -27,13 +28,19 @@ export class SignalRService {
                           .build();
   }
 
-  public startConnection(): Promise<void>
+  public startConnection(list: ChatListVM[]): Promise<void>
   {
     if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
       return this.hubConnection.start()
-      .then(() => console.log('Connection started'))
-      .catch(err => console.log('Error while starting connection: ' + err));;
-    }
+      .then(() => {
+        console.log('Connection started');
+    
+        return this.hubConnection.invoke("AddToGroup", list)
+          .then(() => console.log('AddToGroup invoked successfully'))
+          .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
+      })
+      .catch(err => console.log('Error while starting connection: ' + err));
+  }
     return Promise.resolve();
   }
 
@@ -62,5 +69,10 @@ export class SignalRService {
     return this.hubConnection.stop()
     .then(() => console.log('SignalR connection closed'))
     .catch(err => console.error('Error while closing connection'));
+  }
+
+  public getHubConnection(): signalR.HubConnection
+  {
+    return this.hubConnection;
   }
 }
