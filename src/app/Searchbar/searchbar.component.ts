@@ -25,8 +25,6 @@ export class SearchbarComponent implements OnInit, OnDestroy{
     private ngZone: NgZone){}
 
   ngOnInit(): void{
-    this.signalR.startConnection(); // connect signalR
-
     this.searchSubject.pipe(
       debounceTime(300),
       switchMap(searchValue => searchValue !== '' ? this.search.getSearch(searchValue, 7) : of([]))
@@ -41,6 +39,7 @@ export class SearchbarComponent implements OnInit, OnDestroy{
     //         console.log('Received friend request notification');
     //         this.refreshSearchResults();
     //     });
+
     this.signalR.updateSearchResultsListener()
       .subscribe((newResults: UserDetails[]) => {
         this.searchResult = newResults;
@@ -48,11 +47,7 @@ export class SearchbarComponent implements OnInit, OnDestroy{
       });
   }
 
-  //if end the component then the signalR will stop
   ngOnDestroy(): void {
-    this.signalR.stopConnection();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   onSearchInputChange(): void {

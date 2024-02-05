@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
 import { ChatlistService } from '../chatlist.service';
 
@@ -14,18 +14,25 @@ export class ChatlistComponent implements OnInit{
   userId = 7;
   privateChat: any[] = [];
   groupChat: any[] = [];
-
+  
   constructor(private chatlistService: ChatlistService) {}
 
   ngOnInit(): void {
-    this.chatlistService.getChatListByUserId(this.userId).pipe(
-      tap(chats => console.log(chats)), 
-    ).subscribe((chats: any[]) => {
-      
-      this.privateChat = chats.filter(chat => chat.roomType === false);
-      console.log(this.privateChat);
-      this.groupChat = chats.filter(chat => chat.roomType === true);
-      console.log(this.groupChat);  
-    });
   }
+
+  getChatList(){
+    if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
+    {
+      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+        tap(chats => console.log(chats)), 
+      ).subscribe((chats: any[]) => {
+        
+        this.privateChat = chats.filter(chat => chat.roomType === false);
+        console.log(this.privateChat);
+        this.groupChat = chats.filter(chat => chat.roomType === true);
+        console.log(this.groupChat);  
+      });
+    }
+
+  }  
 }

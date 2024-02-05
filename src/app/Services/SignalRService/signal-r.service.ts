@@ -3,6 +3,11 @@ import * as signalR from '@microsoft/signalr';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 
+interface TypingStatus{
+  userName:string;
+  isTyping:boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +22,8 @@ export class SignalRService {
 
   private buildConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-                          .withUrl(this.https) // Use your server URL
+                          .configureLogging(signalR.LogLevel.Debug)
+                          .withUrl(this.https)
                           .build();
   }
 
@@ -31,22 +37,21 @@ export class SignalRService {
     return Promise.resolve();
   }
 
-  public sendMessageToOtherUser(message:string)
+  public InformUserTyping(name:string, typing:boolean)
   {
-    this.hubConnection.invoke("ReceiveIncomingMessage", message)
-    .then(() => console.log('Message Sent Successfully'))
-    .catch(error => console.error('Error invoking ReceiveIncomingMessage:', error));
+    this.hubConnection.invoke("CheckUserTyping", name, typing)
+    //.then(() => console.log(''))
+    .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
-  public listenMessage():Observable<string>
+  public UserTypingStatus():Observable<TypingStatus>
   {
-    return new Observable<string>(observer => {
+    return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
-        this.hubConnection.on("ReceiveMessage", (message:string) => {
-          console.log("Someone: ",message);
+        this.hubConnection.on("UserTyping", (userName:string, isTyping:boolean) => {
           this.ngZone.run(() => {
-            observer.next(message);
+            observer.next({ userName, isTyping });
           })
         })
       }
