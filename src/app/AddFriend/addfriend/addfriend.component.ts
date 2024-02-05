@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { response } from 'express';
+import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { User } from '../../Models/User/user';
-import { DialogService } from '../../Services/Dialog/dialog.service';
 import { FriendsService } from '../../Services/FriendService/friends.service';
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
+import { SignalRFriendService } from '../../Services/SignalR/Friend/signal-rfriend.service';
 import { UserService } from '../../Services/UserService/user.service';
-
 
 
 @Component({
@@ -14,38 +13,77 @@ import { UserService } from '../../Services/UserService/user.service';
   styleUrl: './addfriend.component.css'
 })
 export class AddfriendComponent implements OnInit{
-  isIconVisible: boolean = true;
-  isDialogOpen: boolean = false;
-  CountgetFriendRequest: any[] = [];
-  sharedata: User[] = [];
-  stop: boolean = false;
-
-  constructor(private dialogService: DialogService, private usersService: UserService, private dataShareService: DataShareService){}
+  constructor(private usersService:UserService, private friendService: FriendsService, private signalRService: SignalRFriendService,
+    private dataShareService: DataShareService){}
+  getFriendRequest: any[] = [];
+  isVisible = false;
+  request: FriendRequest = {ReceivedId: 0, SenderId: 0,Status: 0 };
 
   ngOnInit(): void {
-
-    console.log("Beginning stop", this.stop);
-    if(!this.stop){
-      console.log("stop", this.stop);
     this.usersService.getFriendRequest(7)
     .subscribe(response => {
-      this.CountgetFriendRequest = response;
-      this.sharedata = response;
+      this.getFriendRequest = response;
       console.log("Friend Request Result: ", response);
-
-      //this.dataShareService.updateFriendRequestData(this.sharedata)
     });
-     this.stop = true;
-     console.log("Ending stop", this.stop);
-  }
-}
-
-  openDialog(): void{
-    this.dialogService.openDialog();
   }
 
-  closeDialog(): void{
-    this.dialogService.closeDialog();
+  acceptFriendRequest(senderId:number, rId:string) : void{
+    var receivedId = + rId;
+    this.request = {
+      ReceivedId: receivedId,
+      SenderId: senderId,
+      Status: 2
+    };
+    
+    console.log(this.request);
+    this.friendService.UpdateFriendRequest(this.request)
+    .subscribe(response => {
+      console.log("Accept Friend: ", response);
+       this.refreshRequest();
+      this.signalRService.acceptFriendRequest(response,senderId);
+    });
+  }
+  
+  rejectFriendRequest(senderId:number, rId:string): void{
+    var receivedId = + rId;
+    this.request = {
+      ReceivedId: receivedId,
+      SenderId: senderId,
+      Status: 3
+    };
+    
+    console.log(this.request);
+    this.friendService.UpdateFriendRequest(this.request)
+    .subscribe(response => {
+      console.log("Reject Friend: ", response);
+       this.refreshRequest();
+    });
   }
 
+   private refreshRequest(): void {
+    this.usersService.getFriendRequest(7).subscribe(
+      (results) => {
+        this.getFriendRequest = results;
+        console.log('Request results refreshed:', results);
+      },
+      (error) => {
+        console.error('Error refreshing search results:', error);
+      }
+    );
+  }
+
+  //Model
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  // handleOk(): void {
+  //   console.log('Button ok clicked!');
+  //   this.isVisible = false;
+  // }
+
+  handleCancel(): void {
+    console.log('Button cancel clicked!');
+    this.isVisible = false;
+  }
 }

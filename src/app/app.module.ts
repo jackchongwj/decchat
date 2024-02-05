@@ -24,7 +24,6 @@ import { ChatmessageComponent } from './ChatMessage/chatmessage/chatmessage.comp
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
-import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
 import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
 import { NzModalModule } from 'ng-zorro-antd/modal';
@@ -41,7 +40,6 @@ registerLocaleData(ms);
     ChatmessageComponent,
     HomepageComponent,
     AddfriendComponent,
-    AddFriendDialogContentComponent,
     ChatlistComponent,
     CreategroupComponent
   ],

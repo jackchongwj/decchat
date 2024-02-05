@@ -1,12 +1,47 @@
-<button class="custom-button" (click)="openDialog()">
-  <i *ngIf="isIconVisible" class="custom-icon" nz-icon nzType="user-add">
-    <span>{{ CountgetFriendRequest.length }}</span>
+
+<!-- Create group button at sidebar -->
+<button class="custom-button" (click)="showModal()">
+  <i class="custom-icon" nz-icon nzType="user-add">
+    <span>{{ getFriendRequest.length }}</span>
   </i>
 </button>
+    
+<!-- Modal -->
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Friend Request Lists"
+          (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'">
+  <ng-container *nzModalContent>
 
-<div *ngIf="isDialogOpen">
-    <app-add-friend-dialog-content></app-add-friend-dialog-content>
-    <button (click)="closeDialog()">Close</button>
-</div>
+    <div class="friend-list-container">
+      <div *ngIf="getFriendRequest.length > 0" class="friend-request-list">
+        <div *ngFor="let request of getFriendRequest" class="friend-request-item">
+          <img [src]="request.profilePicture" alt="Profile Image" class="profile-image">
+          <div class="user-info">
+            <span class="profile-name">{{ request.profileName }}</span>
+            <div class="action-buttons">
+              <button mat-icon-button class="accept-button" color="primary" (click)="acceptFriendRequest(request.userId,'7')">
+                <i class="custom-icon" nz-icon nzType="check"></i> Accept
+              </button>
+              <button mat-icon-button class="reject-button" color="warn" (click)="rejectFriendRequest(request.userId,'7')">
+                <i class="custom-icon" nz-icon nzType="close"></i> Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div *ngIf="getFriendRequest.length === 0" class="no-result-message">
+        No Friend Requests!
+      </div>
+    </div>
+  </ng-container>
 
+  <div nz-row nzGutter="16">
+    <div nz-col nzSpan="12">
+      <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    </div>
+  </div>
+</nz-modal>
+
+
+ 
 
