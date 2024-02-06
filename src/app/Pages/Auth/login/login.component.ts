@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../Services/Auth/auth.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent{
     remember: [true]
   });
 
-  constructor(private fb: NonNullableFormBuilder, private router: Router, private authService: AuthService) {}
+  constructor(private fb: NonNullableFormBuilder, private router: Router, private authService: AuthService, private message: NzMessageService) {}
 
   submitForm(): void {
     if (this.validateForm.valid) {
@@ -30,7 +31,8 @@ export class LoginComponent{
           this.authService.setToken(res.accessToken);
           this.authService.setUserId(res.userId);
 
-          console.log('Login successful!');
+          console.log('Login successful!', res);
+          this.message.success('Login successful!');
           this.router.navigate(['/']);
         },
         error: (e) => {

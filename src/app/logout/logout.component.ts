@@ -20,7 +20,9 @@ export class LogoutComponent {
     this.authService.logout().subscribe({
       next: (res) => {
         this.authService.clearStorage();
-        this.message.success('Logged out successfully!');
+
+        console.log('Logout successful!', res)
+        this.message.success('Logout successful!');
         this.router.navigate(['/login']);
       },
       error: (e) => {
