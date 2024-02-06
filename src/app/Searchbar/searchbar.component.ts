@@ -8,6 +8,7 @@ import { FriendsService } from '../Services/FriendService/friends.service';
 import { UserService } from '../Services/UserService/user.service';
 import { SignalRFriendService } from '../Services/SignalR/Friend/signal-rfriend.service';
 import { UserDetails } from '../Models/DTO/User/user-details';
+import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 
 @Component({
   selector: 'app-searchbar',
@@ -17,19 +18,22 @@ import { UserDetails } from '../Models/DTO/User/user-details';
 export class SearchbarComponent implements OnInit{
   isCollapsed = false;
   searchValue: string = '';
-  private searchSubject: Subject<string> = new Subject<string>();
   searchResult: any[] = []; // array
+  // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
+  private searchSubject: Subject<string> = new Subject<string>()
   private destroy$ = new Subject<void>();
+
   
   constructor(private friendService: FriendsService, private search: UserService, private signalR: SignalRFriendService,
-    private ngZone: NgZone){}
+    private ngZone: NgZone, private localStorage: LocalstorageService){}
+    
+   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+
 
   ngOnInit(): void{
-    // this.signalR.startConnection(); // connect signalR
-
     this.searchSubject.pipe(
       debounceTime(300),
-      switchMap(searchValue => searchValue !== '' ? this.search.getSearch(searchValue, 7) : of([]))
+      switchMap(searchValue => searchValue !== '' ? this.search.getSearch(searchValue, this.userId) : of([]))
     ).subscribe(response =>{
       this.searchResult = response;
       console.log('Backend Search Result:', response);
@@ -43,8 +47,13 @@ export class SearchbarComponent implements OnInit{
     //     });
 
     this.signalR.updateSearchResultsListener()
-      .subscribe((newResults: UserDetails[]) => {
-        this.searchResult = newResults;
+      .subscribe((UserId: number) => {
+        const newresult =  this.searchResult.find(user => user.userId == UserId)
+        if(newresult)
+        {
+          newresult.status = 1;
+          console.log("new", this.searchResult);
+        }
         console.log('Received updated search results:', this.searchResult);
       });
   }
@@ -60,13 +69,12 @@ export class SearchbarComponent implements OnInit{
     this.searchSubject.next(this.searchValue);
   }
 
-  OnSendFriendRequest(receiverId: number, sId: string): void {
-    var senderId = +sId;
-    this.friendService.addFriends({ RequestId: null, SenderId: senderId, ReceiverId: receiverId, Status: 0 })
+  OnSendFriendRequest(receiverId: number): void {
+    this.friendService.addFriends({ RequestId: null, SenderId: this.userId, ReceiverId: receiverId, Status: 0 })
       .subscribe(response => {
         console.log('Friend Created successful: ', response);
         this.ngZone.run(() => {
-          this.signalR.notifyFriendRequest(receiverId, senderId, this.searchValue);
+          this.signalR.notifyFriendRequest(receiverId, this.userId, this.searchValue);
         });
       });
   }

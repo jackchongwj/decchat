@@ -14,7 +14,7 @@ interface TypingStatus{
 })
 export class SignalRService {
   private hubConnection!:signalR.HubConnection 
-
+  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   constructor(private ngZone: NgZone) {
     this.buildConnection();
    }
@@ -24,7 +24,7 @@ export class SignalRService {
   private buildConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https)
+                          .withUrl(this.https+"?userId="+this.userId)
                           .build();
   }
 
@@ -33,8 +33,8 @@ export class SignalRService {
     if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
       return this.hubConnection.start()
       .then(() => {
+        console.log("id",this.userId);
         console.log('Connection started');
-    
         return this.hubConnection.invoke("AddToGroup", list)
           .then(() => console.log('AddToGroup invoked successfully'))
           .catch(err => console.log('Error while invoking "AddToGroup": ' + err));

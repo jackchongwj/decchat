@@ -17,20 +17,26 @@ export class AddfriendComponent implements OnInit{
     private dataShareService: DataShareService){}
   getFriendRequest: any[] = [];
   isVisible = false;
+  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   request: FriendRequest = {ReceivedId: 0, SenderId: 0,Status: 0 };
 
   ngOnInit(): void {
-    this.usersService.getFriendRequest(7)
+    this.usersService.getFriendRequest(this.userId)
     .subscribe(response => {
       this.getFriendRequest = response;
       console.log("Friend Request Result: ", response);
     });
+
+    this.signalRService.updateFriendRequestListener()
+    .subscribe((newResults: User[]) => {
+      this.getFriendRequest = newResults;
+      console.log('Received updated friend request results:', this.getFriendRequest);
+    });
   }
 
-  acceptFriendRequest(senderId:number, rId:string) : void{
-    var receivedId = + rId;
+  acceptFriendRequest(senderId:number) : void{
     this.request = {
-      ReceivedId: receivedId,
+      ReceivedId: this.userId,
       SenderId: senderId,
       Status: 2
     };
@@ -44,10 +50,9 @@ export class AddfriendComponent implements OnInit{
     });
   }
   
-  rejectFriendRequest(senderId:number, rId:string): void{
-    var receivedId = + rId;
+  rejectFriendRequest(senderId:number): void{
     this.request = {
-      ReceivedId: receivedId,
+      ReceivedId: this.userId,
       SenderId: senderId,
       Status: 3
     };
@@ -71,6 +76,10 @@ export class AddfriendComponent implements OnInit{
       }
     );
   }
+
+
+  //signalR
+  
 
   //Model
   showModal(): void {

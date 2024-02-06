@@ -13,7 +13,7 @@ import { DataShareService } from '../Services/ShareDate/data-share.service';
 export class ChatlistComponent implements OnInit{
   @Input() isCollapsed : boolean = false;
   showChatList = false;
-  userId = 7;
+  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   privateChat: any[] = [];
   groupChat: any[] = [];
 
@@ -51,6 +51,5 @@ getChatList(){
       this.dataShareService.updateChatListData(chats);
     });
   }
-
 }  
 }
