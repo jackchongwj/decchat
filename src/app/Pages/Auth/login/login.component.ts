@@ -25,18 +25,18 @@ export class LoginComponent{
     if (this.validateForm.valid) {
       const loginData = this.validateForm.value;
 
-      this.authService.login(loginData).subscribe(
-        response => {
-          this.authService.setToken(response.accessToken);
-          this.authService.setUserId(response.userId);
-          
+      this.authService.login(loginData).subscribe({
+        next: (res) => {
+          this.authService.setToken(res.accessToken);
+          this.authService.setUserId(res.userId);
+
           console.log('Login successful!');
           this.router.navigate(['/']);
         },
-        error => {
-          console.error('Login failed:', error);
+        error: (e) => {
+          console.error('Login failed:', e);
         }
-      );
+    });
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {

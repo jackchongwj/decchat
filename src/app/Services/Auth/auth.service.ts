@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   login(loginData: any): Observable<any> {
-    return this.http.post<any>(`${AuthUrl}login`, loginData);
+    return this.http.post<any>(`${AuthUrl}login`, loginData, { withCredentials: true });
   }
 
   logout(): Observable<any> {

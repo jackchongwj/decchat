@@ -26,9 +26,6 @@ import { RegisterComponent } from './Pages/Auth/register/register.component';
 import { LogoutComponent } from './Logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
-import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 
 registerLocaleData(ms);
 
@@ -45,7 +42,7 @@ registerLocaleData(ms);
     ChatlistComponent,
     LoginComponent,
     RegisterComponent,
-    LogoutComponent,,
+    LogoutComponent,
     CreategroupComponent
   ],
   imports: [
@@ -57,10 +54,7 @@ registerLocaleData(ms);
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    ImportNgZorroAntdModule,, 
-    NzSelectModule, 
-    NzModalModule,
-    NzButtonModule
+    ImportNgZorroAntdModule,
   ],
   
   providers: [

@@ -260,18 +260,18 @@ export class RegisterComponent {
       this.isLoading = true;
       const registrationData = this.registerForm.value;
 
-      this.authService.register(registrationData).subscribe(
-        response => {
+      this.authService.register(registrationData).subscribe({
+        next: (res) => {
           this.isLoading = false;
           this.message.success('Registration successful!');
           this.router.navigate(['/login']);
         },
-        error => {
+        error: (e) => {
           this.isLoading = false;
-          console.error('Registration failed:', error);
+          console.error('Registration failed:', e);
           this.message.error('Registration failed');
         }
-      );
+      });
     } else {
       // Mark invalid controls as dirty to display validation errors
       Object.values(this.registerForm.controls).forEach(control => {

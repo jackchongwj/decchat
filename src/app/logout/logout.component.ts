@@ -17,16 +17,16 @@ export class LogoutComponent {
 
   logout(): void {
 
-    this.authService.logout().subscribe(
-      response => {
+    this.authService.logout().subscribe({
+      next: (res) => {
         this.authService.clearStorage();
         this.message.success('Logged out successfully!');
         this.router.navigate(['/login']);
       },
-      error => {
-        console.error('Logout failed', error);
+      error: (e) => {
+        console.error('Logout failed', e);
         this.message.error('Logout failed');
       }
-    );
+    });
   }
 }
