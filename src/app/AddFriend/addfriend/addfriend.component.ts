@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { User } from '../../Models/User/user';
 import { FriendsService } from '../../Services/FriendService/friends.service';
+import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
 import { SignalRFriendService } from '../../Services/SignalR/Friend/signal-rfriend.service';
 import { UserService } from '../../Services/UserService/user.service';
@@ -14,11 +15,12 @@ import { UserService } from '../../Services/UserService/user.service';
 })
 export class AddfriendComponent implements OnInit{
   constructor(private usersService:UserService, private friendService: FriendsService, private signalRService: SignalRFriendService,
-    private dataShareService: DataShareService){}
+    private dataShareService: DataShareService, private localStorage: LocalstorageService){}
 
   getFriendRequest: any[] = [];
   isVisible = false;
-  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
+  // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
+  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   request: FriendRequest = {ReceivedId: 0, SenderId: 0,Status: 0 };
 
   ngOnInit(): void {
