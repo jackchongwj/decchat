@@ -20,7 +20,7 @@ import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component'
 import { MatDialogModule } from '@angular/material/dialog';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
-import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
+// import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
 import { LoginComponent } from './Pages/Auth/login/login.component';
 import { RegisterComponent } from './Pages/Auth/register/register.component';
 import { LogoutComponent } from './Logout/logout.component';
@@ -38,7 +38,6 @@ registerLocaleData(ms);
     ChatmessageComponent,
     HomepageComponent,
     AddfriendComponent,
-    AddFriendDialogContentComponent,
     ChatlistComponent,
     LoginComponent,
     RegisterComponent,

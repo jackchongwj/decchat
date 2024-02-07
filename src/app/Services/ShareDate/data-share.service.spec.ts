@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FriendServiceService } from './friend-service.service';
+import { DataShareService } from './data-share.service';
 
-describe('FriendServiceService', () => {
-  let service: FriendServiceService;
+describe('DataShareService', () => {
+  let service: DataShareService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FriendServiceService);
+    service = TestBed.inject(DataShareService);
   });
 
   it('should be created', () => {

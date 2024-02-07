@@ -29,8 +29,8 @@ export class LoginComponent{
 
       this.authService.login(loginData).subscribe({
         next: (res) => {
-          this.tokenService.setToken(res.accessToken);
-          this.authService.setUserId(res.userId);
+          this.tokenService.setToken(res.AccessToken);
+          this.authService.setUserId(res.UserId);
 
           console.log('Login successful!', res);
           this.message.success('Login successful!');
