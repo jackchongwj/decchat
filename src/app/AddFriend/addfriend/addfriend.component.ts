@@ -15,6 +15,7 @@ import { UserService } from '../../Services/UserService/user.service';
 export class AddfriendComponent implements OnInit{
   constructor(private usersService:UserService, private friendService: FriendsService, private signalRService: SignalRFriendService,
     private dataShareService: DataShareService){}
+
   getFriendRequest: any[] = [];
   isVisible = false;
   userId: number = parseInt(localStorage.getItem('userId') || '', 10);
@@ -29,12 +30,13 @@ export class AddfriendComponent implements OnInit{
 
     this.signalRService.updateFriendRequestListener()
     .subscribe((newResults: User[]) => {
+      console.log("new result", newResults);
       this.getFriendRequest = newResults;
       console.log('Received updated friend request results:', this.getFriendRequest);
     });
   }
 
-  acceptFriendRequest(senderId:number) : void{
+  acceptFriendRequest(senderId: number) : void{
     this.request = {
       ReceivedId: this.userId,
       SenderId: senderId,
@@ -46,7 +48,7 @@ export class AddfriendComponent implements OnInit{
     .subscribe(response => {
       console.log("Accept Friend: ", response);
        this.refreshRequest();
-      this.signalRService.acceptFriendRequest(response,senderId);
+      this.signalRService.acceptFriendRequest(response, senderId, this.userId);
     });
   }
   
@@ -78,8 +80,6 @@ export class AddfriendComponent implements OnInit{
   }
 
 
-  //signalR
-  
 
   //Model
   showModal(): void {

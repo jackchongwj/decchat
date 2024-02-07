@@ -80,3 +80,12 @@
     right: 20px; 
     top: 0; 
   }
+
+  /* button */
+
+  .custom-button {
+    color: white;
+    border: none;
+    margin-top: 10px;
+  }
+  

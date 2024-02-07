@@ -19,6 +19,7 @@ export class SearchbarComponent implements OnInit{
   isCollapsed = false;
   searchValue: string = '';
   searchResult: any[] = []; // array
+  isVisible = false;
   // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   private searchSubject: Subject<string> = new Subject<string>()
   private destroy$ = new Subject<void>();
@@ -38,32 +39,31 @@ export class SearchbarComponent implements OnInit{
       this.searchResult = response;
       console.log('Backend Search Result:', response);
     });
-   
-    // this.signalR.addFriendRequestListener()
-    //     .pipe(takeUntil(this.destroy$))
-    //     .subscribe(() => {
-    //         console.log('Received friend request notification');
-    //         this.refreshSearchResults();
-    //     });
-
+   if(this.signalR.updateSearchResultsAfterAccept())
+   {
+    this.signalR.updateSearchResultsAfterAccept()
+    .subscribe((UserId: number) => {
+      const newresult =  this.searchResult.find(user => user.UserId == UserId)
+      if(newresult)
+      {
+        newresult.Status = 2;
+        console.log("new", this.searchResult);
+      }
+      console.log('Received updated search results After Accept Friend:', this.searchResult);
+    });
+   }
     this.signalR.updateSearchResultsListener()
       .subscribe((UserId: number) => {
-        const newresult =  this.searchResult.find(user => user.userId == UserId)
+        const newresult =  this.searchResult.find(user => user.UserId == UserId)
         if(newresult)
         {
-          newresult.status = 1;
+          newresult.Status = 1;
           console.log("new", this.searchResult);
         }
         console.log('Received updated search results:', this.searchResult);
       });
+      
   }
-
-  //if end the component then the signalR will stop
-  // ngOnDestroy(): void {
-  //   this.signalR.stopConnection();
-  //   this.destroy$.next();
-  //   this.destroy$.complete();
-  // }
 
   onSearchInputChange(): void {
     this.searchSubject.next(this.searchValue);
@@ -79,25 +79,9 @@ export class SearchbarComponent implements OnInit{
       });
   }
 
-  // OnSendFriendRequest(receiverId: number, sId: string ):void{
-  //   var senderId = + sId;
-  //   this.friendService.addFriends({RequestId:null, SenderId: senderId, ReceiverId: receiverId, Status: 0})
-  //     .subscribe(response =>{ console.log('Friend Created successful: ', response)
-  //     // this.refreshSearchResults();
-  //   });
-      
-  //     this.signalR.notifyFriendRequest(receiverId, senderId, this.searchValue);
-  // }
-
-  // private refreshSearchResults(): void {
-  //   this.search.getSearch(this.searchValue, 7).subscribe(
-  //     (results) => {
-  //       this.searchResult = results;
-  //       console.log('Search results refreshed:', results);
-  //     },
-  //     (error) => {
-  //       console.error('Error refreshing search results:', error);
-  //     }
-  //   );
-  // }
+  
+  //Model
+  showModal(): void {
+    this.isVisible = true;
+  }
 }

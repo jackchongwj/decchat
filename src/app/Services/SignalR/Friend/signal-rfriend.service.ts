@@ -17,17 +17,6 @@ export class SignalRFriendService {
 
   private hubConnection = this._SService.getHubConnection();
 
-  // notifyFriendRequest(receiverId: number, senderId:number, profileName:string): void {
-  //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-  //     this.hubConnection.invoke('SendFriendRequestNotification', receiverId, senderId, profileName)
-  //       .then(() => console.log('notify successful'))
-  //       .then(() => console.log(this.updateSearchResultsListener()))
-  //       .catch(error => console.error('Error invoking SendFriendRequestNotification:', error));
-  //   } else {
-  //     console.error('SignalR connection is not in the "Connected" state.');
-  //   }
-  // }
-
   notifyFriendRequest(receiverId: number, senderId:number, profileName:string): void {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
       this.hubConnection.invoke('SendFriendRequestNotification', receiverId, senderId, profileName)
@@ -42,17 +31,6 @@ export class SignalRFriendService {
     }
   }
 
-//   addFriendRequestListener(): Observable<void> {
-//     return new Observable<void>(observer => {
-//       if (this.hubConnection) {
-//         this.hubConnection.on('ReceiveFriendRequestNotification', () => {
-//           observer.next();
-//         });
-//         console.log("add");
-//       }
-//     });
-//   }
-
   updateSearchResultsListener(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -66,6 +44,19 @@ export class SignalRFriendService {
     });
   }
 
+
+  updateSearchResultsAfterAccept(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdateSearchResultsAfterAccept', (userId: number) => {
+          console.log('Received new search results After Accept:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
+        });
+      }
+    });
+  }
   
   updateFriendRequestListener(): Observable<User[]> {
     return new Observable<User[]>(observer => {
@@ -82,19 +73,14 @@ export class SignalRFriendService {
 
 
   //accept friend request
-  acceptFriendRequest(chatRoomId: number, userId: number)
+  acceptFriendRequest(chatRoomId: number, userId: number, receiverId: number)
   {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      this.hubConnection.invoke('acceptFriendRequest', chatRoomId, userId)
+      this.hubConnection.invoke('acceptFriendRequest', chatRoomId, userId, receiverId)
         .then(() => console.log('notify accept successful'))
-        .then(() => console.log(this.updateSearchResultsListener()))
         .catch(error => console.error('Error invoking acceptFriendRequest:', error));
     } else {
       console.error('SignalR connection is not in the "Connected" state.');
     }
   }
-
-  // private friend list
-
-  // updatePrivateFriendList(): Observable
 }
