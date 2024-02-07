@@ -3,13 +3,14 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/c
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from '../Services/Auth/auth.service';
+import { TokenService } from '../Services/Token/token.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private tokenService: TokenService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const accessToken = this.authService.getToken();
+    const accessToken = this.tokenService.getToken();
 
     if (accessToken) {
       request = request.clone({
@@ -27,17 +28,17 @@ export class AuthInterceptor implements HttpInterceptor {
           return this.handle401Error(request, next);
         }
 
-        return throwError(error);
+        return throwError(() => new Error('An unexpected error occurred'));
       })
     );
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Example token refresh logic
-    return this.authService.renewToken().pipe(
+    return this.tokenService.renewToken().pipe(
       switchMap((newToken: string) => {
         // Save the new token
-        this.authService.setToken(newToken);
+        this.tokenService.setToken(newToken);
 
         // Clone the request with the new token
         const updatedRequest = request.clone({
@@ -49,9 +50,8 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(updatedRequest);
       }),
       catchError((refreshError) => {
-        // If refreshing also fails, handle it (e.g., logout the user)
         this.authService.logout();
-        return throwError(refreshError);
+        return throwError(() => new Error(refreshError));
       })
     );
   }

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from '../Services/Auth/auth.service';
 import { Router } from '@angular/router';
+import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 
 @Component({
   selector: 'app-logout',
@@ -13,13 +11,13 @@ import { Router } from '@angular/router';
 })
 export class LogoutComponent {
 
-  constructor(private authService: AuthService, private message: NzMessageService, private router: Router) {}
+  constructor(private localStorageService: LocalstorageService, private authService: AuthService, private message: NzMessageService, private router: Router) {}
 
   logout(): void {
 
     this.authService.logout().subscribe({
       next: (res) => {
-        this.authService.clearStorage();
+        this.localStorageService.clear();
 
         console.log('Logout successful!', res)
         this.message.success('Logout successful!');
