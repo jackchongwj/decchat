@@ -29,6 +29,7 @@ import { RegisterComponent } from './Pages/Auth/register/register.component';
 import { LogoutComponent } from './logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
+import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
 
 
 registerLocaleData(ms);
@@ -46,7 +47,8 @@ registerLocaleData(ms);
     LoginComponent,
     RegisterComponent,
     LogoutComponent,
-    CreategroupComponent
+    CreategroupComponent,
+    UserLoginPageComponent
   ],
   imports: [
     BrowserModule,

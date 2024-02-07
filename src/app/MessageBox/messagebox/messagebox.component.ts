@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Message } from '../../Models/Message/message';
 import { MessageService } from '../../Services/MessageService/message.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { Observable, Subject } from 'rxjs';
+import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
 
 interface TypingStatus{
   userName:string;
@@ -35,10 +35,12 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   isRecording:boolean = false;
   private chunks: BlobPart[] = [];
   mediaRecorder: MediaRecorder | null = null;
-  audioUrl: SafeUrl | null = null;
   recordingInProgress = new Subject<boolean>();
 
-  constructor(private _mService:MessageService, private _sService:SignalRService, private sanitizer: DomSanitizer){}
+  constructor(
+    private _mService:MessageService,
+    private _sService:SignalRService,
+    private _lsService:LocalstorageService){}
   
   ngOnInit(): void {
     console.log("Ignore OnInit");
@@ -114,6 +116,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     formData.append('message', JSON.stringify(this.message));
     
     if (this.uploadedFiles) {
+      console.log(this.uploadedFiles);
         formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
     }
 

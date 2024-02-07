@@ -17,13 +17,24 @@
   }
   
   .header-trigger {
-    height: 64px;
-    padding: 20px 24px;
-    font-size: 20px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 5px 5px;
+    font-size: 25px;
     cursor: pointer;
     transition: all .3s,padding 0s;
   }
   
+  app-logout{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 5px 5px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
   .trigger:hover {
     color: #1890ff;
   }
@@ -62,9 +73,12 @@
   }
   
   .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: relative;
     height: 64px;
-    padding: 0;
+    padding: 0 20px;
     background: #fff;
     box-shadow: 0 1px 4px rgba(0,21,41,.08);
   }

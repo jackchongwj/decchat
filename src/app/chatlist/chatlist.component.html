@@ -5,9 +5,9 @@
     <li nz-submenu nzTitle="Private Chat" nzIcon="message" (click)="getChatList()">
       <ul class="chat-item-list">
         <!-- Display List of Conversation -->
-        <li nz-menu-item *ngFor="let user of privateChat" class="chat-item" (click)="getSelectedChatRoom(user.chatRoomId)">
+        <li nz-menu-item *ngFor="let user of privateChat" class="chat-item" (click)="getSelectedChatRoom(user)">
           <img class="circular-image" alt="Profile">
-          <strong class="user-info">{{ user.profileName }}</strong>
+          <strong class="user-info">{{ user.ChatRoomName }}</strong>
         </li>
       </ul>
     </li>
@@ -15,9 +15,9 @@
     <!-- Group Chat -->
     <li nz-submenu  nzTitle="Group Chat" nzIcon="usergroup-add" (click)="getChatList()">
       <ul class="chat-item-list">
-        <li nz-menu-item *ngFor="let user of groupChat" class="chat-item" (click)="getSelectedChatRoom(user.chatRoomId)">
+        <li nz-menu-item *ngFor="let user of groupChat" class="chat-item" (click)="getSelectedChatRoom(user)">
           <img class="circular-image" alt="Profile">
-          <strong class="user-info">{{ user.roomName }}</strong>
+          <strong class="user-info">{{ user.ChatRoomName }}</strong>
         </li>
       </ul>
     </li>

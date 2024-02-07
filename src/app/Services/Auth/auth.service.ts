@@ -28,10 +28,12 @@ export class AuthService {
   }
 
   setUserId(userId: string): void {
+    console.log("userId: " + userId);
     this.localStorageService.setItem('userId', userId);
   }
 
   setToken(token: string): void {
+    console.log("Token: " + token);
     this.localStorageService.setItem('accessToken', token);
   }
   

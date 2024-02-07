@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
+import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-creategroup',
@@ -13,7 +15,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectMod
 })
 export class CreategroupComponent {
   isVisible = false;
-  privateChat: any[] = [];
+  privateChat: ChatListVM[] = [];
   RoomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
 
@@ -22,13 +24,21 @@ export class CreategroupComponent {
   ) {}
 
   ngOnInit(): void {
-    this.chatlistService.getChatListByUserId(7).subscribe(
-      {next: (res)=> {
-      this.privateChat = res.filter(
-        (chat:any) => chat.roomType === false);
-    }, 
-      error:(err)=>{console.log(err.message)
-    }});
+
+    this.chatlistService.RetrieveChatListByUser(7).pipe(
+      tap(chats => console.log(chats)), 
+    ).subscribe((chats: ChatListVM[]) => {
+      console.log("Friends Subscribed: "+ chats);
+      this.privateChat = chats;
+    });
+
+    // this.chatlistService.RetrieveChatListByUser(7).subscribe(
+    //   {next: (res)=> {
+    //   this.privateChat = res.filter(
+    //     (chat:any) => chat.roomType === false);
+    // }, 
+    //   error:(err)=>{console.log(err.message)
+    // }});
   }
 
     showModal(): void {

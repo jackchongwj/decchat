@@ -27,24 +27,22 @@ export class ChatlistComponent implements OnInit{
     if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
     {
       this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-        tap(chats => console.log(chats)), 
+        tap(), 
       ).subscribe((chats: ChatListVM[]) => {
         
         this.privateChat = chats.filter(chat => chat.RoomType === false);
-        console.log(this.privateChat);
         this.groupChat = chats.filter(chat => chat.RoomType === true);
-        console.log(this.groupChat);  
 
-        console.log("privateGrouplist", chats);
         this.dataShareService.updateChatListData(chats);
       });
     }
   }
 
-  getSelectedChatRoom(chatRoomId:number)
+  getSelectedChatRoom(ChatRoom:ChatListVM)
   {
-    
-    console.log(this.lsService.getItem("userId"));
+    this.dataShareService.updateSelectedChatRoom(ChatRoom);
+    console.log(ChatRoom);
+    //console.log(this.lsService.getItem("userId"));
   }  
   
 }

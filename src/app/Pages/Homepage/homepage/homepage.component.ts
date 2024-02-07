@@ -15,14 +15,24 @@ export class HomepageComponent implements OnDestroy,OnInit{
   private receivedData: ChatListVM[] = [];
 
   ngOnInit(): void{
+
+    // start connection
+
     this.dataShareService.chatListData.subscribe(data => {
       this.receivedData = data;
-      console.log('received Data:', this.receivedData);
+      //console.log('received Data:', this.receivedData);
 
       if(this.receivedData.length > 0){
+        console.log("Now Starting SignalR Connection");
         this.signalRService.startConnection(this.receivedData);
       }
     });
+
+    // if(this.receivedData.length > 0){
+    //   console.log("Now Starting SignalR Connection");
+    //   this.signalRService.startConnection(this.receivedData);
+    // }
+
   }
 
   ngOnDestroy(): void {

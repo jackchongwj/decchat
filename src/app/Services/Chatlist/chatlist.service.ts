@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development'; 
 
@@ -24,6 +24,11 @@ export class ChatlistService {
 
     // Adjust the URL and pass the createGroup object as the request body
     return this.http.post(`${this.url}createGroup`, createGroup);
+  }
+
+  RetrieveChatListByUser(userID: number): Observable<any> {
+    const params = new HttpParams().set('userId', userID.toString());
+    return this.http.get(`${this.url}RetrieveChatListByUser`,{ params });
   }
 }
 

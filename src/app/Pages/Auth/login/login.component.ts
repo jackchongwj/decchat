@@ -27,8 +27,9 @@ export class LoginComponent{
 
       this.authService.login(loginData).subscribe(
         response => {
-          this.authService.setToken(response.accessToken);
-          this.authService.setUserId(response.userId);
+          console.log(response);
+          this.authService.setToken(response.AccessToken);
+          this.authService.setUserId(response.UserId);
           
           console.log('Login successful!');
           this.router.navigate(['/']);
