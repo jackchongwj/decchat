@@ -1,21 +1,26 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
+import { UserService } from '../Services/UserService/user.service';
+import { UserProfileComponent } from '../UserProfile/user-profile.component';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrl: './sidebar.component.css',
 })
-export class SidebarComponent implements OnInit {
 
-  constructor(private ngZone: NgZone){}
+
+export class SidebarComponent implements OnInit {
+  
+  constructor(
+    private ngZone: NgZone,
+    private userService: UserService,
+    ){}
 
   isCollapsed = false;
-  imageUrl: string = 'https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-29T11:42:23-beagle.png';
 
-  
-  ngOnInit(){
+  ngOnInit(): void {
   }
-
   
 }

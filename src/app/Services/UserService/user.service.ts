@@ -1,9 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { PasswordChange } from '../../Models/DTO/User/password-change.model';
 
 const UserUrl: string = environment.apiBaseUrl + 'Users/'
+const AuthUrl: string = environment.apiBaseUrl + 'Auth/'
 
 @Injectable({
   providedIn: 'root'
@@ -22,4 +24,35 @@ export class UserService {
     const params = new HttpParams().set('userId',userId.toString());
     return this.http.get(`${UserUrl}FriendRequest`, {params})
   }
+
+  getUserById(id: number): Observable<any> {
+    const params = new HttpParams().set('id',id.toString());
+    return this.http.get(`${UserUrl}UserDetails`, {params});
+  }
+
+  updateProfileName(id: number, newProfileName: string): Observable<any> {
+    const params = { id, newProfileName }; // Create a body object directly
+    return this.http.post(`${UserUrl}UpdateProfileName`, params);
+  }
+  
+  updateProfilePicture(userId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('id', userId.toString());
+    const params = { formData };
+    console.log(userId,formData);
+    return this.http.post<any>(`${UserUrl}UpdateProfilePicture`, formData);
+  }
+  
+  deleteUser(id: number): Observable<any> {
+    console.log("userid",id);
+    const params = new HttpParams().set('id', id);
+    console.log("param",params);
+    return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} );
+  }
+
+  changePassword(id: number, passwordChangeData: PasswordChange): Observable<any> {
+    return this.http.post(`${AuthUrl}PasswordChange?id=${id}`, passwordChangeData)
+  }
+  
 }

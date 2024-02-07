@@ -1,0 +1,57 @@
+<!-- userProfile.component.html -->
+<!-- <div class="user-profile-container">
+  <img [src]="User.ProfilePicture" alt="Image" class="circular-image">
+  <h1 style="color: white; background-color: aqua;">{{ User.ProfileName }}</h1>
+</div> -->
+<!-- userProfile.component.html -->
+<div class="user-profile-container">
+  <div class="user-profile-image">
+    <nz-avatar [nzSize]="56" nzIcon="user" [nzSrc]="User.ProfilePicture || 'default-profile-picture-url.png'" (click)="showModal = true"></nz-avatar>
+  </div>
+  <div class="user-profile-name">
+    <h1>{{ User.ProfileName }}</h1>
+  </div>
+</div>
+  <!-- Profile Modal Content -->
+  <!-- Use the NZ-MODAL component for the user profile modal -->
+<nz-modal [(nzVisible)]="showModal" nzTitle="User Profile" (nzOnCancel)="toggleModal()" nzClosable [nzFooter]="modalFooter">
+  <ng-container *nzModalContent>
+  <!-- Profile Picture with Edit Icon -->
+  <div class="profile-picture-overlay" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()">
+    <nz-avatar [nzSrc]="previewImageUrl || User.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large"></nz-avatar>
+    <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
+    <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+  </div>
+  <div *ngIf="previewImageUrl" class="image-options">
+    <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
+    <button nz-button nzType="default" (click)="cancelPreview()">✕</button>
+  </div>  
+
+  <!-- User Details Display -->
+  <div *ngIf="User" class="user-details">
+    <p>User Name: <span>{{ User.UserName }}</span></p>
+    <div class="profile-name-edit">
+      <p *ngIf="!editMode">Profile Name: <span>{{ User.ProfileName }}</span>
+        <button nz-button nzType="link" (click)="toggleEditMode()">
+          <i nz-icon nzType="edit"></i>
+        </button>
+      </p>
+      <ng-container *ngIf="editMode">
+        <nz-input-group nzCompact>
+          <input nz-input placeholder="Profile Name" [(ngModel)]="User.ProfileName"/>
+        </nz-input-group>
+        <button nz-button nzType="primary" (click)="saveProfileName()">Save</button>
+        <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
+      </ng-container>
+    </div>
+  </div>  
+  
+</ng-container>
+  <!-- Modal Footer Custom Content -->
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="changePassword()">Change Password</button>
+    <button nz-button nzType="danger" (click)="deleteAccount()">Delete Account</button>
+  </ng-template>
+</nz-modal>
+
+
