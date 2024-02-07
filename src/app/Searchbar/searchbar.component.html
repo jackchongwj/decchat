@@ -1,84 +1,15 @@
-<!-- <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
-    [nzTrigger]="null">
-    <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
-        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-        <h1>Ant Design Of Angular</h1>
-      </a>
-    </div>
-
-    <div>
-      <nz-input-group class="search-bar" nzTheme="dark">
-        <ng-container *nzPrefix  >
-          <i nz-icon nzType="search" nzTheme="outline"></i>
-        </ng-container>
-        <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" placeholder="Search..." />
-      </nz-input-group>
-    </div>
-    
-    <div *ngIf="searchValue != '' ">
-        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-          <li nz-submenu nzOpen nzTitle="People" nzIcon="user">
-            <div *ngIf="searchResult.length > 0">
-              <ul>
-                <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
-                  <img [src]="result.profilePicture" alt="Image" class="circular-image">
-                  {{ result.profileName }}
-                  
-                </li>
-              </ul>
-            </div>
-            <div *ngIf="searchResult.length == 0">
-              <ul>
-                <li nz-menu-item nzMatchRouter>
-                  No Result Found !!!
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-    </div>
-
-
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Private Chat" nzIcon="message">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
-          </li>
-        </ul>
-      </li>
-      <li nz-submenu nzOpen nzTitle="Group Chat" nzIcon="usergroup-add">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </nz-sider>
-  <nz-layout>
-    <nz-header>
-      <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-          <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
-        </span>
-      </div>
-    </nz-header>
-    <nz-content>
-      <div class="inner-content">
-        Developer Page reaches
-      </div>
-    </nz-content>
-  </nz-layout>
-</nz-layout> -->
+<!-- Create group button at sidebar -->
+<!-- <button nz-button class="custom-button" (click)="showModal()" nzTheme="dark">
+  <i nz-icon nzType="search" nzTheme="outline"></i>
+  Search
+</button> -->
+<!-- 
+<div class="search-button-container">
+  <button nz-button class="custom-button" (click)="showModal()" nzTheme="dark">
+    <i nz-icon nzType="search" nzTheme="outline"></i>
+    <input type="text" [(ngModel)]="searchValue" name="searchTerm" class="search-input" placeholder="Search" disabled>
+  </button>
+</div> -->
 
 <div>
   <nz-input-group class="search-bar" nzTheme="dark">
@@ -96,17 +27,17 @@
         <div *ngIf="searchResult.length > 0">
           <ul>
             <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
-              <img [src]="result.profilePicture" alt="Image" class="circular-image">
-              {{ result.profileName }}
-              <div class="st" *ngIf= "result.status == 1">
+              <img [src]="result.ProfilePicture" alt="Image" class="circular-image">
+              {{ result.ProfileName }}
+              <div class="st" *ngIf= "result.Status == 1">
                 Pending
               </div> 
-              <div class="st" *ngIf= "result.status  == 2">
+              <div class="st" *ngIf= "result.Status  == 2">
                 Friend
               </div> 
 
-              <div class="add" *ngIf= "result.status  == 0 || result.status  == 3 || result.status  == 4">
-                <button class="custom-button" (click)="OnSendFriendRequest(result.userId,'7')">
+              <div class="add" *ngIf= "result.Status  == 0 || result.Status  == 3 || result.Status  == 4">
+                <button class="custom-button" (click)="OnSendFriendRequest(result.UserId)">
                   <i class="custom-icon" nz-icon nzType="user-add"></i>
                 </button>
               </div>
@@ -122,4 +53,4 @@
         </div>
       </li>
     </ul>
-</div>
+</div> 

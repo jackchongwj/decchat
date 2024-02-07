@@ -15,7 +15,7 @@ import { DataShareService } from '../Services/ShareDate/data-share.service';
 export class ChatlistComponent implements OnInit{
   @Input() isCollapsed : boolean = false;
   showChatList = false;
-  userId = 7;
+  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   privateChat: any[] = [];
   groupChat: any[] = [];
   
@@ -43,8 +43,7 @@ export class ChatlistComponent implements OnInit{
 
   getSelectedChatRoom(chatRoomId:number)
   {
-    
-    console.log(this.lsService.getItem("userId"));
+        console.log(this.lsService.getItem("userId"));
   }  
   
 }

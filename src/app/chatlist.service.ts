@@ -22,6 +22,6 @@ export class ChatlistService {
     console.log("1");
     const params = new HttpParams().set('userId', userID.toString());
     const timestamp = Date.now().toString();
-    return this.http.get(`${this.url}RetrieveChatListByUser?time=${timestamp}`,{ params });
+    return this.http.get(`${this.url}GetChatListByUserId`,{ params });
   }
 } 
