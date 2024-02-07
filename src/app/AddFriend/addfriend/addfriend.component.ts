@@ -15,22 +15,30 @@ import { UserService } from '../../Services/UserService/user.service';
 export class AddfriendComponent implements OnInit{
   constructor(private usersService:UserService, private friendService: FriendsService, private signalRService: SignalRFriendService,
     private dataShareService: DataShareService){}
+
   getFriendRequest: any[] = [];
   isVisible = false;
+  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   request: FriendRequest = {ReceivedId: 0, SenderId: 0,Status: 0 };
 
   ngOnInit(): void {
-    this.usersService.getFriendRequest(7)
+    this.usersService.getFriendRequest(this.userId)
     .subscribe(response => {
       this.getFriendRequest = response;
       console.log("Friend Request Result: ", response);
     });
+
+    this.signalRService.updateFriendRequestListener()
+    .subscribe((newResults: User[]) => {
+      console.log("new result", newResults);
+      this.getFriendRequest = newResults;
+      console.log('Received updated friend request results:', this.getFriendRequest);
+    });
   }
 
-  acceptFriendRequest(senderId:number, rId:string) : void{
-    var receivedId = + rId;
+  acceptFriendRequest(senderId: number) : void{
     this.request = {
-      ReceivedId: receivedId,
+      ReceivedId: this.userId,
       SenderId: senderId,
       Status: 2
     };
@@ -40,14 +48,13 @@ export class AddfriendComponent implements OnInit{
     .subscribe(response => {
       console.log("Accept Friend: ", response);
        this.refreshRequest();
-      this.signalRService.acceptFriendRequest(response,senderId);
+      this.signalRService.acceptFriendRequest(response, senderId, this.userId);
     });
   }
   
-  rejectFriendRequest(senderId:number, rId:string): void{
-    var receivedId = + rId;
+  rejectFriendRequest(senderId:number): void{
     this.request = {
-      ReceivedId: receivedId,
+      ReceivedId: this.userId,
       SenderId: senderId,
       Status: 3
     };
@@ -71,6 +78,8 @@ export class AddfriendComponent implements OnInit{
       }
     );
   }
+
+
 
   //Model
   showModal(): void {

@@ -22,8 +22,7 @@ export class HomepageComponent implements OnDestroy,OnInit{
       this.receivedData = data;
       //console.log('received Data:', this.receivedData);
 
-      if(this.receivedData.length > 0){
-        console.log("Now Starting SignalR Connection");
+      if(this.receivedData.length >= 0){
         this.signalRService.startConnection(this.receivedData);
       }
     });

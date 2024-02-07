@@ -6,10 +6,6 @@ import { SearchbarComponent } from './Searchbar/searchbar.component';
 import { ChatlistComponent } from './chatlist/chatlist.component';
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NzImageModule } from 'ng-zorro-antd/image';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { ms_MY } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
@@ -24,13 +20,13 @@ import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component'
 import { MatDialogModule } from '@angular/material/dialog';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
+// import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
 import { LoginComponent } from './Pages/Auth/login/login.component';
 import { RegisterComponent } from './Pages/Auth/register/register.component';
-import { LogoutComponent } from './logout/logout.component';
+import { LogoutComponent } from './Logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
 import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
-
 
 registerLocaleData(ms);
 
@@ -54,16 +50,12 @@ registerLocaleData(ms);
     BrowserModule,
     AppRoutingModule,
     IconsProviderModule,
-    NzIconModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzImageModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    ImportNgZorroAntdModule
+    ImportNgZorroAntdModule,
   ],
   
   providers: [

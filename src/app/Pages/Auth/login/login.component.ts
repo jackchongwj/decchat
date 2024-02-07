@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../Services/Auth/auth.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { TokenService } from '../../../Services/Token/token.service';
 
 @Component({
   selector: 'app-login',
@@ -19,25 +21,25 @@ export class LoginComponent{
     remember: [true]
   });
 
-  constructor(private fb: NonNullableFormBuilder, private router: Router, private authService: AuthService) {}
+  constructor(private fb: NonNullableFormBuilder, private router: Router, private tokenService: TokenService, private authService: AuthService, private message: NzMessageService) {}
 
   submitForm(): void {
     if (this.validateForm.valid) {
       const loginData = this.validateForm.value;
 
-      this.authService.login(loginData).subscribe(
-        response => {
-          console.log(response);
-          this.authService.setToken(response.AccessToken);
-          this.authService.setUserId(response.UserId);
-          
-          console.log('Login successful!');
+      this.authService.login(loginData).subscribe({
+        next: (res) => {
+          this.tokenService.setToken(res.AccessToken);
+          this.authService.setUserId(res.UserId);
+
+          console.log('Login successful!', res);
+          this.message.success('Login successful!');
           this.router.navigate(['/']);
         },
-        error => {
-          console.error('Login failed:', error);
+        error: (e) => {
+          console.error('Login failed:', e);
         }
-      );
+    });
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
