@@ -3,6 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
+import { LocalstorageService } from '../LocalStorage/local-storage.service';
 
 interface TypingStatus{
   userName:string;
@@ -13,12 +14,14 @@ interface TypingStatus{
   providedIn: 'root'
 })
 export class SignalRService {
-  private hubConnection!:signalR.HubConnection 
-  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
-  constructor(private ngZone: NgZone) {
+  private hubConnection!:signalR.HubConnection; 
+    
+  // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
+  constructor(private ngZone: NgZone,  private localStorage: LocalstorageService) {
     this.buildConnection();
    }
 
+   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
    https: string = environment.signalRUrl;
 
   private buildConnection = () => {
@@ -28,20 +31,25 @@ export class SignalRService {
                           .build();
   }
 
-  public startConnection(list: ChatListVM[]): Promise<void>
+  public startConnection(): Promise<void>
   {
     if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
       return this.hubConnection.start()
       .then(() => {
         console.log("id",this.userId);
         console.log('Connection started');
-        return this.hubConnection.invoke("AddToGroup", list)
-          .then(() => console.log('AddToGroup invoked successfully'))
-          .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
       })
       .catch(err => console.log('Error while starting connection: ' + err));
   }
     return Promise.resolve();
+  }
+
+  public AddToGroup(chatlists: ChatListVM[])
+  {
+    console.log("list", chatlists);
+    this.hubConnection.invoke("AddToGroup", chatlists, null, null)
+    .then(() => console.log('AddToGroup invoked successfully'))
+    .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
   }
 
   public InformUserTyping(name:string, typing:boolean)
