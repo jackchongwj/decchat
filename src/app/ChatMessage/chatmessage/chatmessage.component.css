@@ -1,74 +1,17 @@
-/* 
-.drop-zone {
-  border: 2px dashed #007bff;
-  border-radius: 10px; 
-  padding: 20px; 
-  text-align: center; 
-  margin: auto;
-  cursor: pointer; 
-  transition: border .3s ease-in-out, background-color .3s ease-in-out; 
-  width: 40%; 
-  max-width: 600px; 
-  min-width: 300px; 
-  margin-top: 50px;
+.main-container {
+  display: flex;
+  flex-direction: column;
 }
 
-.drop-zone:hover {
-  border-color: #0056b3; 
-  background-color: #e9ecef; 
+app-chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 100; 
 }
 
-.drop-zone p {
-  font-size: 16px; 
-  color: #333; 
+app-messagebox {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;  
 }
 
-.drop-zone.drag-over {
-  border-color: #28a745; 
-  background-color: #d4edda; 
-} */
-
-/* .show-chat-room{
-  display: flex; 
-  align-items: center; 
-  position: relative;
-  background-color: beige;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding-top: 10px;
-  padding-left: 15px;
-}
-
-.chatprofile {
-  border-radius: 50%;
-  width: 50px;  
-  height: 50px; 
-  object-fit: cover;
-  margin-right: 8px;
-  margin-bottom: 10px;  
-} */
-
-.show-chat-room {
-  display: flex; /* Use flexbox layout */
-  align-items: center; /* Center items vertically */
-  padding: 10px; /* Add some padding */
-  background-color: beige;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom: 2px solid #ececec; /* A subtle border to separate the header */
-}
-
-.show-chat-room img.chatprofile {
-  border-radius: 50%; /* Make the image round */
-  margin-right: 15px; /* Add margin to the right of the image */
-  width: 45px; /* Set a fixed width */
-  height: 45px; /* And fixed height for the image */
-  object-fit: cover; /* Ensure the image covers the area without distortion */
-}
-
-.show-chat-room h1 {
-  font-size: 1.5em; /* Increase the font size of the header */
-  margin: 0; /* Remove default margin */
-  color: #333; /* Darker text color for the title */
-  font-weight: normal; /* Optional: normal font weight for a more modern look */
-}

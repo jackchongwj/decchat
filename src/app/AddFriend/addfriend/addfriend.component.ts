@@ -18,7 +18,8 @@ export class AddfriendComponent implements OnInit{
 
   getFriendRequest: any[] = [];
   isVisible = false;
-  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
+  userId: number = 25;
+  //userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   request: FriendRequest = {ReceivedId: 0, SenderId: 0,Status: 0 };
 
   ngOnInit(): void {

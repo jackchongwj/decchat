@@ -13,8 +13,9 @@ interface TypingStatus{
   providedIn: 'root'
 })
 export class SignalRService {
-  private hubConnection!:signalR.HubConnection 
-  userId: number = parseInt(localStorage.getItem('userId') || '', 10);
+  private hubConnection!:signalR.HubConnection
+  userId:number = 25; 
+  //userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   constructor(private ngZone: NgZone) {
     this.buildConnection();
    }

@@ -4,6 +4,7 @@ import { MessageService } from '../../Services/MessageService/message.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { Observable, Subject } from 'rxjs';
 import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
+import { DataShareService } from '../../Services/ShareDate/data-share.service';
 
 interface TypingStatus{
   userName:string;
@@ -40,7 +41,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   constructor(
     private _mService:MessageService,
     private _sService:SignalRService,
-    private _lsService:LocalstorageService){}
+    private _lsService:LocalstorageService,
+    private _dataShareService:DataShareService){}
   
   ngOnInit(): void {
     console.log("Ignore OnInit");
@@ -210,17 +212,18 @@ export class MessageboxComponent implements OnInit, OnDestroy{
 
   OnInputFocus(): void {
     this._sService.InformUserTyping("Alice", true);
-    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      this.userActive = status.isTyping;
-    });
-    
+    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    //   this.userActive = status.isTyping;
+    //   this._dataShareService.updateTypingStatus(status.isTyping);
+    // });
   }
 
   OnInputBlur(): void {
     this._sService.InformUserTyping("Alice", false);
-    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      this.userActive = status.isTyping;
-    });
+    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    //   this.userActive = status.isTyping;
+    //   this._dataShareService.updateTypingStatus(status.isTyping);
+    // });
   }
 
   // Voice Message Recording Session

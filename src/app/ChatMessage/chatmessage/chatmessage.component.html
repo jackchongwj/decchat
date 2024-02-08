@@ -1,21 +1,41 @@
-<div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
-  <img [src]="imageUrl" alt="Image preview" class="chatprofile">
-  <h1>{{ currentChatRoom.ChatRoomName }}</h1>
+<div class="main-container">
+  <app-chat-header></app-chat-header>
+  <app-chat-room-message></app-chat-room-message>
+  <app-messagebox></app-messagebox>
 </div>
 
-<div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div>
   <audio controls>
     <source [src]="audioUrl" type="audio/mp3">
     Your browser does not support the audio element.
   </audio>
-</div>
-
-
-
-<!-- <div class="upload-area" style="background-color: red" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
-  Drag and drop your image here or click to select a file
-  <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none;" />
-  <button onclick="document.getElementById('fileInput').click()">Select File</button>
-</div>
-<img id="preview" *ngIf="imageUrl" [src]="imageUrl" alt="Image preview" /> -->
+</div> -->
 
