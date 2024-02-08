@@ -15,7 +15,6 @@ export class MessageService {
 
   sendMessage(formData:FormData): Observable<any>
   {
-    //console.log(message);
     return this.http.post<Message>(AddMessageUrl, formData);
     
   }

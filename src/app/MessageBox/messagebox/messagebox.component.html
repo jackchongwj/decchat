@@ -1,8 +1,14 @@
 <div class="message-input-container" style="flex-shrink: 0;">
+  <!-- Uploaded File Preview -->
   <div *ngIf="uploadedFiles" class="upload-list-container">
     <div class="preview-item">
       <!-- Image preview -->
-      <img *ngIf="isImage(uploadedFiles.name)" [src]="previewImage" alt="Image preview" class="preview-image">
+      <img *ngIf="isImage(uploadedFiles.name)" nz-image
+            width="200px"
+            height="200px"
+            [nzSrc]="previewFile"
+            alt="" class="preview-image"
+      >
             
       <!-- Video icon -->
       <img *ngIf="isVideo(uploadedFiles.name)" src="assets/videoicon.png" alt="Video preview" class="preview-icon">
@@ -17,17 +23,33 @@
 
     </div>
   </div>
-  
+
+  <!-- User Typing Indicator -->
+  <div *ngIf="userActive" class="typing-indicator">
+    User is typing
+    <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+  </div>
+
   <!-- Message Text Field -->
   <div class="input-button-container">
+    <!-- Attachment Button -->
     <span nz-icon nzType="plus-circle" nzTheme="fill" class="icon-plus-circle" (click)="triggerFileInput()"></span>
     <input type="file" name="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)"
     accept="image/jpeg, image/png, image/webp,
     .mp4, .mkv, .pdf, .doc, .docx, .txt"/>
 
-    <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
-    (keydown.enter)="onSendMessage($event)" placeholder="Type a message..." nzSize="default"/>
+    <div class="message-field-input">
+      <!-- Message Input Field -->
+      <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
+      (keydown.enter)="onSendMessage($event)" (focus)="OnInputFocus()" (blur)="OnInputBlur()" placeholder="Type a message..." nzSize="default"/>
 
+      <!-- Voice Message Button -->
+      <span nz-icon nzType="audio" class="icon-voice" 
+      (click)="isRecording ? stopRecording() : startRecording()" *ngIf="!isRecording"></span>
+      <span nz-icon nzType="stop" class="icon-voice"
+      (click)="stopRecording()" *ngIf="isRecording"></span>
+    </div>
+    
     <!-- Send Message Button -->
     <button nz-button nzType="primary" #sendButton (click)="onSendMessage($event)"
     [disabled]="!messageText.trim() && uploadedFiles === null || sendCooldownOn">
