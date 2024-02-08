@@ -3,15 +3,17 @@ import { AuthService } from '../../../Services/Auth/auth.service';
 import { Router } from '@angular/router';
 import {
   AbstractControl,
+  AsyncValidatorFn,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
+  ValidationErrors,
   ValidatorFn,
   Validators,
-  ReactiveFormsModule,
 } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { catchError, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { UserService } from '../../../Services/UserService/user.service';
 
 @Component({
   selector: 'app-register',
@@ -19,15 +21,17 @@ import { catchError, tap } from 'rxjs';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
+  private isLoading = false;
+
   registerForm: FormGroup<{
     username: FormControl<string>;
     password: FormControl<string>;
     confirmPassword: FormControl<string>;
   }>;
 
-  constructor(private fb: NonNullableFormBuilder, private message: NzMessageService, private router: Router, private authService: AuthService) {
+  constructor(private fb: NonNullableFormBuilder, private message: NzMessageService, private router: Router, private authService: AuthService, private userService: UserService) {
     this.registerForm = this.fb.group({
-      username: ['', [Validators.required, this.usernameValidator]],
+      username: ['', [Validators.required, this.usernameValidator], [this.usernameAsyncValidator()]],
       password: ['', [Validators.required, this.passwordValidator]],
       confirmPassword: ['', [Validators.required, this.confirmationValidator]]
     });
@@ -40,8 +44,6 @@ export class RegisterComponent {
       });
     }
   }
-
-  private isLoading = false;
 
   get minLengthValid() {
     const passwordControl = this.registerForm.controls["password"];
@@ -85,7 +87,10 @@ export class RegisterComponent {
     else if (usernameControl.hasError("maximum")) {
       errors.push("Maximum length (15) reached");
     }
-  
+    else if (usernameControl.hasError("duplicate")) {
+      errors.push("That username already exists");
+    }
+
     return errors;
   }
 
@@ -151,6 +156,17 @@ export class RegisterComponent {
   
     return null;
   };
+
+  usernameAsyncValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return this.userService.doesUsernameExist(control.value)
+        .pipe(
+          map(isExist => {
+            return isExist ? { 'duplicate': true } : null;
+          })
+        );
+    };
+  }
 
   passwordValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
     const value: string = control.value;
@@ -255,25 +271,31 @@ export class RegisterComponent {
     return '';
   }
 
+  updateConfirmValidator(): void {
+    Promise.resolve().then(() => this.registerForm.controls.confirmPassword.updateValueAndValidity());
+  }
+
   submitForm(): void {
     if (this.registerForm.valid) {
       this.isLoading = true;
       const registrationData = this.registerForm.value;
 
-      this.authService.register(registrationData).subscribe(
-        response => {
+      this.authService.register(registrationData).subscribe({
+        next: (res) => {
           this.isLoading = false;
+          
+          console.log('Registration successful!', res);
           this.message.success('Registration successful!');
           this.router.navigate(['/login']);
         },
-        error => {
+        error: (e) => {
           this.isLoading = false;
-          console.error('Registration failed:', error);
-          this.message.error('Registration failed');
+
+          console.error('Registration failed:', e);
+          this.message.error(e.error['message']);
         }
-      );
+      });
     } else {
-      // Mark invalid controls as dirty to display validation errors
       Object.values(this.registerForm.controls).forEach(control => {
         if (control.invalid) {
           control.markAsDirty();
@@ -281,10 +303,5 @@ export class RegisterComponent {
         }
       });
     }
-  }
-  
-  updateConfirmValidator(): void {
-    /** wait for refresh value */
-    Promise.resolve().then(() => this.registerForm.controls.confirmPassword.updateValueAndValidity());
   }
 }
