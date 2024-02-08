@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development'; 
+import { CreategroupComponent } from '../../CreateGroup/creategroup.component';
+import { Group } from '../../Models/DTO/Group/group';
 
 @Injectable({
   providedIn: 'root'
@@ -9,37 +11,25 @@ import { environment } from '../../../environments/environment.development';
 export class ChatlistService {
 
   private url: string = environment.apiBaseUrl+ 'Users/'
+  private chatRoomUrl: string = environment.apiBaseUrl + 'Chatroom/';
 
   constructor(private http: HttpClient) {}
 
-  getChatListByUserId(userID: number): Observable<any> {
-    return this.http.get(`${this.url}getChatListByUserId`,{params:{userId : userID}});
+  getChatListByUserId(group: Group): Observable<any> {
+    // Construct HttpParams object with userId parameter
+    const params = new HttpParams().set('userId', group.UserId.toString());
+
+    // Use params object in the request
+    return this.http.get(`${this.url}getChatListByUserId`, { params: params });
   }
 
-  createNewGroup(roomName: string, selectedUserIds: number[]): Observable<any> {
-    const createGroup = {
-      roomName,
-      selectedUserIds
+  createNewGroup(group: Group): Observable<any> {
+    // Create data object from Group properties
+    const data = {
+      roomName: group.RoomName,
+      SelectedUsers: group.SelectedUsers,
+      InitiatedBy: group.InitiatedBy
     };
-
-    // Adjust the URL and pass the createGroup object as the request body
-    return this.http.post(`${this.url}createGroup`, createGroup);
+    return this.http.post(`${this.chatRoomUrl}createNewGroup`, data);
   }
 }
-
-//   createNewGroup((roomName: string, selectedUserIds: number[]): Observable<any> {
-//     const createGroup = {
-//       roomName,
-//       selectedUserIds
-//     };
-
-//     // return this.http.post<any>(this.url, createGroupRequest);
-//     return this.http.post(`${this.url}createGroup`, createGroup);
-
-//     // const payload = { roomName: groupName }; // Assume your backend expects 'roomName'
-//     // return this.http.post(`${this.url}/createGroup`, payload);
-//   }
-// }
-
-  
-

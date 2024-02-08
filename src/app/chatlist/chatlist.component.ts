@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
-import { ChatlistService } from '../chatlist.service';
+import { ChatlistService } from '../Services/Chatlist/chatlist.service';
+import { Group } from '../Models/DTO/Group/group';
 
 @Component({
   selector: 'app-chatlist',
@@ -18,7 +19,11 @@ export class ChatlistComponent implements OnInit{
   constructor(private chatlistService: ChatlistService) {}
 
   ngOnInit(): void {
-    this.chatlistService.getChatListByUserId(this.userId).pipe(
+
+    // Create a Group instance with the userId
+    const group = new Group('', [], 0, this.userId); // Assuming other parameters are not relevant here
+
+    this.chatlistService.getChatListByUserId(group).pipe(
       tap(chats => console.log(chats)), 
     ).subscribe((chats: any[]) => {
       

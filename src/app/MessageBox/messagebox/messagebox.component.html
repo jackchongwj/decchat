@@ -26,15 +26,15 @@
     .mp4, .mkv, .pdf, .doc, .docx, .txt"/>
 
     <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
-    (keydown.enter)="sendButton.click()" placeholder="Type a message..." nzSize="default"/>
+    (keydown.enter)="onSendMessage($event)" placeholder="Type a message..." nzSize="default"/>
 
     <!-- Send Message Button -->
     <button nz-button nzType="primary" #sendButton (click)="onSendMessage($event)"
     [disabled]="!messageText.trim() && uploadedFiles === null || sendCooldownOn">
-      Send
+      <span>Send</span>
       <span nz-icon nzType="send" class="icon-send"></span>
     </button>
-    
+
 
   </div>
 </div>
