@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Message } from '../../Models/Message/message';
-import { MessageService } from '../../Services/MessageService/message.service';
-import { DataShareService } from '../../Services/ShareDate/data-share.service';
-import { SignalRService } from '../../Services/SignalRService/signal-r.service';
+import { Message } from '../../../Models/Message/message';
+import { MessageService } from '../../../Services/MessageService/message.service';
+import { DataShareService } from '../../../Services/ShareDate/data-share.service';
+import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 
 interface TypingStatus{
   userName:string;
@@ -30,12 +30,14 @@ export class ChatRoomMessageComponent implements OnInit{
     this._dataShareService.UserTyping.subscribe( typingStatus => {
       this.isTyping = typingStatus;
     });
-
+    console.log("Received message list");
     this.messageList = this._messageService.obtainDummyData();
 
     this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
       this.isTyping = status.isTyping;
     });
+
+
   }
 
 }

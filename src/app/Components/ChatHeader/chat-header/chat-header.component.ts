@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
-import { DataShareService } from '../../Services/ShareDate/data-share.service';
+import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
+import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 
 @Component({
   selector: 'app-chat-header',

@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Message } from '../../Models/Message/message';
-import { MessageService } from '../../Services/MessageService/message.service';
-import { SignalRService } from '../../Services/SignalRService/signal-r.service';
+import { Message } from '../../../Models/Message/message';
+import { MessageService } from '../../../Services/MessageService/message.service';
+import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 import { Observable, Subject } from 'rxjs';
-import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
-import { DataShareService } from '../../Services/ShareDate/data-share.service';
+import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
+import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 
 interface TypingStatus{
   userName:string;

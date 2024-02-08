@@ -14,21 +14,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from './Sidebar/sidebar.component';
-import { MessageboxComponent } from './MessageBox/messagebox/messagebox.component';
-import { ChatmessageComponent } from './ChatMessage/chatmessage/chatmessage.component';
+import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
+import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdisplay/chatroomdisplay.component';
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
-// import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
 import { LoginComponent } from './Pages/Auth/login/login.component';
 import { RegisterComponent } from './Pages/Auth/register/register.component';
-import { LogoutComponent } from './Logout/logout.component';
+import { LogoutComponent } from './logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
 import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
-import { ChatHeaderComponent } from './ChatHeader/chat-header/chat-header.component';
-import { ChatRoomMessageComponent } from './ChatRoomMessage/chat-room-message/chat-room-message.component';
+import { ChatHeaderComponent } from './Components/ChatHeader/chat-header/chat-header.component';
+import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room-message/chat-room-message.component';
 
 registerLocaleData(ms);
 
@@ -38,7 +37,7 @@ registerLocaleData(ms);
     SearchbarComponent,
     SidebarComponent,
     MessageboxComponent,
-    ChatmessageComponent,
+    ChatRoomDisplayComponent,
     HomepageComponent,
     AddfriendComponent,
     ChatlistComponent,
