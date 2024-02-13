@@ -1,0 +1,20 @@
+<div class="chat-message-display">
+  <div *ngFor="let message of messageList" class="message">
+    <img nz-image
+      width="200px"
+      height="200px"
+      [nzSrc]="imageUrl"
+      alt="" class="profile-picture"
+    >
+    <div class="message-content">
+      <span class="user-name">{{ message.UserChatRoomId }}</span>
+      {{ message.Content }}
+    </div> 
+  </div>
+
+  <!-- User Typing Indicator -->
+  <div *ngIf="isTyping" class="typing-indicator">
+    User is typing
+    <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+  </div>
+</div>

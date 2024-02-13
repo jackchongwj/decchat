@@ -3,7 +3,7 @@
   <!-- SideBar Start-->
   <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
+      <a target="_blank">
         <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
         <h1>Hello There</h1>
       </a>
@@ -24,18 +24,36 @@
       <div class="app-header">
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
           <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
+          
         </span>
+        <span><app-logout></app-logout></span>
       </div>
-      <span><app-logout></app-logout></span>
+      
     </nz-header>
     <!-- Header End-->
 
     <!-- Message Area Start-->
     <nz-content>
       <div class="inner-content">
-
         <app-chatmessage></app-chatmessage>
-        <app-messagebox></app-messagebox>
+
+        <ng-container *ngIf="IsSelected; else emptyPage">
+          <app-chatmessage></app-chatmessage>
+        </ng-container>
+
+        <ng-template #emptyPage>
+          <app-user-login-page></app-user-login-page>
+        </ng-template>
+        <!-- <ng-container *ngIf="IsSelected; else emptyPage">
+          
+        </ng-container>
+
+        <ng-template #emptyPage>
+          <app-chatmessage></app-chatmessage>
+        </ng-template> -->
+
+        <!-- <app-chatmessage></app-chatmessage>
+        <app-messagebox></app-messagebox> -->
 
       </div>
     </nz-content>

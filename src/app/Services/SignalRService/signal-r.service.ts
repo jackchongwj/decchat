@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
+import { Message } from '../../Models/Message/message';
+import { Messages } from '../../Models/DTO/Messages/messages';
 
 interface TypingStatus{
   userName:string;
@@ -83,4 +85,36 @@ export class SignalRService {
   {
     return this.hubConnection;
   }
+
+  notifyMessage(newMessage: Messages): void {
+    console.log("connect", this.hubConnection.state);
+    console.log("new message", newMessage);
+    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      this.hubConnection.invoke('SendMessageNotification',newMessage)
+        .then(() => {
+          console.log('notify successful');
+          return this.updateMessageListener(); 
+        })
+        .then(() => console.log('update Message successful'))
+        .catch(error => console.error('Error invoking update message:', error));
+    } else {
+      console.error('SignalR connection is not in the "Connected" state.');
+    }
+  }
+  
+  
+  updateMessageListener(): Observable<Messages[]> {
+    return new Observable<Messages[]>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdateMessage', (newMessage: Messages[]) => {
+          console.log('Received new message:', newMessage); 
+          this.ngZone.run(() => {
+            observer.next(newMessage);
+          });
+        });
+      }
+    });
+  }
+
+
 }

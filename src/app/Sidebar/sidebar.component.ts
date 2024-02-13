@@ -1,4 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 
 @Component({
@@ -8,13 +9,18 @@ import { SignalRService } from '../Services/SignalRService/signal-r.service';
 })
 export class SidebarComponent implements OnInit {
 
-  constructor(private ngZone: NgZone){}
+  constructor(private _dataShareService:DataShareService){}
 
   isCollapsed = false;
-  imageUrl: string = 'https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-29T11:42:23-beagle.png';
-
+  IsSelected: boolean = false;
   
   ngOnInit(){
+    this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
+      if(chatroom.ChatRoomId && chatroom.ChatRoomName)
+      {
+        this.IsSelected = true;
+      }
+    });
   }
 
   
