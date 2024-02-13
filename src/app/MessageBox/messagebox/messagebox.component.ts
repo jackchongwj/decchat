@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Message } from '../../Models/Message/message';
 import { MessageService } from '../../Services/MessageService/message.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { Observable, Subject } from 'rxjs';
+import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
+import { DataShareService } from '../../Services/ShareDate/data-share.service';
 
 interface TypingStatus{
   userName:string;
@@ -35,10 +36,13 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   isRecording:boolean = false;
   private chunks: BlobPart[] = [];
   mediaRecorder: MediaRecorder | null = null;
-  audioUrl: SafeUrl | null = null;
   recordingInProgress = new Subject<boolean>();
 
-  constructor(private _mService:MessageService, private _sService:SignalRService, private sanitizer: DomSanitizer){}
+  constructor(
+    private _mService:MessageService,
+    private _sService:SignalRService,
+    private _lsService:LocalstorageService,
+    private _dataShareService:DataShareService){}
   
   ngOnInit(): void {
     console.log("Ignore OnInit");
@@ -114,6 +118,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     formData.append('message', JSON.stringify(this.message));
     
     if (this.uploadedFiles) {
+      console.log(this.uploadedFiles);
         formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
     }
 
@@ -207,17 +212,18 @@ export class MessageboxComponent implements OnInit, OnDestroy{
 
   OnInputFocus(): void {
     this._sService.InformUserTyping("Alice", true);
-    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      this.userActive = status.isTyping;
-    });
-    
+    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    //   this.userActive = status.isTyping;
+    //   this._dataShareService.updateTypingStatus(status.isTyping);
+    // });
   }
 
   OnInputBlur(): void {
     this._sService.InformUserTyping("Alice", false);
-    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      this.userActive = status.isTyping;
-    });
+    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    //   this.userActive = status.isTyping;
+    //   this._dataShareService.updateTypingStatus(status.isTyping);
+    // });
   }
 
   // Voice Message Recording Session

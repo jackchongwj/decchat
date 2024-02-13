@@ -1,4 +1,4 @@
-<div class="message-input-container" style="flex-shrink: 0;">
+<div class="message-input-container" >
   <!-- Uploaded File Preview -->
   <div *ngIf="uploadedFiles" class="upload-list-container">
     <div class="preview-item">
@@ -22,12 +22,6 @@
       </div>
 
     </div>
-  </div>
-
-  <!-- User Typing Indicator -->
-  <div *ngIf="userActive" class="typing-indicator">
-    User is typing
-    <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
   </div>
 
   <!-- Message Text Field -->
