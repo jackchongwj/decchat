@@ -1,6 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Message } from '../../Models/Message/message';
 import { MessageService } from '../../Services/MessageService/message.service';
+import { SignalRService } from '../../Services/SignalRService/signal-r.service';
+import { Observable, Subject } from 'rxjs';
+
+interface TypingStatus{
+  userName:string;
+  isTyping:boolean;
+}
 
 @Component({
   selector: 'app-messagebox',
@@ -8,21 +16,43 @@ import { MessageService } from '../../Services/MessageService/message.service';
   styleUrl: './messagebox.component.css'
 })
 
-export class MessageboxComponent implements OnInit{
+export class MessageboxComponent implements OnInit, OnDestroy{
 
+  // Limit Message Sending
   sendCooldownOn:boolean = false;
   previewVisible = false;
 
-  previewImage: string | undefined = '';
-  messageText: string = '';
-  url: string = '';
-  message = {} as Message;
-  uploadedFiles: File | null = null;
+  // Show User Typing Status
+  userActive:boolean = false;
 
-  constructor(private _mService:MessageService){}
+  // File Uploads
+  uploadedFiles: File | null = null;
+  previewFile: string = '';
+  messageText: string = '';
+  message = {} as Message;
+  
+  // Voice Message
+  isRecording:boolean = false;
+  private chunks: BlobPart[] = [];
+  mediaRecorder: MediaRecorder | null = null;
+  audioUrl: SafeUrl | null = null;
+  recordingInProgress = new Subject<boolean>();
+
+  constructor(private _mService:MessageService, private _sService:SignalRService, private sanitizer: DomSanitizer){}
   
   ngOnInit(): void {
     console.log("Ignore OnInit");
+  }
+
+  ngOnDestroy(): void {
+    if (this.isRecording) {
+      this.stopRecording();
+    }
+    
+    // Release the media stream
+    if (this.mediaRecorder && this.mediaRecorder.stream) {
+      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    }
   }
 
   triggerFileInput(): void {
@@ -37,32 +67,47 @@ export class MessageboxComponent implements OnInit{
 
   onFileSelected(event:Event): void {
     const input = event.target as HTMLInputElement;
+    
+    const maxSizeInMb = 8;
+    const maxSizeInBytes = maxSizeInMb * 1024 * 1024;
 
     if (input.files && input.files.length) {
       this.uploadedFiles = input.files[0];
 
-      const reader = new FileReader();
+      if(!(this.uploadedFiles.size>maxSizeInBytes))
+      {
+        if(this.uploadedFiles.type.startsWith('image/'))
+        {
+          this.resizeAndPreviewImage(this.uploadedFiles);
+        }
+        
+        const reader = new FileReader();
 
-      reader.onload = (e) => {
-        console.log(reader.result);
+        reader.onload = (e) => {
+          //console.log(reader.result);
+          this.previewFile = reader.result as string;
+        };
 
-        this.previewImage = reader.result as string;
-      };
-
-      reader.readAsDataURL(this.uploadedFiles);
-     }
+        reader.readAsDataURL(this.uploadedFiles);
+      }
+      else
+      {
+        console.log("Invalid File Size, file too big");
+        
+      }
+    }
   }
 
-  onSendMessage(event:Event): void {
-    event.preventDefault();
+  onSendMessage(event?:Event): void {
+    if (event) {
+      event.preventDefault();
+  }
 
     this.message.Content = this.messageText;
     this.message.UserChatRoomId = 1;
-    this.message.ResourceUrl = this.url;
+    this.message.ResourceUrl = null;
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
-
-    console.log(this.message);
 
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
@@ -80,9 +125,8 @@ export class MessageboxComponent implements OnInit{
         this.sendCooldownOn = true; // Activate cooldown
         setTimeout(() => this.sendCooldownOn = false, 1000); 
 
-        this.messageText = '';
-        this.uploadedFiles = null;
-        this.previewImage = undefined;
+        // Reset field
+        this.resetInputField();
       },
       error: (e) => {
         console.error(e);
@@ -90,9 +134,63 @@ export class MessageboxComponent implements OnInit{
     }); 
   }
 
+  private resizeAndPreviewImage(file: File): void 
+  {
+    // Define the maximum dimensions for the resized image
+    const maxWidth = 720;
+    const maxHeight = 720;
+
+    // Create an image element
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+
+    img.onload = () => {
+      // Get the dimensions of the loaded image
+      const originalWidth = img.width;
+      const originalHeight = img.height;
+
+      // Calculate the scaling factor to resize the image
+      let scaleFactor = Math.min(maxWidth / originalWidth, maxHeight / originalHeight, 1); // Ensure it's not scaled up
+
+      // Compute the new dimensions
+      const newWidth = originalWidth * scaleFactor;
+      const newHeight = originalHeight * scaleFactor;
+
+      // Create a canvas to perform the resizing
+      const canvas = document.createElement('canvas');
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      // Draw the resized image onto the canvas
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+      // Convert the canvas content to a Blob
+      canvas.toBlob((blob) => 
+      {
+        if (blob) {
+          // Convert the Blob to a File object
+          const resizedFile = new File([blob], file.name, { type: 'image/webp', lastModified: Date.now() });
+
+          // Preview the resized image
+          this.previewFile = URL.createObjectURL(resizedFile);
+
+          // Update the uploadedFiles with the resized image
+          this.uploadedFiles = resizedFile;
+        }
+      }, 'image/webp', 0.85); // Adjust the quality as needed
+    };
+  }
+
   removeFile(): void {
     this.uploadedFiles = null;
-    this.previewImage = undefined;
+    this.previewFile = '';
+
+    // Reset the file input
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+        fileInput.value = ''; // Add this line
+    }
   }
 
   isImage(fileName: string): boolean {
@@ -105,6 +203,66 @@ export class MessageboxComponent implements OnInit{
   
   isDocument(fileName: string): boolean {
     return /\.(pdf|docx?|doc?|txt)$/i.test(fileName);
+  }
+
+  OnInputFocus(): void {
+    this._sService.InformUserTyping("Alice", true);
+    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+      this.userActive = status.isTyping;
+    });
+    
+  }
+
+  OnInputBlur(): void {
+    this._sService.InformUserTyping("Alice", false);
+    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+      this.userActive = status.isTyping;
+    });
+  }
+
+  // Voice Message Recording Session
+  startRecording(): void {
+    this.isRecording = true;
+    navigator.mediaDevices.getUserMedia({audio: true})
+    .then(stream => {
+      this.mediaRecorder = new MediaRecorder(stream);
+      this.mediaRecorder.ondataavailable = (e) => this.chunks.push(e.data);
+      this.mediaRecorder.onstop = () => this.onRecordingStop();
+      this.mediaRecorder.start();
+    })
+    .catch(error => {
+      console.error('Error accessing media devices:', error);
+    });
+  }
+
+  stopRecording(): void {
+    this.isRecording = false;
+    if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+      this.mediaRecorder.stop();
+    }
+
+    if (this.mediaRecorder && this.mediaRecorder.stream) {
+      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+  }
+  }
+
+  private onRecordingStop(): void {
+    const blob = new Blob(this.chunks, { type: 'audio/mp3'});
+    this.chunks = [];
+
+    this.uploadedFiles = new File([blob], 'voiceMessage.mp3', { type: 'audio/mp3' });
+    this.onSendMessage();
+  }
+
+  private resetInputField():void{
+    this.messageText = '';
+    this.uploadedFiles = null;
+    this.previewFile = '';
+
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+        fileInput.value = '';
+    }
   }
 
 }
