@@ -47,6 +47,9 @@ registerLocaleData(ms);
     CreategroupComponent,
     UserLoginPageComponent,
     ChatHeaderComponent,
+    ChatRoomMessageComponent,
+    UserLoginPageComponent,
+    ChatHeaderComponent,
     ChatRoomMessageComponent
   ],
   imports: [

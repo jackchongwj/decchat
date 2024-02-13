@@ -1,4 +1,4 @@
-export class UserDetails {
+export class UserSearchDetails {
     constructor(
         public UserId: number,
         public UserName: string,
@@ -9,4 +9,3 @@ export class UserDetails {
         public IsDelete:number
     ) {}
 }
-
