@@ -13,63 +13,48 @@ import { UserService } from '../../Services/UserService/user.service';
   templateUrl: './addfriend.component.html',
   styleUrl: './addfriend.component.css'
 })
-export class AddfriendComponent implements OnInit{
-  constructor(private usersService:UserService, private friendService: FriendsService, private signalRService: SignalRFriendService,
-    private dataShareService: DataShareService, private localStorage: LocalstorageService){}
+export class AddfriendComponent implements OnInit {
+  constructor(private usersService: UserService, private friendService: FriendsService, private signalRService: SignalRFriendService,
+    private dataShareService: DataShareService, private localStorage: LocalstorageService) { }
 
-  getFriendRequest: any[] = [];
+  getFriendRequest: User[] = [];
   isVisible = false;
-  // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
-  request: FriendRequest = {ReceivedId: 0, SenderId: 0,Status: 0 };
+  request: FriendRequest = { ReceivedId: 0, SenderId: 0, Status: 0 };
 
   ngOnInit(): void {
     this.usersService.getFriendRequest(this.userId)
-    .subscribe(response => {
-      this.getFriendRequest = response;
-      console.log("Friend Request Result: ", response);
-    });
+      .subscribe(response => {
+        this.getFriendRequest = response;
+        console.log("Friend Request Result: ", response);
+      });
 
-    this.signalRService.updateFriendRequestListener()
-    .subscribe((newResults: User[]) => {
-      console.log("new result", newResults);
-      this.getFriendRequest = newResults;
-      console.log('Received updated friend request results:', this.getFriendRequest);
-    });
+    this.updateFriendRequestListener();
+
   }
 
-  acceptFriendRequest(senderId: number) : void{
+  acceptFriendRequest(senderId: number): void {
     this.request = {
       ReceivedId: this.userId,
       SenderId: senderId,
       Status: 2
     };
-    
-    console.log(this.request);
-    this.friendService.UpdateFriendRequest(this.request)
-    .subscribe(response => {
-      console.log("Accept Friend: ", response);
-       this.refreshRequest();
-      this.signalRService.acceptFriendRequest(response, senderId, this.userId);
-    });
+
+    this.UpdateFriendRequest(this.request);
   }
-  
-  rejectFriendRequest(senderId:number): void{
+
+  rejectFriendRequest(senderId: number): void {
     this.request = {
       ReceivedId: this.userId,
       SenderId: senderId,
       Status: 3
     };
-    
-    console.log(this.request);
-    this.friendService.UpdateFriendRequest(this.request)
-    .subscribe(response => {
-      console.log("Reject Friend: ", response);
-       this.refreshRequest();
-    });
+
+    this.UpdateFriendRequest(this.request);
   }
 
-   private refreshRequest(): void {
+
+  private refreshRequest(): void {
     this.usersService.getFriendRequest(7).subscribe(
       (results) => {
         this.getFriendRequest = results;
@@ -81,6 +66,27 @@ export class AddfriendComponent implements OnInit{
     );
   }
 
+  //service
+  private UpdateFriendRequest(FRequest: FriendRequest): void {
+    console.log(FRequest);
+    this.friendService.UpdateFriendRequest(FRequest)
+      .subscribe(response => {
+        console.log("Update Friend Request: ", response);
+        this.refreshRequest();
+        FRequest.Status == 2 ? this.signalRService.acceptFriendRequest(response, FRequest.SenderId, this.userId) :
+          this.signalRService.rejectFriendRequest(FRequest.SenderId, this.userId);
+      });
+  }
+
+  //signalR
+  private updateFriendRequestListener(): void {
+    this.signalRService.updateFriendRequestListener()
+      .subscribe((newResults: User[]) => {
+        console.log("new result", newResults);
+        this.getFriendRequest = newResults;
+        console.log('Received updated friend request results:', this.getFriendRequest);
+      });
+  }
 
 
   //Model

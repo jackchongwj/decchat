@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, inject, Inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
-import { ChatlistService } from '../chatlist.service';
+import { ChatlistService } from '../Services/Chatlist/chatlist.service';
+import { Group } from '../Models/DTO/Group/group';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
@@ -28,9 +29,13 @@ export class ChatlistComponent implements OnInit{
   ngOnInit(): void {}
 
   getChatList(){
+
+    // Create a Group instance with the userId
+    const group = new Group('', [], 0, this.userId); // Assuming other parameters are not relevant here
+
     if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
     {
-      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+      this.chatlistService.getChatListByUserId(group).pipe(
         tap(chats => console.log(chats)), 
       ).subscribe((chats: ChatListVM[]) => {
         
