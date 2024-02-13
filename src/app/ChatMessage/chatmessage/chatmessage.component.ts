@@ -1,6 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { Message } from '../../Models/Message/message';
+import { Messages } from '../../Models/DTO/Messages/messages';
 import { MessageService } from '../../Services/MessageService/message.service';
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
@@ -24,7 +25,7 @@ export class ChatmessageComponent implements OnInit {
 
   imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
   currentChatRoom = new ChatListVM();
-  messageList : Message[] = [];
+  messageList : Messages[] = [];
   isTyping: boolean = false;
 
   ngOnInit(){

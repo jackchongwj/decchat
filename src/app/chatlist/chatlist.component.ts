@@ -23,31 +23,32 @@ export class ChatlistComponent implements OnInit{
   constructor(private chatlistService: ChatlistService, private lsService: LocalstorageService, private dataShareService: DataShareService,
     private signalRService: SignalRService, private localStorage: LocalstorageService) {}
 
-    private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  public userId: number = parseInt(this.localStorage.getItem('userId') || '');
     
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.getChatList();
+  }
 
   getChatList(){
     if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
     {
       this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-        tap(), 
       ).subscribe((chats: ChatListVM[]) => {
-        console.log()
+        console.log("sr")
+        this.signalRService.AddToGroup(chats);        
+        console.log("Success Add To Group")
+
         this.privateChat = chats.filter(chat => chat.RoomType === false);
         this.groupChat = chats.filter(chat => chat.RoomType === true);
-
-        console.log("privateGrouplist", chats);
-        // this.dataShareService.updateChatListData(chats);
-        this.signalRService.AddToGroup(chats);
-      });
+      })
     }
   }
 
   getSelectedChatRoom(ChatRoom:ChatListVM)
   {
+    console.log("get1")
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
-    console.log(ChatRoom);
+    console.log("chatRoom",ChatRoom);
     //console.log(this.lsService.getItem("userId"));
   }  
   

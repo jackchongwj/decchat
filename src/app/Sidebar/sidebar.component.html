@@ -36,6 +36,14 @@
     <nz-content>
       <div class="inner-content">
         <app-chatmessage></app-chatmessage>
+
+        <ng-container *ngIf="IsSelected; else emptyPage">
+          <app-chatmessage></app-chatmessage>
+        </ng-container>
+
+        <ng-template #emptyPage>
+          <app-user-login-page></app-user-login-page>
+        </ng-template>
         <!-- <ng-container *ngIf="IsSelected; else emptyPage">
           
         </ng-container>

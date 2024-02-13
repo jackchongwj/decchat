@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Message } from '../../Models/Message/message';
+import { Messages } from '../../Models/DTO/Messages/messages';
 import { MessageService } from '../../Services/MessageService/message.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { Observable, Subject } from 'rxjs';
 import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
+import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 
 interface TypingStatus{
   userName:string;
@@ -30,13 +32,19 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   uploadedFiles: File | null = null;
   previewFile: string = '';
   messageText: string = '';
-  message = {} as Message;
-  
+  message = {} as Messages;
+
+
   // Voice Message
   isRecording:boolean = false;
   private chunks: BlobPart[] = [];
   mediaRecorder: MediaRecorder | null = null;
   recordingInProgress = new Subject<boolean>();
+
+  //share data
+ userChatRoomId: number = 0;
+ ChatRoomId: number = 0;
+
 
   constructor(
     private _mService:MessageService,
@@ -107,11 +115,26 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       event.preventDefault();
   }
 
+  //share Data
+    this._dataShareService.selectedChatRoomData.subscribe
+    (
+      data =>{
+        console.log("chatlist Data",data);
+        this.userChatRoomId = data.UserChatRoomId;
+        this.ChatRoomId = data.ChatRoomId;
+        console.log("chatroom id", data.ChatRoomId);
+      }
+    )
+    
     this.message.Content = this.messageText;
-    this.message.UserChatRoomId = 1;
+    this.message.UserChatRoomId = this.userChatRoomId;
     this.message.ResourceUrl = null;
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
+    this.message.ChatRoomId = this.ChatRoomId;
+
+    console.log("message", this.message);
+    console.log("User chatroom id", this.message.UserChatRoomId);
 
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
@@ -137,6 +160,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
         console.error(e);
       }
     }); 
+
+    this._sService.notifyMessage(this.message);
   }
 
   private resizeAndPreviewImage(file: File): void 
