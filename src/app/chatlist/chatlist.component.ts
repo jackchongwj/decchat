@@ -30,7 +30,7 @@ export class ChatlistComponent implements OnInit{
       this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
         tap(), 
       ).subscribe((chats: ChatListVM[]) => {
-        console.log()
+        console.log(chats);
         this.privateChat = chats.filter(chat => chat.RoomType === false);
         this.groupChat = chats.filter(chat => chat.RoomType === true);
 

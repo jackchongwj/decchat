@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { Message } from '../../Models/Message/message';
 
-const AddMessageUrl: string = environment.apiBaseUrl + 'Messages/AddMessage'
+const MessageUrl: string = environment.apiBaseUrl;
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +13,14 @@ export class MessageService {
 
   constructor(private http: HttpClient) { }
 
-  sendMessage(formData:FormData): Observable<any>
+  sendMessage(formData:FormData): Observable<Message>
   {
-    return this.http.post<Message>(AddMessageUrl, formData);
+    return this.http.post<Message>(`${MessageUrl}Messages/AddMessage`, formData);
+  }
+
+  retrieveChatMessages(ChatRoomId:number): Observable<any>
+  {
+    return this.http.get<Message>(`${MessageUrl}Messages/GetChatMessages`,{params:{ChatRoomId : ChatRoomId}})
   }
 
   obtainDummyData()

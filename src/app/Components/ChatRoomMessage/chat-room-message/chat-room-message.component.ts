@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { Message } from '../../../Models/Message/message';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
@@ -22,22 +23,42 @@ export class ChatRoomMessageComponent implements OnInit{
     private _signalRService:SignalRService
   ){}
     
+  currentChatRoom = new ChatListVM();
   messageList : Message[] = [];
   isTyping: boolean = false;
   imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
+  videoUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Videos/testvideo.mp4";
+  docsUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Documents/testrun1233333333333333333333333333333333333333333333333333333333333333333333333333.docx";
 
   ngOnInit(){
     this._dataShareService.UserTyping.subscribe( typingStatus => {
       this.isTyping = typingStatus;
     });
-    console.log("Received message list");
+
+    this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
+      this.currentChatRoom = chatroom;
+    });
+
+    console.log("Test run chat room message");
+
     this.messageList = this._messageService.obtainDummyData();
 
     this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
       this.isTyping = status.isTyping;
     });
 
+  }
 
+  isImage(fileName: string): boolean {
+    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
+  }
+  
+  isVideo(fileName: string): boolean {
+    return /\.(mp4)$/i.test(fileName);
+  }
+  
+  isDocument(fileName: string): boolean {
+    return /\.(pdf|docx?|doc?|txt)$/i.test(fileName);
   }
 
 }
