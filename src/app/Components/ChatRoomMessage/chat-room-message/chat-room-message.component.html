@@ -1,4 +1,5 @@
 <div class="chat-message-display">
+  <!-- Normal Message Display -->
   <div *ngFor="let message of messageList" class="message">
     <img nz-image
       width="200px"
@@ -12,18 +13,28 @@
     </div> 
   </div>
 
-  <div>
-    <video width="320" height="240" controls>
-      <source [src]="videoUrl" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
+  <!-- Video File Display -->
+  <!-- <div class="video-container">
+    <img nz-image
+      width="200px"
+      height="200px"
+      [nzSrc]="imageUrl"
+      alt="" class="profile-picture"
+    >
+    <img src="assets/videoicon.png" alt="Video Preview" class="video-preview" (click)="playVideo()">
+  </div> -->
 
-  <ngx-doc-viewer
-    [url]="docsUrl"
-    viewer="google"
-    style="width:100%;height:50vh;"
-  ></ngx-doc-viewer>
+  <div class="document-container">
+    <!-- Document Preview Thumbnail -->
+    <img 
+      src="assets/docicon.jpg"
+      alt="Document Thumbnail"
+      (click)="openDocument()"
+    >
+
+    <!-- Download document -->
+    <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument()"></span>
+  </div>
 
   <!-- User Typing Indicator -->
   <div *ngIf="isTyping" class="typing-indicator">

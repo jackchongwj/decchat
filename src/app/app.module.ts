@@ -28,7 +28,6 @@ import { CreategroupComponent } from './CreateGroup/creategroup.component';
 import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
 import { ChatHeaderComponent } from './Components/ChatHeader/chat-header/chat-header.component';
 import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room-message/chat-room-message.component';
-import { NgxDocViewerModule } from 'ngx-doc-viewer';
 
 registerLocaleData(ms);
 
@@ -59,8 +58,7 @@ registerLocaleData(ms);
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    ImportNgZorroAntdModule,
-    NgxDocViewerModule
+    ImportNgZorroAntdModule
   ],
   
   providers: [

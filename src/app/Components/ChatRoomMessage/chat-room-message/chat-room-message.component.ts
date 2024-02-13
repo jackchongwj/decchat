@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { Message } from '../../../Models/Message/message';
 import { MessageService } from '../../../Services/MessageService/message.service';
@@ -24,8 +24,10 @@ export class ChatRoomMessageComponent implements OnInit{
   ){}
     
   currentChatRoom = new ChatListVM();
+  currentUser = localStorage.getItem("userId");
   messageList : Message[] = [];
   isTyping: boolean = false;
+
   imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
   videoUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Videos/testvideo.mp4";
   docsUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Documents/testrun1233333333333333333333333333333333333333333333333333333333333333333333333333.docx";
@@ -49,6 +51,28 @@ export class ChatRoomMessageComponent implements OnInit{
 
   }
 
+  isUserSend(){
+    
+  }
+
+  hasAttachment(message:Message):boolean{
+    if(message.ResourceUrl != "" || message.ResourceUrl == null){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  isMsgWithAttach(message:Message):boolean{
+    if(this.hasAttachment(message) && message.Content != ""){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   isImage(fileName: string): boolean {
     return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
@@ -59,6 +83,29 @@ export class ChatRoomMessageComponent implements OnInit{
   
   isDocument(fileName: string): boolean {
     return /\.(pdf|docx?|doc?|txt)$/i.test(fileName);
+  }
+
+  isAudio(fileName: string): boolean {
+    return /\.(mp3)$/i.test(fileName);
+  }
+
+  playVideo():void{
+    console.log("Attempting to open video:", this.videoUrl);
+    window.open(this.videoUrl, '_blank');
+  }
+
+  openDocument(): void {
+    const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(this.docsUrl)}&embedded=true`
+    window.open(viewerUrl, '_blank');
+  }
+
+  downloadDocument(): void {
+    const a = document.createElement('a');
+    a.href = this.docsUrl;
+    a.download = 'aa'; // You can set the default file name here
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
 }
