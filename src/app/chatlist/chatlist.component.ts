@@ -37,7 +37,7 @@ export class ChatlistComponent implements OnInit{
 
     if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
     {
-      this.chatlistService.getChatListByUserId(group).pipe(
+      this.chatlistService.getChatListByUserId(this.userId).pipe(
         tap(chats => console.log(chats)), 
       ).subscribe((chats: ChatListVM[]) => {
         console.log("sr")
