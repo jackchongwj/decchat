@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { tap } from 'rxjs';
-import { ChatlistService } from '../Services/Chatlist/chatlist.service';
-import { Group } from '../Models/DTO/Group/group';
+import { ChatlistService } from '../../app/Services/Chatlist/chatlist.service';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
@@ -24,38 +23,32 @@ export class ChatlistComponent implements OnInit{
   constructor(private chatlistService: ChatlistService, private lsService: LocalstorageService, private dataShareService: DataShareService,
     private signalRService: SignalRService, private localStorage: LocalstorageService) {}
 
-  public userId: number = parseInt(this.localStorage.getItem('userId') || '');
+    private userId: number = parseInt(this.localStorage.getItem('userId') || '');
     
-  ngOnInit(): void {
-    // this.getChatList();
-  }
+  ngOnInit(): void {}
 
   getChatList(){
-
-    // Create a Group instance with the userId
-    const group = new Group('', [], 0, this.userId); // Assuming other parameters are not relevant here
-
     if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
     {
-      this.chatlistService.getChatListByUserId(this.userId).pipe(
+      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
         tap(chats => console.log(chats)), 
       ).subscribe((chats: ChatListVM[]) => {
-        console.log("sr")
-        this.signalRService.AddToGroup(chats);        
-        console.log("Success Add To Group")
-
+        
         this.privateChat = chats.filter(chat => chat.RoomType === false);
+        console.log(this.privateChat);
         this.groupChat = chats.filter(chat => chat.RoomType === true);
-      })
+        console.log(this.groupChat);  
+
+        console.log("privateGrouplist", chats);
+        // this.dataShareService.updateChatListData(chats);
+        this.signalRService.AddToGroup(chats);
+      });
     }
   }
 
-  getSelectedChatRoom(ChatRoom:ChatListVM)
+  getSelectedChatRoom(chatRoomId:number)
   {
-    console.log("get1")
-    this.dataShareService.updateSelectedChatRoom(ChatRoom);
-    console.log("chatRoom",ChatRoom);
-    //console.log(this.lsService.getItem("userId"));
+        console.log(this.lsService.getItem("userId"));
   }  
   
 }
