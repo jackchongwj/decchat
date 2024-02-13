@@ -1,117 +1,113 @@
-/* userProfile.component.css */
-.user-profile-modal {
-    position: relative; /* Ensure modal positioning is relative for absolute child positioning */
-    width: 100%; /* Adjust based on your design */
-    max-width: 800px; /* Example max-width */
-    margin: auto; /* Center the modal */
-    background-color: white; /* Example background */
-    padding: 20px; /* Padding around modal content */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Example shadow for modal pop effect */
-    border-radius: 8px; /* Rounded corners */
-  }
-  
-  .user-profile-modal .header {
-    display: flex;
-    justify-content: flex-end; /* Aligns the close button to the right */
-  }
-  
-  .user-profile-modal .header .close-button {
-    position: absolute; /* Position the close button absolutely within the header */
-    top: 10px; /* Adjust as needed */
-    right: 10px; /* Adjust as needed */
-    z-index: 999; /* Make sure it's above other elements */
-  }
-  
-  .user-profile-modal .content {
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; Center content vertically */
-    gap: 20px; /* Space between content items */
-    overflow: auto; /* Add scroll if content overflows */
-    height: auto; /* Adjust based on content */
-  }
-  
-  .user-profile-modal .profile-picture img {
-    width: 150px; /* Adjust as needed */
-    height: 150px; /* Adjust as needed */
-    border-radius: 50%; /* Circular image */
-    object-fit: cover;
-  }
-  
-  /* Ensure the file input and edit buttons are not obstructing other interactive elements */
-  .user-profile-modal input[type="file"],
-  .user-profile-modal button {
-    z-index: 2;
-  }
-
-  /* userProfile.component.css */
 .user-profile-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .user-profile-image {
-    margin-right: 10px; /* Adjust as needed */
-  }
-  
-  .circular-image {
-    border-radius: 50%;
-    width: 40px; /* Adjust as needed */
-    height: 40px; /* Adjust as needed */
-    object-fit: cover;
-  }
-  
-  .user-profile-name h1 {
-    color: white;
-    background-color: rgb(68, 67, 62);
-    margin: 0;
-    padding: 5px 10px; /* Adjust as needed */
-  }
-  
-  .profile-picture-overlay {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-  }
-  
-  .edit-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white; /* Adjust color based on your design */
-    font-size: 24px; /* Adjust size based on your design */
-    opacity: 0.7; /* Adjust for desired visibility */
-    display: none; /* Initially hidden */
-  }
-  
-  .profile-picture-overlay:hover .edit-icon {
-    display: block;
-  }
+  display: flex;
+  align-items: center;
+}
 
-  .user-details .profile-name-edit {
-    display: flex;
-    align-items: center;
-  }
+.user-profile-image {
+  margin-right: 10px;
+}
+
+.user-profile-image nz-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.user-profile-name h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #ece9e979;
+}
+
+/* Modal content */
+.profile-picture-overlay {
+  height: 160px;
+  position: relative;
+  /* cursor: pointer; */
+  display: flex;
   
-  .user-details p {
-    margin: 0; /* Remove margin to align text and button/icon */
-  }
-  
-  .nz-input-group {
-    margin-left: 8px; /* Add some spacing between the profile name and the input */
-  }
-  
-  .user-details .profile-name-edit {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap; /* Allows items to wrap if needed */
-  }
-  
-  .user-details .profile-name-edit p {
-    margin-right: 8px; /* Ensures spacing between the profile name and edit icon */
-    display: flex;
-    align-items: center; /* Aligns text and button vertically */
-  }
-  
-  
+  margin-bottom: 20px;
+}
+
+.modal-avatar {
+  width: 160px; 
+  height: 160px;
+  border-radius: 50%; 
+  display: block; 
+  margin: 0 auto; 
+  align-self: center;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #007bff;
+  cursor: pointer;
+  font-size: 45px;
+  display: none;
+}
+
+.profile-picture-overlay:hover .edit-icon {
+  display: block;
+}
+
+/* Image options buttons */
+.image-options {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* User details styling */
+.user-details {
+  margin-top: 20px;
+}
+
+.user-details p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Profile name edit mode */
+.profile-name-edit {
+  display: flex;
+  align-items: center;
+}
+
+.profile-name-edit p {
+  margin: 0;
+}
+
+.nz-input-group {
+  margin-left: 8px;
+}
+
+/* Buttons */
+nz-button {
+  margin-right: 5px;
+}
+
+/* Modal footer custom content */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Ensure buttons in modal footer have some spacing */
+.modalFooter nz-button:not(:last-child) {
+  margin-right: 10px;
+}
+
+.user-details, .profile-name-edit, .user-details p {
+  text-align: center;
+  width: 100%; 
+}
+
+.ng-container *nzModalContent {
+  display: flex;
+  justify-content: center; 
+  flex-direction: column;
+  align-items: center; 
+}

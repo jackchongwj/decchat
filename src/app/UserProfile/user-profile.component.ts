@@ -19,6 +19,7 @@ export class UserProfileComponent implements OnInit {
   showModal: boolean = false;
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
+ 
 
 
   constructor(
@@ -50,14 +51,14 @@ export class UserProfileComponent implements OnInit {
       reader.readAsDataURL(this.selectedFile);
     }
   }
-  
 
   saveProfileName(): void { 
     this.userService.updateProfileName(this.userId, this.User.ProfileName).subscribe({
       next: () => {
         console.log('Profile name updated successfully');
-        // Optionally, refresh user data here or update UI accordingly
-        this.fetchUserData(); // Assuming you have a method to refresh user data
+        this.fetchUserData(); // Refresh user data
+        this.editMode = false; // Exit edit mode
+        console.log("name edit",this.editMode);
       },
       error: (error) => {
         console.error('Error updating profile name:', error);
@@ -69,9 +70,10 @@ export class UserProfileComponent implements OnInit {
     if (this.selectedFile && this.userId) {
       this.userService.updateProfilePicture(this.userId, this.selectedFile).subscribe({
         next: (event) => {
-          // Handle successful upload, refresh the user's profile picture URL if needed
           this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png'; // Update the main profile picture URL
           this.previewImageUrl = null; // Clear the preview
+          this.showEditIcon = false; // Hide the edit icon
+          this.editMode = false; // Exit edit mode, ensuring a smooth user experience
         },
         error: (error) => {
           console.error('Error uploading file:', error);
@@ -102,8 +104,7 @@ fetchUserData(): void {
     if (confirm("Are you sure you want to delete your account?") && this.User) {
       this.userService.deleteUser(this.userId).subscribe({
         next: () => {
-          // TODO: Update this path to the login route once it's available
-          this.router.navigate(['/placeholder-login']);
+          this.router.navigate(['/login']);
         },
         error: error => {
           console.error('Error deleting account:', error);
@@ -113,8 +114,8 @@ fetchUserData(): void {
   } 
 
   cancelPreview() {
-    this.previewImageUrl = null; // Clear the preview image URL
-    // Optionally reset the selectedFile if you're keeping track of it
+    this.previewImageUrl = null;
+    
     this.selectedFile = null;
   }
 

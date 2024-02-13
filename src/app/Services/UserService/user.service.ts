@@ -2,10 +2,9 @@ import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { PasswordChange } from '../../Models/DTO/User/password-change.model';
+
 
 const UserUrl: string = environment.apiBaseUrl + 'Users/'
-const AuthUrl: string = environment.apiBaseUrl + 'Auth/'
 
 @Injectable({
   providedIn: 'root'
@@ -58,8 +57,6 @@ export class UserService {
     return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} );
   }
 
-  changePassword(id: number, passwordChangeData: PasswordChange): Observable<any> {
-    return this.http.post(`${AuthUrl}PasswordChange?id=${id}`, passwordChangeData)
-  }
+  
   
 }

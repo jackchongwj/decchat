@@ -17,8 +17,8 @@
 <nz-modal [(nzVisible)]="showModal" nzTitle="User Profile" (nzOnCancel)="toggleModal()" nzClosable [nzFooter]="modalFooter">
   <ng-container *nzModalContent>
   <!-- Profile Picture with Edit Icon -->
-  <div class="profile-picture-overlay" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()">
-    <nz-avatar [nzSrc]="previewImageUrl || User.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large"></nz-avatar>
+  <div class="profile-picture-overlay" >
+    <nz-avatar class="modal-avatar" [nzSrc]="previewImageUrl || User.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
     <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
     <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
   </div>
@@ -29,7 +29,7 @@
 
   <!-- User Details Display -->
   <div *ngIf="User" class="user-details">
-    <p>User Name: <span>{{ User.UserName }}</span></p>
+    <p>Username: <span>{{ User.UserName }}</span></p>
     <div class="profile-name-edit">
       <p *ngIf="!editMode">Profile Name: <span>{{ User.ProfileName }}</span>
         <button nz-button nzType="link" (click)="toggleEditMode()">
@@ -50,7 +50,7 @@
   <!-- Modal Footer Custom Content -->
   <ng-template #modalFooter>
     <button nz-button nzType="default" (click)="changePassword()">Change Password</button>
-    <button nz-button nzType="danger" (click)="deleteAccount()">Delete Account</button>
+    <button nz-button nzType="default" nzDanger (click)="deleteAccount()">Delete Account</button>
   </ng-template>
 </nz-modal>
 

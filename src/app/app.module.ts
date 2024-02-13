@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
-import { NzModalModule } from 'ng-zorro-antd/modal';
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
 import { ChatlistComponent } from './chatlist/chatlist.component';
@@ -20,7 +19,16 @@ import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component'
 import { MatDialogModule } from '@angular/material/dialog';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
-import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
+// import { AddFriendDialogContentComponent } from './AddFriend/add-friend-dialog-content/add-friend-dialog-content.component';
+import { LoginComponent } from './Pages/Auth/login/login.component';
+import { RegisterComponent } from './Pages/Auth/register/register.component';
+import { LogoutComponent } from './logout/logout.component';
+import { AuthInterceptor } from './Interceptor/auth.interceptor';
+import { CreategroupComponent } from './CreateGroup/creategroup.component';
+import { UserProfileComponent } from './UserProfile/user-profile.component';
+import { ChangePasswordComponent } from './ChangePassword/change-password.component';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 registerLocaleData(ms);
 
@@ -37,12 +45,11 @@ registerLocaleData(ms);
     LoginComponent,
     RegisterComponent,
     LogoutComponent,
-    CreategroupComponent
-    AddFriendDialogContentComponent,
+    CreategroupComponent,
     UserProfileComponent,
     ChangePasswordComponent
   ],
-  imports: [
+    imports: [
     BrowserModule,
     AppRoutingModule,
     IconsProviderModule,
@@ -51,11 +58,12 @@ registerLocaleData(ms);
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    NzModalModule,
-    NzAvatarModule,
-    ReactiveFormsModule,
     ImportNgZorroAntdModule,
+    NzAvatarModule,
+    NzModalModule,
+    ReactiveFormsModule
   ],
+  
   
   providers: [
     provideClientHydration(),

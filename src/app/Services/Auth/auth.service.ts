@@ -4,7 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { CookieService } from 'ngx-cookie-service';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
-
+import { PasswordChange } from '../../Models/DTO/User/password-change.model';
 
 const AuthUrl: string = environment.apiBaseUrl + 'Auth/'
 
@@ -29,5 +29,9 @@ export class AuthService {
 
   setUserId(userId: string): void {
     this.localStorageService.setItem('userId', userId);
+  }
+
+  changePassword(id: number, passwordChangeData: PasswordChange): Observable<any> {
+    return this.http.post(`${AuthUrl}PasswordChange?id=${id}`, passwordChangeData)
   }
 }
