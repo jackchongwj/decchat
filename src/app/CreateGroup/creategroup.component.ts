@@ -5,10 +5,9 @@ import { CommonModule } from '@angular/common';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
+import { Group } from '../Models/DTO/Group/group';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { tap } from 'rxjs';
-import { Group } from '../Models/DTO/Group/group';
-
 
 @Component({
   selector: 'app-creategroup',
@@ -17,8 +16,8 @@ import { Group } from '../Models/DTO/Group/group';
 })
 export class CreategroupComponent {
   isVisible = false;
-  privateChat: ChatListVM[] = [];
-  RoomName: string = '';
+  privateChat: any[] = [];
+  roomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
   InitiatedBy=8; 
   userId: number = 7; // Assuming userId is a number property
@@ -28,19 +27,21 @@ export class CreategroupComponent {
   ) {}
 
   ngOnInit(): void {
-
      // Create a Group instance with the userId
-     const group = new Group('', [], 0, this.userId); // Assuming other parameters are not relevant here
+    //  const group = new Group('', [], 0, this.userId); // Assuming other parameters are not relevant here
 
-    this.chatlistService.RetrieveChatListByUser(7).pipe(
+    ///change 7 to userid
+     this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
       tap(chats => console.log(chats)), 
     ).subscribe((chats: ChatListVM[]) => {
       console.log("Friends Subscribed: "+ chats);
-      this.privateChat = chats;
+      this.privateChat = chats.filter(chat => chat.RoomType === false) // Filter by roomType being false
+      ;
     });
 
-    // this.chatlistService.RetrieveChatListByUser(group).subscribe(
+    // this.chatlistService.getChatListByUserId(group).subscribe(
     //   {next: (res)=> {
+    //     console.log(res);
     //   this.privateChat = res.filter(
     //     (chat:any) => chat.roomType === false);
     // }, 

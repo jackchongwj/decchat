@@ -12,10 +12,11 @@
       <label for="roomName">Room Name:</label>
       <input id="roomName" type="text" nz-input [(ngModel)]="roomName" />
     </div>
+    
     <div style="margin-top: 16px;">
       <label for="privateChatUsers">Select Private Chat Users:</label>
       <nz-select id="privateChatUsers" style="width: 100%;" nzMode="multiple" [(ngModel)]="selectedUsers">
-        <nz-option *ngFor="let user of privateChat" [nzLabel]="user.ChatRoomName" [nzValue]="user.ChatRoomId"></nz-option>
+        <nz-option *ngFor="let user of privateChat" [nzLabel]="user.ChatRoomName" [nzValue]="user.UserId"></nz-option>  <!--change chatroomid to userid-->
       </nz-select>
     </div>
   </ng-container>
