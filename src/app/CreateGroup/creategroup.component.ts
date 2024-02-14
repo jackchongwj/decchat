@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
+import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { tap } from 'rxjs';
 import { Group } from '../Models/DTO/Group/group';
@@ -18,21 +19,24 @@ import { Group } from '../Models/DTO/Group/group';
 export class CreategroupComponent {
   isVisible = false;
   privateChat: ChatListVM[] = [];
-  roomName: string = '';
+  RoomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
-  InitiatedBy=8; 
-  userId: number = 7; // Assuming userId is a number property
 
   constructor(
     private chatlistService: ChatlistService, //privatelist
+    private localStorage: LocalstorageService
   ) {}
 
+  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+
   ngOnInit(): void {
-    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-      tap(), 
-    ).subscribe((chats: ChatListVM[]) => {
-      this.privateChat = chats;
-    });
+    this.chatlistService.getChatListByUserId(this.userId).subscribe(
+      {next: (res)=> {
+      this.privateChat = res.filter(
+        (chat:any) => chat.roomType === false);
+    }, 
+      error:(err)=>{console.log(err.message)
+    }});
   }
 
   showModal(): void {

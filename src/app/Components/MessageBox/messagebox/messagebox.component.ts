@@ -129,7 +129,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     this.message.ResourceUrl = null;
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
-    this.message.ChatRoomId = this.currentUserChatRoomId;
+    this.message.ChatRoomId = this.ChatRoomId;
+    this.message.UserId = this.userId;
 
     console.log("message", this.message);
 
