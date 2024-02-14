@@ -23,9 +23,8 @@
 .profile-picture-overlay {
   height: 160px;
   position: relative;
-  /* cursor: pointer; */
+  cursor: pointer;
   display: flex;
-  
   margin-bottom: 20px;
 }
 
@@ -47,6 +46,7 @@
   cursor: pointer;
   font-size: 45px;
   display: none;
+  pointer-events: none;
 }
 
 .profile-picture-overlay:hover .edit-icon {

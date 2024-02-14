@@ -4,7 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { CookieService } from 'ngx-cookie-service';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
-import { PasswordChange } from '../../Models/DTO/User/password-change.model';
+import { PasswordChange } from '../../Models/DTO/User/password-change';
 
 const AuthUrl: string = environment.apiBaseUrl + 'Auth/'
 

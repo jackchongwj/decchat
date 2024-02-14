@@ -12,20 +12,22 @@ import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
-  @Input() userId!: number;
+  userId: number;
   User = {} as User;
   editMode: boolean = false;
   showEditIcon: boolean = false;
   showModal: boolean = false;
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
- 
+  showDeleteConfirm = false;
 
 
   constructor(
     private userService: UserService, 
     private router: Router
-  ) {}
+  ) {
+      this.userId = parseInt(localStorage.getItem('userId') || '0', 10);
+  }
 
   ngOnInit() {
     console.log('Opening user profile modal for user ID:', this.userId);
@@ -100,18 +102,19 @@ fetchUserData(): void {
   });
 }
 
-  deleteAccount() {
-    if (confirm("Are you sure you want to delete your account?") && this.User) {
-      this.userService.deleteUser(this.userId).subscribe({
-        next: () => {
-          this.router.navigate(['/login']);
-        },
-        error: error => {
-          console.error('Error deleting account:', error);
-        }
-      });
+deleteAccount() {
+  // Use your userService to delete the account
+  this.userService.deleteUser(this.userId).subscribe({
+    next: () => {
+      this.showDeleteConfirm = false; // Close the modal on success
+      this.router.navigate(['/login']); // Redirect or handle as needed
+    },
+    error: error => {
+      this.showDeleteConfirm = false; // Close the modal on error
+      console.error('Error deleting account:', error);
     }
-  } 
+  });
+}
 
   cancelPreview() {
     this.previewImageUrl = null;

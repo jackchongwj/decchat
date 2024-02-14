@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../Services/UserService/user.service';
-import { PasswordChange } from '../Models/DTO/User/password-change.model';
+import { PasswordChange } from '../Models/DTO/User/password-change';
 import { AuthService } from '../Services/Auth/auth.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-change-password',
@@ -12,8 +13,9 @@ import { AuthService } from '../Services/Auth/auth.service';
 })
 export class ChangePasswordComponent {
   changePasswordForm: FormGroup;
+  private userId: number = parseInt(localStorage.getItem('userId') || '0', 10);
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private message: NzMessageService, private authService: AuthService, private router: Router) {
     this.changePasswordForm = new FormGroup({
       currentPassword: new FormControl('', [Validators.required]),
       newPassword: new FormControl('', [
@@ -58,28 +60,33 @@ export class ChangePasswordComponent {
 
   onSubmit() {
     if (this.changePasswordForm.valid) {
-      const userId = 7; // Placeholder user ID; replace as needed
-      const passwordChangeData = new PasswordChange(
-        this.changePasswordForm.get('currentPassword')?.value??'',
-        this.changePasswordForm.get('newPassword')?.value??''
-      );
-
-      this.authService.changePassword(userId, passwordChangeData).subscribe({
+      const passwordChangeData: PasswordChange = {
+        currentPassword: this.changePasswordForm.value.currentPassword,
+        newPassword: this.changePasswordForm.value.newPassword,
+        // Include any additional fields required by your PasswordChange model
+      };
+  
+      this.authService.changePassword(this.userId, passwordChangeData).subscribe({
         next: () => {
-          alert('Password successfully changed.');
-          this.router.navigate(['/']); // Navigate back to the main page.
+          this.message.create('success', 'Password successfully changed');
+          this.router.navigate(['/']);
+          // You might want to navigate the user or reset the form here
         },
         error: error => {
-          alert('Failed to change password: ' + error.message);
+          this.message.create('error', `Incorrect Current Password`);
+          // Handle your error state here
         }
       });
     } else {
       // Trigger validation for all form fields
       Object.values(this.changePasswordForm.controls).forEach(control => {
-        control.updateValueAndValidity();
+        if (control instanceof FormControl) {
+          control.markAsTouched();
+        }
       });
     }
   }
+  
 
   goBack() {
     this.router.navigate(['/']); // Or use this.router.navigateByUrl('/') for a similar effect

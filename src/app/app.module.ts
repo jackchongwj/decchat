@@ -29,6 +29,7 @@ import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageModule } from 'ng-zorro-antd/message';
 
 registerLocaleData(ms);
 
@@ -61,6 +62,7 @@ registerLocaleData(ms);
     ImportNgZorroAntdModule,
     NzAvatarModule,
     NzModalModule,
+    NzMessageModule,
     ReactiveFormsModule
   ],
   
