@@ -2,6 +2,7 @@
 
   <!-- SideBar Start-->
   <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+    
     <div class="sidebar-logo">
       <a target="_blank">
         <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
@@ -16,6 +17,9 @@
     <hr>
     <app-chatlist [isCollapsed]="isCollapsed"></app-chatlist>
     
+    <div class="sidebar-footer">
+      <app-user-profile></app-user-profile>
+    </div>
   </nz-sider>
   <!-- SideBar End-->
   <nz-layout class="message-layout">
@@ -47,6 +51,5 @@
       </div>
     </nz-content>
     <!-- Message Area End-->
-
   </nz-layout>
 </nz-layout>
