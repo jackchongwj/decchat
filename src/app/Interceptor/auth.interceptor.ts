@@ -10,14 +10,22 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private tokenService: TokenService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const accessToken = this.tokenService.getToken();
+    // Define a list of routes that should not have the Authorization header
+    const authRoutes = ['/api/auth/login', '/api/auth/register'];
 
-    if (accessToken) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
+    // Check if the request is to an auth route
+    const isAuthRoute = authRoutes.some(route => request.url.includes(route));
+
+    // If not an auth route, and we have an access token, clone the request to include the Authorization header
+    if (!isAuthRoute) {
+      const accessToken = this.tokenService.getToken();
+      if (accessToken) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+      }
     }
 
     return next.handle(request).pipe(

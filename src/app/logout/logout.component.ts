@@ -20,12 +20,12 @@ export class LogoutComponent {
         this.localStorageService.clear();
 
         console.log('Logout successful!', res)
-        this.message.success('Logout successful!');
+        this.message.success(res.Message || 'Logout successful');
         this.router.navigate(['/login']);
       },
       error: (e) => {
         console.error('Logout failed', e);
-        this.message.error('Logout failed');
+        this.message.error(e.error.Error || 'Logout failed');
       }
     });
   }

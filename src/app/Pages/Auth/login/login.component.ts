@@ -33,11 +33,12 @@ export class LoginComponent{
           this.authService.setUserId(res.UserId);
 
           console.log('Login successful!', res);
-          this.message.success('Login successful!');
+          this.message.success(res.Message || 'Login successful');
           this.router.navigate(['/']);
         },
         error: (e) => {
           console.error('Login failed:', e);
+          this.message.error(e.error.Error || 'Login failed. Please try again.');
         }
     });
     } else {

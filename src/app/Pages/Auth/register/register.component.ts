@@ -285,14 +285,14 @@ export class RegisterComponent {
           this.isLoading = false;
           
           console.log('Registration successful!', res);
-          this.message.success('Registration successful!');
+          this.message.success(res.Message || 'Registration successful');
           this.router.navigate(['/login']);
         },
         error: (e) => {
           this.isLoading = false;
 
           console.error('Registration failed:', e);
-          this.message.error(e.error['message']);
+          this.message.error(e.error.Error || 'Registration failed due to an internal error.');
         }
       });
     } else {
