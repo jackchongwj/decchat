@@ -15,9 +15,9 @@ export class ChatlistService {
 
   constructor(private http: HttpClient) {}
 
-  getChatListByUserId(group: Group): Observable<any> {
+  getChatListByUserId(userId: number): Observable<any> {
     // Construct HttpParams object with userId parameter
-    const params = new HttpParams().set('userId', group.UserId.toString());
+    const params = new HttpParams().set('userId', userId);
 
     // Use params object in the request
     return this.http.get(`${this.url}getChatListByUserId`, { params: params });
