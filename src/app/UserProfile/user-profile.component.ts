@@ -17,6 +17,7 @@ export class UserProfileComponent implements OnInit {
   editMode: boolean = false;
   showEditIcon: boolean = false;
   showModal: boolean = false;
+  
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   showDeleteConfirm = false;
