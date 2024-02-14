@@ -34,26 +34,15 @@
 
     <!-- Message Area Start-->
     <nz-content>
-      <div class="inner-content">
-        <app-chatmessage></app-chatmessage>
 
+      <div class="inner-content">
         <ng-container *ngIf="IsSelected; else emptyPage">
-          <app-chatmessage></app-chatmessage>
+          <app-chatroomdisplay></app-chatroomdisplay>
         </ng-container>
 
         <ng-template #emptyPage>
           <app-user-login-page></app-user-login-page>
         </ng-template>
-        <!-- <ng-container *ngIf="IsSelected; else emptyPage">
-          
-        </ng-container>
-
-        <ng-template #emptyPage>
-          <app-chatmessage></app-chatmessage>
-        </ng-template> -->
-
-        <!-- <app-chatmessage></app-chatmessage>
-        <app-messagebox></app-messagebox> -->
 
       </div>
     </nz-content>

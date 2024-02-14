@@ -4,13 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
-import { Message } from '../../Models/Message/message';
-import { Messages } from '../../Models/DTO/Messages/messages';
-
-interface TypingStatus{
-  userName:string;
-  isTyping:boolean;
-}
+import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
+import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 
 @Injectable({
   providedIn: 'root'
@@ -54,9 +49,9 @@ export class SignalRService {
     .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
   }
 
-  public InformUserTyping(name:string, typing:boolean)
+  public InformUserTyping(chatroomId:number, typing:boolean)
   {
-    this.hubConnection.invoke("CheckUserTyping", name, typing)
+    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing)
     //.then(() => console.log(''))
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
@@ -66,9 +61,9 @@ export class SignalRService {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
-        this.hubConnection.on("UserTyping", (userName:string, isTyping:boolean) => {
+        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean) => {
           this.ngZone.run(() => {
-            observer.next({ userName, isTyping });
+            observer.next({ChatRoomId, isTyping});
           })
         })
       }
@@ -86,7 +81,7 @@ export class SignalRService {
     return this.hubConnection;
   }
 
-  notifyMessage(newMessage: Messages): void {
+  notifyMessage(newMessage: ChatRoomMessages): void {
     console.log("connect", this.hubConnection.state);
     console.log("new message", newMessage);
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
@@ -103,10 +98,10 @@ export class SignalRService {
   }
   
   
-  updateMessageListener(): Observable<Messages[]> {
-    return new Observable<Messages[]>(observer => {
+  updateMessageListener(): Observable<ChatRoomMessages[]> {
+    return new Observable<ChatRoomMessages[]>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('UpdateMessage', (newMessage: Messages[]) => {
+        this.hubConnection.on('UpdateMessage', (newMessage: ChatRoomMessages[]) => {
           console.log('Received new message:', newMessage); 
           this.ngZone.run(() => {
             observer.next(newMessage);
@@ -115,6 +110,5 @@ export class SignalRService {
       }
     });
   }
-
 
 }

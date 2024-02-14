@@ -27,10 +27,10 @@
   <!-- Message Text Field -->
   <div class="input-button-container">
     <!-- Attachment Button -->
-    <span nz-icon nzType="plus-circle" nzTheme="fill" class="icon-plus-circle" (click)="triggerFileInput()"></span>
+    <span nz-icon nzType="upload" nzTheme="outline" class="icon-upload" (click)="triggerFileInput()"></span>
     <input type="file" name="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)"
     accept="image/jpeg, image/png, image/webp,
-    .mp4, .mkv, .pdf, .doc, .docx, .txt"/>
+    .mp4, .pdf, .doc, .docx, .txt"/>
 
     <div class="message-field-input">
       <!-- Message Input Field -->

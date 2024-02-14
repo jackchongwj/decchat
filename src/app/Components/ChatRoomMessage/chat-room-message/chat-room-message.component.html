@@ -1,0 +1,37 @@
+<div class="chat-message-display">
+  <!-- Normal Message Display -->
+  <div *ngFor="let message of messageList" class="message">
+    <img nz-image
+      width="200px"
+      height="200px"
+      [nzSrc]="imageUrl"
+      alt="" class="profile-picture"
+    >
+    <div class="message-content">
+      <span class="user-name">{{ message.UserChatRoomId }}</span>
+      {{ message.Content }}
+    </div> 
+  </div>
+
+  <!-- Video File Display -->
+  <!-- <div class="video-container">
+    <img nz-image
+      width="200px"
+      height="200px"
+      [nzSrc]="imageUrl"
+      alt="" class="profile-picture"
+    >
+    <img src="assets/videoicon.png" alt="Video Preview" class="video-preview" (click)="playVideo()">
+  </div> -->
+
+  <!-- <div class="document-container">
+    <img 
+      src="assets/docicon.jpg"
+      alt="Document Thumbnail"
+      (click)="openDocument()"
+    >
+
+    <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument()"></span>
+  </div> -->
+
+</div>

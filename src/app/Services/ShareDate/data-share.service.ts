@@ -10,12 +10,12 @@ export class DataShareService {
   // BehaviorSubject for immediate access of current value
   private ChatlistSubject = new BehaviorSubject<ChatListVM[]>([]);
   private SelectedChatRoom = new BehaviorSubject<ChatListVM>({} as ChatListVM); 
-  private IsTyping = new BehaviorSubject<boolean>(false);
+  private SelectedChatMessageHistory = new BehaviorSubject<ChatListVM[]>([]);
 
   // Observable for widely use
   public chatListData = this.ChatlistSubject.asObservable();
   public selectedChatRoomData = this.SelectedChatRoom.asObservable();
-  public UserTyping = this.IsTyping.asObservable();
+  public ChatHistory = this.SelectedChatMessageHistory.asObservable();
 
   updateChatListData(data: ChatListVM[]){
     this.ChatlistSubject.next(data);
@@ -23,9 +23,20 @@ export class DataShareService {
 
   updateSelectedChatRoom(data: ChatListVM){
     this.SelectedChatRoom.next(data);
+    this.clearChatMessageHistory();
   }
 
-  updateTypingStatus(typing: boolean){
-    this.IsTyping.next(typing);
+  updateChatMessage(data:ChatListVM[]){
+    this.SelectedChatMessageHistory.next(data);
+  }
+
+  appendChatMessage(message: ChatListVM){
+    const currentMessages = this.SelectedChatMessageHistory.getValue();
+    this.SelectedChatMessageHistory.next([...currentMessages, message]);
+  }
+
+  // Clears the chat message history
+  private clearChatMessageHistory() {
+    this.SelectedChatMessageHistory.next([]);
   }
 }

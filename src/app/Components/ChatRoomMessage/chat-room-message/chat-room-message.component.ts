@@ -1,0 +1,115 @@
+import { Component, NgZone, OnInit} from '@angular/core';
+import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
+import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
+import { MessageService } from '../../../Services/MessageService/message.service';
+import { DataShareService } from '../../../Services/ShareDate/data-share.service';
+import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
+
+@Component({
+  selector: 'app-chat-room-message',
+  templateUrl: './chat-room-message.component.html',
+  styleUrl: './chat-room-message.component.css'
+})
+export class ChatRoomMessageComponent implements OnInit{
+
+  constructor(
+    private _dataShareService:DataShareService,
+    private _messageService:MessageService,
+    private _signalRService:SignalRService,
+    private ngZone: NgZone
+  ){}
+    
+  currentChatRoom = {} as ChatListVM;
+  currentUser = localStorage.getItem("userId");
+  messageList : ChatRoomMessages[] = [];
+
+  imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
+  videoUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Videos/testvideo.mp4";
+  docsUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Documents/testrun1233333333333333333333333333333333333333333333333333333333333333333333333333.docx";
+
+  ngOnInit(){
+
+    // Get Chosen Chat Room
+    this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
+      this.currentChatRoom = chatroom;
+
+      // HTTP Get Message Service
+      this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
+        this.messageList = response;
+        console.log("Obtained messageList", this.messageList);
+      }, error => {
+        console.error('Error fetching messages:', error);
+      });
+
+    });
+
+    this.updateMessageListenerListener();
+  }
+
+  isUserSend(){
+    
+  }
+
+  hasAttachment(message:ChatRoomMessages):boolean{
+    if(message.ResourceUrl != "" || message.ResourceUrl == null){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  isMsgWithAttach(message:ChatRoomMessages):boolean{
+    if(this.hasAttachment(message) && message.Content != ""){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  isImage(fileName: string): boolean {
+    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
+  }
+  
+  isVideo(fileName: string): boolean {
+    return /\.(mp4)$/i.test(fileName);
+  }
+  
+  isDocument(fileName: string): boolean {
+    return /\.(pdf|docx?|doc?|txt)$/i.test(fileName);
+  }
+
+  isAudio(fileName: string): boolean {
+    return /\.(mp3)$/i.test(fileName);
+  }
+
+  playVideo():void{
+    console.log("Attempting to open video:", this.videoUrl);
+    window.open(this.videoUrl, '_blank');
+  }
+
+  openDocument(): void {
+    const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(this.docsUrl)}&embedded=true`
+    window.open(viewerUrl, '_blank');
+  }
+
+  downloadDocument(): void {
+    const a = document.createElement('a');
+    a.href = this.docsUrl;
+    a.download = 'aa'; // You can set the default file name here
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  private updateMessageListenerListener(): void {
+    this._signalRService.updateMessageListener()
+      .subscribe((newResults: ChatRoomMessages[]) => {
+        this.messageList = this.messageList.concat(newResults);
+        console.log("new result", newResults);
+        console.log('Received updated message results:', this.messageList);
+      });
+  }
+
+}
