@@ -17,31 +17,31 @@ import { SignalRService } from '../Services/SignalRService/signal-r.service';
 export class ChatlistComponent implements OnInit{
   @Input() isCollapsed : boolean = false;
   showChatList = false;
-  userId:number = 7;
-  //userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   privateChat: ChatListVM[] = [];
   groupChat: ChatListVM[] = [];
-  
-  constructor(private chatlistService: ChatlistService, private lsService: LocalstorageService, private dataShareService: DataShareService,
-    private signalRService: SignalRService, private localStorage: LocalstorageService) {}
+  userId: number = parseInt(this.localStorage.getItem('userId') || '');
 
-  public userId: number = parseInt(this.localStorage.getItem('userId') || '');
-    
+  constructor(
+    private chatlistService: ChatlistService,
+    private lsService: LocalstorageService,
+    private dataShareService: DataShareService,
+    private signalRService: SignalRService,
+    private localStorage: LocalstorageService
+    ) {}
+
   ngOnInit(): void {
     // this.getChatList();
   }
 
   getChatList(){
-
     // Create a Group instance with the userId
-    const group = new Group('', [], 0, this.userId); // Assuming other parameters are not relevant here
-
-    if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
+    if (this.privateChat.length === 0 && this.groupChat.length === 0)
     {
+      console.log(this.userId);
       this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
         tap(), 
       ).subscribe((chats: ChatListVM[]) => {
-        console.log("sr")
+        console.log("Whole Chat List:", chats)
         this.signalRService.AddToGroup(chats);        
         console.log("Success Add To Group")
 
@@ -56,8 +56,7 @@ export class ChatlistComponent implements OnInit{
   getSelectedChatRoom(ChatRoom:ChatListVM)
   {
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
-    console.log(ChatRoom);
-    //console.log(this.lsService.getItem("userId"));
+    console.log("Selected from chat list: ", ChatRoom);
   }  
   
 }

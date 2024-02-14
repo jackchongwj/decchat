@@ -1,14 +1,9 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, NgZone, OnInit} from '@angular/core';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
-import { Message } from '../../../Models/Message/message';
+import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
-
-interface TypingStatus{
-  userName:string;
-  isTyping:boolean;
-}
 
 @Component({
   selector: 'app-chat-room-message',
@@ -20,42 +15,42 @@ export class ChatRoomMessageComponent implements OnInit{
   constructor(
     private _dataShareService:DataShareService,
     private _messageService:MessageService,
-    private _signalRService:SignalRService
+    private _signalRService:SignalRService,
+    private ngZone: NgZone
   ){}
     
-  currentChatRoom = new ChatListVM();
+  currentChatRoom = {} as ChatListVM;
   currentUser = localStorage.getItem("userId");
-  messageList : Message[] = [];
-  isTyping: boolean = false;
+  messageList : ChatRoomMessages[] = [];
 
   imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
   videoUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Videos/testvideo.mp4";
   docsUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Documents/testrun1233333333333333333333333333333333333333333333333333333333333333333333333333.docx";
 
   ngOnInit(){
-    this._dataShareService.UserTyping.subscribe( typingStatus => {
-      this.isTyping = typingStatus;
-    });
 
+    // Get Chosen Chat Room
     this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
       this.currentChatRoom = chatroom;
+
+      // HTTP Get Message Service
+      this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
+        this.messageList = response;
+        console.log("Obtained messageList", this.messageList);
+      }, error => {
+        console.error('Error fetching messages:', error);
+      });
+
     });
 
-    console.log("Test run chat room message");
-
-    this.messageList = this._messageService.obtainDummyData();
-
-    this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      this.isTyping = status.isTyping;
-    });
-
+    this.updateMessageListenerListener();
   }
 
   isUserSend(){
     
   }
 
-  hasAttachment(message:Message):boolean{
+  hasAttachment(message:ChatRoomMessages):boolean{
     if(message.ResourceUrl != "" || message.ResourceUrl == null){
       return true;
     }
@@ -64,7 +59,7 @@ export class ChatRoomMessageComponent implements OnInit{
     }
   }
 
-  isMsgWithAttach(message:Message):boolean{
+  isMsgWithAttach(message:ChatRoomMessages):boolean{
     if(this.hasAttachment(message) && message.Content != ""){
       return true;
     }
@@ -106,6 +101,15 @@ export class ChatRoomMessageComponent implements OnInit{
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  }
+
+  private updateMessageListenerListener(): void {
+    this._signalRService.updateMessageListener()
+      .subscribe((newResults: ChatRoomMessages[]) => {
+        this.messageList = this.messageList.concat(newResults);
+        console.log("new result", newResults);
+        console.log('Received updated message results:', this.messageList);
+      });
   }
 
 }

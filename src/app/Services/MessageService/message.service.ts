@@ -2,8 +2,7 @@ import { HttpClient , HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { Message } from '../../Models/Message/message';
-import { Messages } from '../../Models/DTO/Messages/messages';
+import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
 
 const AddMessageUrl: string = environment.apiBaseUrl + 'Messages/AddMessage'
 const MessageUrl: string = environment.apiBaseUrl + 'Messages/'
@@ -15,28 +14,28 @@ export class MessageService {
 
   constructor(private http: HttpClient) { }
 
-  sendMessage(formData:FormData): Observable<Message>
+  sendMessage(formData:FormData): Observable<ChatRoomMessages>
   {
-    return this.http.post<Messages>(AddMessageUrl, formData);
+    return this.http.post<ChatRoomMessages>(AddMessageUrl, formData);
   }
 
   // obtainDummyData()
   // {
   //   return[
-  //     new Message(1,"TestRun111",3,"12:00:00","path/to/pic",1,true),
-  //     new Message(2,"TestRun222",4,"11:00:00","path/to/pic",1,true),
-  //     new Message(3,"TestRun333",3,"12:50:00","path/to/pic",1,true),
-  //     new Message(4,"TestRun444",4,"13:00:00","path/to/pic",1,true),
-  //     new Message(5,"TestRun555",5,"15:00:00","path/to/pic",1,true),
-  //     new Message(6,"TestRun666",5,"12:01:00","path/to/pic",1,true),
-  //     new Message(7,"TestRun777",3,"12:04:00","path/to/pic",1,true),
-  //     new Message(8,"TestRun888",3,"14:44:00","path/to/pic",1,true),
-  //     new Message(9,"TestRun999",4,"20:10:00","path/to/pic",1,true),
-  //     new Message(10,"TestRun111000",6,"20:00:00","path/to/pic",1,true),
-  //     new Message(11,"TestRun111111",4,"20:10:00","path/to/pic",1,true),
-  //     new Message(12,"TestRun111222",6,"20:00:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(1,"TestRun111",3,"12:00:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(2,"TestRun222",4,"11:00:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(3,"TestRun333",3,"12:50:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(4,"TestRun444",4,"13:00:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(5,"TestRun555",5,"15:00:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(6,"TestRun666",5,"12:01:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(7,"TestRun777",3,"12:04:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(8,"TestRun888",3,"14:44:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(9,"TestRun999",4,"20:10:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(10,"TestRun111000",6,"20:00:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(11,"TestRun111111",4,"20:10:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(12,"TestRun111222",6,"20:00:00","path/to/pic",1,true),
   //     new Message(13,"TestRun111333",4,"20:10:00","path/to/pic",1,true),
-  //     new Message(14,"TestRun111444",6,"20:00:00","path/to/pic",1,true),
+  //     new ChatRoomMessages(14,"TestRun111444",6,"20:00:00","path/to/pic",1,true),
   //     new Message(10,"TestRun111000",6,"20:00:00","path/to/pic",1,true),
   //     new Message(11,"TestRun111111",4,"20:10:00","path/to/pic",1,true),
   //     new Message(12,"TestRun111222",6,"20:00:00","path/to/pic",1,true),

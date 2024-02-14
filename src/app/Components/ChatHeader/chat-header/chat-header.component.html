@@ -5,4 +5,9 @@
       [nzSrc]="imageUrl"
       alt="" class="chatprofile">
     <h1>{{ currentChatRoom.ChatRoomName }}</h1>
+    
+    <div *ngIf="IsCurrentChatUser" class="typing-indicator">
+      User is typing
+      <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    </div>
   </div>

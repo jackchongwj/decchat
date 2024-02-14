@@ -11,12 +11,10 @@ export class DataShareService {
   private ChatlistSubject = new BehaviorSubject<ChatListVM[]>([]);
   private SelectedChatRoom = new BehaviorSubject<ChatListVM>({} as ChatListVM); 
   private SelectedChatMessageHistory = new BehaviorSubject<ChatListVM[]>([]);
-  private IsTyping = new BehaviorSubject<boolean>(false);
 
   // Observable for widely use
   public chatListData = this.ChatlistSubject.asObservable();
   public selectedChatRoomData = this.SelectedChatRoom.asObservable();
-  public UserTyping = this.IsTyping.asObservable();
   public ChatHistory = this.SelectedChatMessageHistory.asObservable();
 
   updateChatListData(data: ChatListVM[]){
@@ -25,10 +23,7 @@ export class DataShareService {
 
   updateSelectedChatRoom(data: ChatListVM){
     this.SelectedChatRoom.next(data);
-  }
-
-  updateTypingStatus(typing: boolean){
-    this.IsTyping.next(typing);
+    this.clearChatMessageHistory();
   }
 
   updateChatMessage(data:ChatListVM[]){

@@ -14,7 +14,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from './Sidebar/sidebar.component';
-import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
 import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdisplay/chatroomdisplay.component';
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -28,6 +27,7 @@ import { CreategroupComponent } from './CreateGroup/creategroup.component';
 import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
 import { ChatHeaderComponent } from './Components/ChatHeader/chat-header/chat-header.component';
 import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room-message/chat-room-message.component';
+import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
 
 registerLocaleData(ms);
 
