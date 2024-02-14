@@ -20,6 +20,7 @@ export class UserProfileComponent implements OnInit {
   
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
+  
   showDeleteConfirm = false;
 
 
