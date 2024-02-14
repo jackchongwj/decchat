@@ -109,10 +109,10 @@
 }
 
 /* Attachment Button */
-.icon-plus-circle {
-  font-size: 3em; 
+.icon-upload {
+  font-size: 2em; 
   vertical-align: middle; 
-  margin-right: 10px;
+  margin-right: 12px;
   margin-left: -10px;
 
   color: #333; /* Dark gray for visibility against white */
@@ -123,7 +123,7 @@
 
 }
 
-.icon-plus-circle:hover{
+.icon-upload:hover{
 color: #555; /* Slightly lighter shade on hover */
 }
 

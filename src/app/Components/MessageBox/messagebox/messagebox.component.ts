@@ -1,12 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Message } from '../../Models/Message/message';
-import { Messages } from '../../Models/DTO/Messages/messages';
-import { MessageService } from '../../Services/MessageService/message.service';
-import { SignalRService } from '../../Services/SignalRService/signal-r.service';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
-import { DataShareService } from '../../Services/ShareDate/data-share.service';
-import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
+import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
+import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
+import { MessageService } from '../../../Services/MessageService/message.service';
+import { DataShareService } from '../../../Services/ShareDate/data-share.service';
+import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 
 interface TypingStatus{
   userName:string;
@@ -20,6 +18,17 @@ interface TypingStatus{
 })
 
 export class MessageboxComponent implements OnInit, OnDestroy{
+  
+  constructor(
+    private _mService:MessageService,
+    private _sService:SignalRService,
+    private _lsService:LocalstorageService,
+    private _dataShareService:DataShareService){}
+
+  // Current User
+  userId:number = Number(this._lsService.getItem("userId"));
+  currentUserChatRoomId:number = 0;
+  currentChatRoom:number = 0;
 
   // Limit Message Sending
   sendCooldownOn:boolean = false;
@@ -32,8 +41,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   uploadedFiles: File | null = null;
   previewFile: string = '';
   messageText: string = '';
-  message = {} as Messages;
-
+  message = {} as ChatRoomMessages;
 
   // Voice Message
   isRecording:boolean = false;
@@ -41,21 +49,12 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   mediaRecorder: MediaRecorder | null = null;
   recordingInProgress = new Subject<boolean>();
 
-  //share data
- userChatRoomId: number = 0;
- ChatRoomId: number = 0;
-
-
-  constructor(
-    private _mService:MessageService,
-    private _sService:SignalRService,
-    private _lsService:LocalstorageService,
-    private _dataShareService:DataShareService,
-    private localStorage: LocalstorageService){}
-  
-    private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   ngOnInit(): void {
     console.log("Ignore OnInit");
+    this._dataShareService.selectedChatRoomData.subscribe(data => {
+      this.currentUserChatRoomId = data.UserChatRoomId;
+      this.currentChatRoom = data.ChatRoomId;
+    });
   }
 
   ngOnDestroy(): void {
@@ -115,29 +114,25 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   onSendMessage(event?:Event): void {
     if (event) {
       event.preventDefault();
-  }
+    }
 
-  //share Data
+    //share Data
     this._dataShareService.selectedChatRoomData.subscribe
     (
       data =>{
-        console.log("chatlist Data",data);
-        this.userChatRoomId = data.UserChatRoomId;
-        this.ChatRoomId = data.ChatRoomId;
-        console.log("chatroom id", data.ChatRoomId);
+        this.currentUserChatRoomId = data.UserChatRoomId;
       }
     )
     
     this.message.Content = this.messageText;
-    this.message.UserChatRoomId = this.userChatRoomId;
+    this.message.UserChatRoomId = this.currentUserChatRoomId;
     this.message.ResourceUrl = null;
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
-    this.message.ChatRoomId = this.ChatRoomId;
+    this.message.ChatRoomId = this.currentChatRoom;
     this.message.UserId = this.userId;
 
     console.log("message", this.message);
-    console.log("User chatroom id", this.message.UserChatRoomId);
 
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
@@ -231,7 +226,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   }
   
   isVideo(fileName: string): boolean {
-    return /\.(mp4|mkv)$/i.test(fileName);
+    return /\.(mp4)$/i.test(fileName);
   }
   
   isDocument(fileName: string): boolean {
@@ -239,19 +234,18 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   }
 
   OnInputFocus(): void {
-    this._sService.InformUserTyping("Alice", true);
-    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-    //   this.userActive = status.isTyping;
-    //   this._dataShareService.updateTypingStatus(status.isTyping);
-    // });
+    console.log("CurrentChatRoom MSGBox: ", this.currentChatRoom);
+    this._sService.InformUserTyping(this.currentChatRoom, true);
   }
 
   OnInputBlur(): void {
-    this._sService.InformUserTyping("Alice", false);
-    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-    //   this.userActive = status.isTyping;
-    //   this._dataShareService.updateTypingStatus(status.isTyping);
-    // });
+    this._sService.InformUserTyping(this.currentChatRoom, false);
+  }
+
+  // Handle Event Show User Status = 1 After Refresh
+  @HostListener('window:beforeunload')
+  onBeforeUnload(): void {
+    this._sService.InformUserTyping(this.currentChatRoom, false);
   }
 
   // Voice Message Recording Session

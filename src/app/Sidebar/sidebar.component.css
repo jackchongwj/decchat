@@ -96,6 +96,19 @@ nz-content {
   height: 100%; 
   border-radius: 20px;
   border: 1px solid black;
+  flex-grow: 1;
+}
+
+.message-layout{
+  height: 100%;
+}
+
+app-user-login-page {
+  flex-grow: 1;
+}
+
+app-chatroomdisplay{
+  flex-grow: 1;
 }
 
 p{

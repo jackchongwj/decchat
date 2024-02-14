@@ -75,3 +75,34 @@
     opacity: 1;
   }
 }
+
+
+.video-container {
+  position: relative;
+  width: 320px;
+  height: 240px;
+  cursor: pointer;
+}
+
+.video-preview {
+  width: 100%;
+  height: auto;
+}
+
+.video-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+.video-container:hover .video-play-button {
+  display: block;
+}
+
+.video-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

@@ -6,15 +6,19 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
+import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
+import { tap } from 'rxjs';
+import { Group } from '../Models/DTO/Group/group';
 
 @Component({
   selector: 'app-creategroup',
   templateUrl: './creategroup.component.html',
   styleUrl: './creategroup.component.css'
 })
+
 export class CreategroupComponent {
   isVisible = false;
-  privateChat: any[] = [];
+  privateChat: ChatListVM[] = [];
   RoomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
 
@@ -35,30 +39,35 @@ export class CreategroupComponent {
     }});
   }
 
-    showModal(): void {
-      this.isVisible = true;
-    }
+  showModal(): void {
+    this.isVisible = true;
+  }
 
-    handleOk(): void {
-      console.log('Group Name:', this.RoomName);
-      console.log('Selected Users:', this.selectedUsers);
+  handleOk(): void {
+    console.log('Group Name:', this.RoomName);
+    console.log('Selected Users:', this.selectedUsers);
+    console.log('InitiatedBy:', this.userId);
 
-      // // Send groupName to the backend using the service
-      // this.chatlistService.createGroup(this.RoomName).subscribe(
-      //   (response) => {
-      //     // Handle success response from the backend if needed
-      //     console.log('Backend Response:', response);
-      //   },
-      //   (error) => {
-      //     // Handle error response from the backend if needed
-      //     console.error('Backend Error:', error);
-      //   });
-      console.log('Button ok clicked!');
-      this.isVisible = false;
-    }
+  // Create a Group instance with the data
+  const newGroup = new Group(this.RoomName, this.selectedUsers, this.userId, 0); // Assuming UserId is not relevant here
 
-    handleCancel(): void {
-      console.log('Button cancel clicked!');
-      this.isVisible = false;
+  // Send data to the backend
+  this.chatlistService.createNewGroup(newGroup).subscribe({
+    next: (response) => {
+      // Handle the response from the backend if needed
+      console.log('Backend response:', response);
+    },
+    error: (error) => {
+      console.log('Error from the backend:', error);
     }
+  });
+
+    // console.log('Button ok clicked!');
+    this.isVisible = false;
+  }
+
+  handleCancel(): void {
+    console.log('Button cancel clicked!');
+    this.isVisible = false;
+  }
 }

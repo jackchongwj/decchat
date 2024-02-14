@@ -1,4 +1,4 @@
-export class Messages {
+export class ChatRoomMessages {
     constructor(
         public MessageId:number| null,
         public Content:string,
