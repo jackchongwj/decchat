@@ -7,7 +7,8 @@ export class Messages {
         public ResourceUrl:string | null,
         public MessageType:number,
         public IsDeleted:boolean,
-        public ChatRoomId:number
+        public ChatRoomId:number,
+        public UserId:number
     )
     {}
 }

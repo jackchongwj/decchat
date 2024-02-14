@@ -50,8 +50,10 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     private _mService:MessageService,
     private _sService:SignalRService,
     private _lsService:LocalstorageService,
-    private _dataShareService:DataShareService){}
+    private _dataShareService:DataShareService,
+    private localStorage: LocalstorageService){}
   
+    private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   ngOnInit(): void {
     console.log("Ignore OnInit");
   }
@@ -132,6 +134,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
     this.message.ChatRoomId = this.ChatRoomId;
+    this.message.UserId = this.userId;
 
     console.log("message", this.message);
     console.log("User chatroom id", this.message.UserChatRoomId);
