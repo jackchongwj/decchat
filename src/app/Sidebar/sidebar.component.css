@@ -132,3 +132,11 @@ img {
   float: left;
   margin-left:8px ;
 }
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Add any additional styles for padding, background, etc., as needed */
+  /* Ensure that the footer has a defined height if necessary */
+}
