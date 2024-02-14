@@ -1,0 +1,8 @@
+<div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
+    <img nz-image
+      width="200px"
+      height="200px"
+      [nzSrc]="imageUrl"
+      alt="" class="chatprofile">
+    <h1>{{ currentChatRoom.ChatRoomName }}</h1>
+  </div>

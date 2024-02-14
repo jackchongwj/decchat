@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Message } from '../../Models/Message/message';
+import { Messages } from '../../Models/DTO/Messages/messages';
 import { MessageService } from '../../Services/MessageService/message.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { Observable, Subject } from 'rxjs';
+import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
+import { DataShareService } from '../../Services/ShareDate/data-share.service';
+import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 
 interface TypingStatus{
   userName:string;
@@ -29,16 +32,25 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   uploadedFiles: File | null = null;
   previewFile: string = '';
   messageText: string = '';
-  message = {} as Message;
-  
+  message = {} as Messages;
+
+
   // Voice Message
   isRecording:boolean = false;
   private chunks: BlobPart[] = [];
   mediaRecorder: MediaRecorder | null = null;
-  audioUrl: SafeUrl | null = null;
   recordingInProgress = new Subject<boolean>();
 
-  constructor(private _mService:MessageService, private _sService:SignalRService, private sanitizer: DomSanitizer){}
+  //share data
+ userChatRoomId: number = 0;
+ ChatRoomId: number = 0;
+
+
+  constructor(
+    private _mService:MessageService,
+    private _sService:SignalRService,
+    private _lsService:LocalstorageService,
+    private _dataShareService:DataShareService){}
   
   ngOnInit(): void {
     console.log("Ignore OnInit");
@@ -103,17 +115,33 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       event.preventDefault();
   }
 
+  //share Data
+    this._dataShareService.selectedChatRoomData.subscribe
+    (
+      data =>{
+        console.log("chatlist Data",data);
+        this.userChatRoomId = data.UserChatRoomId;
+        this.ChatRoomId = data.ChatRoomId;
+        console.log("chatroom id", data.ChatRoomId);
+      }
+    )
+    
     this.message.Content = this.messageText;
-    this.message.UserChatRoomId = 1;
+    this.message.UserChatRoomId = this.userChatRoomId;
     this.message.ResourceUrl = null;
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
+    this.message.ChatRoomId = this.ChatRoomId;
+
+    console.log("message", this.message);
+    console.log("User chatroom id", this.message.UserChatRoomId);
 
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
     formData.append('message', JSON.stringify(this.message));
     
     if (this.uploadedFiles) {
+      console.log(this.uploadedFiles);
         formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
     }
 
@@ -132,6 +160,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
         console.error(e);
       }
     }); 
+
+    this._sService.notifyMessage(this.message);
   }
 
   private resizeAndPreviewImage(file: File): void 
@@ -207,17 +237,18 @@ export class MessageboxComponent implements OnInit, OnDestroy{
 
   OnInputFocus(): void {
     this._sService.InformUserTyping("Alice", true);
-    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      this.userActive = status.isTyping;
-    });
-    
+    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    //   this.userActive = status.isTyping;
+    //   this._dataShareService.updateTypingStatus(status.isTyping);
+    // });
   }
 
   OnInputBlur(): void {
     this._sService.InformUserTyping("Alice", false);
-    this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      this.userActive = status.isTyping;
-    });
+    // this._sService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    //   this.userActive = status.isTyping;
+    //   this._dataShareService.updateTypingStatus(status.isTyping);
+    // });
   }
 
   // Voice Message Recording Session

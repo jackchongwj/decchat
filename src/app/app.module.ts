@@ -25,6 +25,9 @@ import { RegisterComponent } from './Pages/Auth/register/register.component';
 import { LogoutComponent } from './logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
+import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
+import { ChatHeaderComponent } from './ChatHeader/chat-header/chat-header.component';
+import { ChatRoomMessageComponent } from './ChatRoomMessage/chat-room-message/chat-room-message.component';
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
@@ -47,6 +50,9 @@ registerLocaleData(ms);
     RegisterComponent,
     LogoutComponent,
     CreategroupComponent,
+    UserLoginPageComponent,
+    ChatHeaderComponent,
+    ChatRoomMessageComponent,
     UserProfileComponent,
     ChangePasswordComponent
   ],

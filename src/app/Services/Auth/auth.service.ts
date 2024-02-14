@@ -28,6 +28,7 @@ export class AuthService {
   }
 
   setUserId(userId: string): void {
+    console.log("userId: " + userId);
     this.localStorageService.setItem('userId', userId);
   }
 

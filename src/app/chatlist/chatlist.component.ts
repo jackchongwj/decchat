@@ -24,9 +24,11 @@ export class ChatlistComponent implements OnInit{
   constructor(private chatlistService: ChatlistService, private lsService: LocalstorageService, private dataShareService: DataShareService,
     private signalRService: SignalRService, private localStorage: LocalstorageService) {}
 
-    private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  public userId: number = parseInt(this.localStorage.getItem('userId') || '');
     
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.getChatList();
+  }
 
   getChatList(){
 
@@ -35,25 +37,25 @@ export class ChatlistComponent implements OnInit{
 
     if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
     {
-      this.chatlistService.getChatListByUserId(group).pipe(
+      this.chatlistService.getChatListByUserId(this.userId).pipe(
         tap(chats => console.log(chats)), 
       ).subscribe((chats: ChatListVM[]) => {
-        
-        this.privateChat = chats.filter(chat => chat.RoomType === false);
-        console.log(this.privateChat);
-        this.groupChat = chats.filter(chat => chat.RoomType === true);
-        console.log(this.groupChat);  
+        console.log("sr")
+        this.signalRService.AddToGroup(chats);        
+        console.log("Success Add To Group")
 
-        console.log("privateGrouplist", chats);
-        // this.dataShareService.updateChatListData(chats);
-        this.signalRService.AddToGroup(chats);
-      });
+        this.privateChat = chats.filter(chat => chat.RoomType === false);
+        this.groupChat = chats.filter(chat => chat.RoomType === true);
+      })
     }
   }
 
-  getSelectedChatRoom(chatRoomId:number)
+  getSelectedChatRoom(ChatRoom:ChatListVM)
   {
-        console.log(this.lsService.getItem("userId"));
+    console.log("get1")
+    this.dataShareService.updateSelectedChatRoom(ChatRoom);
+    console.log("chatRoom",ChatRoom);
+    //console.log(this.lsService.getItem("userId"));
   }  
   
 }

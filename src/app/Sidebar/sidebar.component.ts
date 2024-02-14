@@ -1,4 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { UserService } from '../Services/UserService/user.service';
 import { UserProfileComponent } from '../UserProfile/user-profile.component';
@@ -12,15 +13,19 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 
 export class SidebarComponent implements OnInit {
-  
-  constructor(
-    private ngZone: NgZone,
-    private userService: UserService,
-    ){}
+
+  constructor(private _dataShareService:DataShareService){}
 
   isCollapsed = false;
-
-  ngOnInit(): void {
+  IsSelected: boolean = false;
+  
+  ngOnInit(){
+    this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
+      if(chatroom.ChatRoomId && chatroom.ChatRoomName)
+      {
+        this.IsSelected = true;
+      }
+    });
   }
   
 }

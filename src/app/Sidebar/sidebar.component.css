@@ -5,99 +5,112 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
-  .app-layout {
-    height: 100vh;
-  }
-  
-  .menu-sidebar {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    box-shadow: 2px 0 6px rgba(0,21,41,.35);
-  }
-  
-  .header-trigger {
-    height: 64px;
-    padding: 20px 24px;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all .3s,padding 0s;
-  }
-  
-  .trigger:hover {
-    color: #1890ff;
-  }
-  
-  .sidebar-logo {
-    position: relative;
-    height: 64px;
-    padding-left: 20px;
-    overflow: hidden;
-    line-height: 64px;
-    background: #001529;
-    transition: all .3s;
-  }
-  
-  .sidebar-logo img {
-    display: inline-block;
-    height: 32px;
-    width: 32px;
-    vertical-align: middle;
-  }
-  
-  .sidebar-logo h1 {
-    display: inline-block;
-    margin: 0 0 0 13px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 14px;
-    font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
-    vertical-align: middle;
-  }
-  
-  nz-header {
-    padding: 0;
-    width: 100%;
-    z-index: 2;
-  }
-  
-  .app-header {
-    position: relative;
-    height: 64px;
-    padding: 0;
-    background: #fff;
-    box-shadow: 0 1px 4px rgba(0,21,41,.08);
-  }
-  
-  nz-content {
-    margin: 15px;
-    display: flex; /* Make nz-content a flex container */
-    flex-direction: column; /* Stack children vertically */
-    height: 100%; /* Full height */
-  }
-  
-  .inner-content {
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    height: 100%; 
-    border-radius: 20px;
-    border: 1px solid black;
-  }
-  
-  p{
-    flex-grow: 1; /* Grow to take available space */
-    overflow-y: auto; /* Add scrollbar if content overflows */
-  }
+.app-layout {
+  height: 100vh;
+}
+
+.menu-sidebar {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  box-shadow: 2px 0 6px rgba(0,21,41,.35);
+}
+
+.header-trigger {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 5px 5px;
+  font-size: 25px;
+  cursor: pointer;
+  transition: all .3s,padding 0s;
+}
+
+app-logout{
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 5px 5px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+
+.sidebar-logo {
+  position: relative;
+  height: 64px;
+  padding-left: 20px;
+  overflow: hidden;
+  line-height: 64px;
+  background: #001529;
+  transition: all .3s;
+}
+
+.sidebar-logo img {
+  display: inline-block;
+  height: 32px;
+  width: 32px;
+  vertical-align: middle;
+}
+
+.sidebar-logo h1 {
+  display: inline-block;
+  margin: 0 0 0 13px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
+  vertical-align: middle;
+}
+
+nz-header {
+  padding: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  height: 64px;
+  padding: 0 20px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+}
+
+nz-content {
+  margin: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.inner-content {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  border-radius: 20px;
+  border: 1px solid black;
+}
+
+p{
+  flex-grow: 1; 
+  overflow-y: auto; 
+}
 
 img {
-  width: 15%;
+  width: 15%; 
   height: 20%;
 }
 
-app-chatmessage {
-  flex-grow: 1;
-  overflow-y: auto;
+img {
+  width: 15%; 
+  height: 20%;
 }
 
 .circular-image {
@@ -117,17 +130,5 @@ app-chatmessage {
 .custom-icon {
   font-size: 18px;
   float: left;
-  margin-left:8px;
-}
-
-/* New CSS for app-user-profile to be positioned at the bottom */
-.sidebar-content {
-  flex-grow: 1;
-  overflow-y: auto; /* Allows scrolling */
-}
-
-.sidebar-footer {
-  margin-top: auto; /* Pushes the footer to the bottom */
-  flex-shrink: 0; /* Prevents the footer from shrinking */
-  height: 64px; /* Example height, adjust as needed */
+  margin-left:8px ;
 }
