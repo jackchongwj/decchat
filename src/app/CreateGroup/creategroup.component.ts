@@ -53,12 +53,12 @@ export class CreategroupComponent {
     }
 
     handleOk(): void {
-      console.log('Group Name:', this.roomName);
+      console.log('Group Name:', this.RoomName);
       console.log('Selected Users:', this.selectedUsers);
       console.log('InitiatedBy:', this.InitiatedBy);
 
     // Create a Group instance with the data
-    const newGroup = new Group(this.roomName, this.selectedUsers, this.InitiatedBy, 0); // Assuming UserId is not relevant here
+    const newGroup = new Group(this.RoomName, this.selectedUsers, this.InitiatedBy, 0); // Assuming UserId is not relevant here
 
     // Send data to the backend
     this.chatlistService.createNewGroup(newGroup).subscribe({
