@@ -19,7 +19,7 @@ export class ChatlistComponent implements OnInit{
   // // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
   // privateChat: any[] = [];
   // groupChat: any[] = [];
-  showChatList = false;
+  // showChatList = false;
   userId = 7;
   privateChat: any[] = [];
   groupChat: any[] = [];
@@ -29,7 +29,7 @@ export class ChatlistComponent implements OnInit{
     // private userId: number = parseInt(this.localStorage.getItem('userId') || '');
     
 
-  constructor(private chatlistService: ChatlistService){}
+  constructor(private chatlistService: ChatlistService, private signalRService: SignalRService){}
 
   ngOnInit(): void {
     // Create a Group instance with the userId
@@ -43,6 +43,13 @@ export class ChatlistComponent implements OnInit{
       console.log(this.privateChat);
       this.groupChat = chats.filter(chat => chat.RoomType === true);
       console.log(this.groupChat);  
+    });
+
+    this.signalRService.addNewGroupListener().subscribe(roomName => {
+      console.log('Received new group4 :', roomName);
+      // Add the new room to the groupChat array
+      this.groupChat.push({ ChatRoomName: roomName, RoomType: true });
+
     });
   }
 }

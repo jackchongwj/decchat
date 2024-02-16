@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
@@ -102,7 +102,7 @@ export class SignalRService {
     }
   }
   
-  
+ 
   updateMessageListener(): Observable<Messages[]> {
     return new Observable<Messages[]>(observer => {
       if (this.hubConnection) {
@@ -117,4 +117,78 @@ export class SignalRService {
   }
 
 
+  // addNewGroupListener(): Observable<any> {
+  //   return new Observable<any>(observer => {
+  //     if (this.hubConnection) {
+  //       this.hubConnection.on('NewGroupCreated', (roomName: string) => {
+  //         console.log('New group created: ', roomName);
+  //         observer.next(roomName); // Emit the roomName to observers
+  //       });
+  //     }
+  //   });
+  //   }
+
+  //   this.hubConnection.on('NewGroupCreated', (roomName: string) => {
+  //     console.log('New group created: ', roomName);
+  //     // Handle the new group creation event (e.g., update UI)
+  //   });
+  // }
+
+  //  // good good Method to create a new group and notify the server
+  //  createNewGroup(roomName: string, initiatedBy: number, selectedUsers: number[]): void {
+  //   // Invoke the server method to create a new group
+  //   this.hubConnection.invoke('CreateGroup', roomName, initiatedBy, selectedUsers)
+
+  //   .then(() => {
+  //     console.log('Group created successful');
+  //     return this.addNewGroupListener(); 
+  //   })
+  //     .catch(err => console.error(err));
+    
+  // }
+
+
+
+  // addNewGroupListener(callback: (groupChat: any) => void) {
+  //   this.hubConnection.on('NewGroupCreated', (groupChat: any) => {
+  //     callback(groupChat);
+  //   });
+  // }
+
+  //  // Method to listen for group created events
+  //  groupCreated(): Observable<groupChat[]> {
+  //   const subject = new Subject<groupChat[]>();
+  //   this.hubConnection.on('GroupCreated', (data: GroupCregroupChat[]) => {
+  //       subject.next(data);
+  //   });
+  //   return subject.asObservable();
+  // }
+  // createNewGroup(roomName: string, initiatedBy: number, selectedUsers: number[]): Observable<any> {
+  //   return new Observable<any>(observer => {
+  //     this.hubConnection.invoke('CreateGroup', roomName, initiatedBy, selectedUsers)
+  //       .then(() => {
+  //         console.log('Group creation request sent');
+  //       })
+  //       .catch(err => {
+  //         console.error('Error creating group:', err);
+  //         observer.error(err); // Emit error if encountered
+  //       });
+  //   });
+  // }
+  
+  addNewGroupListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('NewGroupCreated', (roomName: string) => {
+          // console.log('New group created:', roomName);
+          // observer.next(roomName); // Emit the roomName to observers
+        //pass to roomtype in chatlist
+        this.ngZone.run(() => {
+          observer.next(roomName); // Emit the roomName to observers
+        });
+        
+        });
+      }
+    });
+  }
 }
