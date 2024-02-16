@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
-
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
 import { ChatlistComponent } from './chatlist/chatlist.component';
@@ -28,6 +27,11 @@ import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/u
 import { ChatHeaderComponent } from './Components/ChatHeader/chat-header/chat-header.component';
 import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room-message/chat-room-message.component';
 import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
+import { UserProfileComponent } from './UserProfile/user-profile.component';
+import { ChangePasswordComponent } from './ChangePassword/change-password.component';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageModule } from 'ng-zorro-antd/message';
 
 registerLocaleData(ms);
 
@@ -50,9 +54,11 @@ registerLocaleData(ms);
     ChatRoomMessageComponent,
     UserLoginPageComponent,
     ChatHeaderComponent,
+    UserProfileComponent,
+    ChangePasswordComponent,
     ChatRoomMessageComponent
   ],
-  imports: [
+    imports: [
     BrowserModule,
     AppRoutingModule,
     IconsProviderModule,
@@ -61,8 +67,13 @@ registerLocaleData(ms);
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    ImportNgZorroAntdModule
+    ImportNgZorroAntdModule,
+    NzAvatarModule,
+    NzModalModule,
+    NzMessageModule,
+    ReactiveFormsModule
   ],
+  
   
   providers: [
     provideClientHydration(),
