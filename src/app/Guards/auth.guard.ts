@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, CanActivateFn } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { map, Observable } from 'rxjs';
 import { AuthService } from '../Services/Auth/auth.service';
 
@@ -7,7 +8,7 @@ import { AuthService } from '../Services/Auth/auth.service';
   providedIn: 'root'
 })
 class PermissionsService {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private message: NzMessageService) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -17,6 +18,7 @@ class PermissionsService {
       if (!isLoggedIn) {
         // If not logged in, redirect to login page
         this.router.navigate(['/login']);
+        this.message.warning('Authentication expired. Please log in again.');
         return false;
       }
       return true;
