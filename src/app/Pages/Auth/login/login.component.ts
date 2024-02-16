@@ -4,6 +4,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@ang
 import { AuthService } from '../../../Services/Auth/auth.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenService } from '../../../Services/Token/token.service';
+import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,14 @@ export class LoginComponent{
     remember: [true]
   });
 
-  constructor(private fb: NonNullableFormBuilder, private router: Router, private tokenService: TokenService, private authService: AuthService, private message: NzMessageService) {}
+  constructor(
+    private fb: NonNullableFormBuilder,
+    private router: Router,
+    private tokenService: TokenService,
+    private authService: AuthService,
+    private message: NzMessageService,
+    private shareDataService: DataShareService
+    ) {}
 
   submitForm(): void {
     if (this.validateForm.valid) {
@@ -31,6 +39,7 @@ export class LoginComponent{
         next: (res) => {
           this.tokenService.setToken(res.AccessToken);
           this.authService.setUserId(res.UserId);
+          this.shareDataService.updateLoginUserPN("pending BE");
 
           console.log('Login successful!', res);
           this.message.success('Login successful!');

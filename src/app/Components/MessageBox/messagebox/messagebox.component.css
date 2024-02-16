@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column; /* Stack children vertically */
   align-items: stretch;
-  margin-bottom: -2px;
 }
 
 .upload-list-container {

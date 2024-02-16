@@ -32,9 +32,10 @@ export class CreategroupComponent {
   ngOnInit(): void {
     this.chatlistService.getChatListByUserId(this.userId).subscribe(
       {next: (res)=> {
-      this.privateChat = res.filter(
-        (chat:any) => chat.roomType === false);
-    }, 
+        this.privateChat = res.filter(
+          (chat:any) => chat.RoomType === false);
+        console.log("Private Chat:", this.privateChat);
+      }, 
       error:(err)=>{console.log(err.message)
     }});
   }
