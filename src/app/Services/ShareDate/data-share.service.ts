@@ -11,11 +11,13 @@ export class DataShareService {
   private ChatlistSubject = new BehaviorSubject<ChatListVM[]>([]);
   private SelectedChatRoom = new BehaviorSubject<ChatListVM>({} as ChatListVM); 
   private SelectedChatMessageHistory = new BehaviorSubject<ChatListVM[]>([]);
+  private CurrentLoginUserProfileName = new BehaviorSubject<string>("PendingBackend");
 
   // Observable for widely use
   public chatListData = this.ChatlistSubject.asObservable();
   public selectedChatRoomData = this.SelectedChatRoom.asObservable();
   public ChatHistory = this.SelectedChatMessageHistory.asObservable();
+  public LoginUserProfileName = this.CurrentLoginUserProfileName.asObservable();
 
   updateChatListData(data: ChatListVM[]){
     this.ChatlistSubject.next(data);
@@ -28,6 +30,10 @@ export class DataShareService {
 
   updateChatMessage(data:ChatListVM[]){
     this.SelectedChatMessageHistory.next(data);
+  }
+  
+  updateLoginUserPN(data:string){
+    this.CurrentLoginUserProfileName.next(data);
   }
 
   appendChatMessage(message: ChatListVM){

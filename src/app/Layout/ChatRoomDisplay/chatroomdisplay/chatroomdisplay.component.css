@@ -10,11 +10,6 @@ app-chat-header {
   z-index: 100; 
 }
 
-app-chat-room-message {
-  flex-grow: 1;
-  overflow-y: auto; 
-}
-
 app-messagebox {
   position: sticky;
   bottom: 0;
