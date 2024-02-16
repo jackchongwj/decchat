@@ -45,10 +45,10 @@ export class ChatlistComponent implements OnInit{
       console.log(this.groupChat);  
     });
 
-    this.signalRService.addNewGroupListener().subscribe(roomName => {
-      console.log('Received new group4 :', roomName);
+    this.signalRService.addNewGroupListener().subscribe(chatListVM => {
+      console.log('Received new group4 :', chatListVM);
       // Add the new room to the groupChat array
-      this.groupChat.push({ ChatRoomName: roomName, RoomType: true });
+      this.groupChat.push(chatListVM);
 
     });
   }
