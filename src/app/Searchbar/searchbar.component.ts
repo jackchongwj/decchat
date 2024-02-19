@@ -14,15 +14,22 @@ import { LocalstorageService } from '../Services/LocalStorage/local-storage.serv
 })
 export class SearchbarComponent implements OnInit {
 
-  constructor(private friendService: FriendsService, private search: UserService, private signalR: SignalRFriendService,
-    private ngZone: NgZone, private localStorage: LocalstorageService) { }
+  constructor(
+    private friendService: FriendsService, 
+    private search: UserService, 
+    private signalR: SignalRFriendService,
+    private ngZone: NgZone, 
+    private localStorage: LocalstorageService) { }
 
   //variable declare
   isCollapsed = false;
+
+  //search
   public searchValue: string = '';
-  public searchResult: UserSearchDetails[] = []; // array
+  public searchResult: UserSearchDetails[] = []; 
   private isVisible = false;
   private searchSubject: Subject<string> = new Subject<string>()
+
   // get username form local storage
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
 
@@ -40,6 +47,8 @@ export class SearchbarComponent implements OnInit {
     this.UpdateSearchAfterAceptFriend();
 
     this.UpdateSearchAfterReject();
+
+    this.UpdateDeletePrivateChatlist();
   }
 
   onSearchInputChange(): void {
@@ -47,15 +56,11 @@ export class SearchbarComponent implements OnInit {
   }
 
   //signalR
-
   //signalR: send friend request
   OnSendFriendRequest(receiverId: number): void {
     this.friendService.addFriends({ RequestId: null, SenderId: this.userId, ReceiverId: receiverId, Status: 0 })
       .subscribe(response => {
         console.log('Friend Created successful: ', response);
-        this.ngZone.run(() => {
-          this.signalR.notifyFriendRequest(receiverId, this.userId, this.searchValue);
-        });
       });
   }
 
@@ -94,6 +99,20 @@ export class SearchbarComponent implements OnInit {
           newresult.Status = 2;
         }
         console.log('Received updated search results to friend:', this.searchResult);
+      });
+  }
+
+  
+  private UpdateDeletePrivateChatlist(): void {
+    this.signalR.DelteFriend()
+      .subscribe((UserId: number) => {
+        console.log("Delete {UserId}",UserId)
+        const newresult = this.searchResult.find(user => user.UserId == UserId)
+        if (newresult) {
+          newresult.Status = 3;
+          console.log("new", this.searchResult);
+        }
+        console.log('Received updated private ChatList:', this.searchResult);
       });
   }
 

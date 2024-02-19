@@ -1,8 +1,34 @@
 <div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
-    <img nz-image
-      width="200px"
-      height="200px"
-      [nzSrc]="imageUrl"
-      alt="" class="chatprofile">
-    <h1>{{ currentChatRoom.ChatRoomName }}</h1>
-  </div>
+  <img nz-image width="200px" height="200px" [nzSrc]="imageUrl" alt="" class="chatprofile">
+  <h1>{{ currentChatRoom.ChatRoomName }}</h1>
+  <!-- <button mat-icon-button class="delete-button" color="primary" (click)="DeleteFriend(currentChatRoom.ChatRoomId, currentChatRoom.UserId)">
+      <i class="custom-icon" nz-icon nzType="delete"></i>
+      
+    </button> -->
+
+  <button class="custom-button" (click)="showModal()" *ngIf="currentChatRoom.RoomType == false">
+    <i class="custom-icon" nz-icon nzType="delete">
+    </i>
+  </button>
+
+  <!-- Modal -->
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="Delete Friend"
+  (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Okiee'">
+
+    <ng-container *nzModalContent>
+
+      <div class="friend-list-container">
+        DO YOU WANT TO DELETE THIS FRIEND
+      </div>
+      
+    </ng-container>
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="12">
+        <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+      </div>
+      <div nz-col nzSpan="12">
+        <button nz-button nzType="primary" (click)="handleOk()">Delete Friend</button>
+      </div>
+    </div>
+  </nz-modal>
+</div>

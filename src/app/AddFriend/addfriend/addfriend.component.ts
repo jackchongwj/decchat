@@ -16,10 +16,10 @@ import { UserService } from '../../Services/UserService/user.service';
 })
 export class AddfriendComponent implements OnInit {
   constructor(
-    private usersService: UserService, 
-    private friendService: FriendsService, 
+    private usersService: UserService,
+    private friendService: FriendsService,
     private signalRService: SignalRFriendService,
-    private dataShareService: DataShareService, 
+    private dataShareService: DataShareService,
     private localStorage: LocalstorageService) { }
 
   getFriendRequest: User[] = [];
@@ -59,36 +59,12 @@ export class AddfriendComponent implements OnInit {
     this.UpdateFriendRequest(this.request);
   }
 
-
-  private refreshRequest(): void {
-    this.usersService.getFriendRequest(this.userId).subscribe(
-      (results) => {
-        this.getFriendRequest = results;
-        console.log('Request results refreshed:', results);
-      },
-      (error) => {
-        console.error('Error refreshing search results:', error);
-      }
-    );
-  }
-
   //service
   private UpdateFriendRequest(FRequest: FriendRequest): void {
     this.friendService.UpdateFriendRequest(FRequest, this.userId)
       .subscribe(response => {
         console.log("Update Friend Request: ", response);
-        this.refreshRequest();
-        if(FRequest.Status == 2)
-        {
-          this.chatlist = response;
-
-          console.log("chatlist", parseInt(response[0].ChatRoomId))
-          this.signalRService.acceptFriendRequest(parseInt(response[0].ChatRoomId), FRequest.SenderId, this.userId);
-          this.signalRService.notifyUserUpdatePrivateChatlist(this.chatlist);
-        }else
-        {
-          this.signalRService.rejectFriendRequest(FRequest.SenderId, this.userId);
-        }
+        this.getFriendRequest = this.getFriendRequest.filter(User => User.UserId != FRequest.SenderId)
       });
   }
 

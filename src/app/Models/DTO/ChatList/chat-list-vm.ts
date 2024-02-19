@@ -5,6 +5,6 @@ export class ChatListVM {
         public ProfilePicture: string | null = null,
         public ChatRoomName: string = '',
         public RoomType: boolean | null = null,
-        
+        public UserId: number = 0,
     ){}
 }

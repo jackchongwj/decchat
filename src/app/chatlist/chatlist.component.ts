@@ -18,7 +18,7 @@ export class ChatlistComponent implements OnInit{
   @Input() isCollapsed : boolean = false;
   showChatList = false;
   // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
-  privateChat: any[] = [];
+  privateChat: ChatListVM[] = [];
   groupChat: any[] = [];
   
   constructor(
@@ -35,7 +35,7 @@ export class ChatlistComponent implements OnInit{
   ngOnInit(): void {}
 
   getChatList(){
-    if (!this.privateChat || this.privateChat.length === 0 || !this.groupChat || this.groupChat.length === 0)
+    if (this.privateChat.length === 0 && this.groupChat.length === 0)
     {
       this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
         tap(chats => console.log(chats)), 
@@ -48,10 +48,11 @@ export class ChatlistComponent implements OnInit{
 
         console.log("privateGrouplist", chats);
         // this.dataShareService.updateChatListData(chats);
-        this.signalRService.AddToGroup(chats);
+        // this.signalRService.AddToGroup(chats);
       });
 
       this.UpdatePrivateChatList();
+      this.UpdateDeletePrivateChatlist();
     }
   }
 
@@ -69,6 +70,15 @@ export class ChatlistComponent implements OnInit{
       .subscribe((chatlist: ChatListVM) => {
         console.log("list",chatlist)
         this.privateChat = this.privateChat.concat(chatlist);
+        console.log('Received updated private ChatList:', this.privateChat);
+      });
+  }
+
+  private UpdateDeletePrivateChatlist(): void {
+    this.signalRFService.DelteFriend()
+      .subscribe((userId: number) => {
+        console.log("Delete {userId}",userId)
+        this.privateChat = this.privateChat.filter(chat => chat.UserId != userId);
         console.log('Received updated private ChatList:', this.privateChat);
       });
   }

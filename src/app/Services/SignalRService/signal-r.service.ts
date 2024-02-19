@@ -46,6 +46,12 @@ export class SignalRService {
     return Promise.resolve();
   }
 
+  public stopConnection(): Promise<void> {
+    return this.hubConnection.stop()
+    .then(() => console.log('SignalR connection closed'))
+    .catch(err => console.error('Error while closing connection'));
+  }
+  
   public AddToGroup(chatlists: ChatListVM[])
   {
     console.log("list", chatlists);
@@ -75,38 +81,32 @@ export class SignalRService {
     })
   }
 
-  public stopConnection(): Promise<void> {
-    return this.hubConnection.stop()
-    .then(() => console.log('SignalR connection closed'))
-    .catch(err => console.error('Error while closing connection'));
-  }
-
   public getHubConnection(): signalR.HubConnection
   {
     return this.hubConnection;
   }
 
-  notifyMessage(newMessage: Messages): void {
-    console.log("connect", this.hubConnection.state);
-    console.log("new message", newMessage);
-    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      this.hubConnection.invoke('SendMessageNotification',newMessage)
-        .then(() => {
-          console.log('notify successful');
-          return this.updateMessageListener(); 
-        })
-        .then(() => console.log('update Message successful'))
-        .catch(error => console.error('Error invoking update message:', error));
-    } else {
-      console.error('SignalR connection is not in the "Connected" state.');
-    }
-  }
+  // notifyMessage(newMessage: Messages): void {
+  //   console.log("connect", this.hubConnection.state);
+  //   console.log("new message", newMessage);
+  //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+  //     this.hubConnection.invoke('SendMessageNotification',newMessage)
+  //       .then(() => {
+  //         console.log('notify successful');
+  //         return this.updateMessageListener(); 
+  //       })
+  //       .then(() => console.log('update Message successful'))
+  //       .catch(error => console.error('Error invoking update message:', error));
+  //   } else {
+  //     console.error('SignalR connection is not in the "Connected" state.');
+  //   }
+  // }
   
   
-  updateMessageListener(): Observable<Messages[]> {
-    return new Observable<Messages[]>(observer => {
+  updateMessageListener(): Observable<Messages> {
+    return new Observable<Messages>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('UpdateMessage', (newMessage: Messages[]) => {
+        this.hubConnection.on('UpdateMessage', (newMessage: Messages) => {
           console.log('Received new message:', newMessage); 
           this.ngZone.run(() => {
             observer.next(newMessage);

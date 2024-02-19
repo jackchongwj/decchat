@@ -164,7 +164,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
     }); 
 
-    this._sService.notifyMessage(this.message);
+    // this._sService.notifyMessage(this.message);
   }
 
   private resizeAndPreviewImage(file: File): void 

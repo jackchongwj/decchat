@@ -5,6 +5,7 @@ import { Messages } from '../../Models/DTO/Messages/messages';
 import { MessageService } from '../../Services/MessageService/message.service';
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
+import { User } from '../../Models/User/user';
 
 interface TypingStatus{
   userName:string;
@@ -68,12 +69,25 @@ export class ChatRoomMessageComponent implements OnInit{
 
     //signalR
     private updateMessageListenerListener(): void {
+      console.log("------------")
       this._signalRService.updateMessageListener()
-        .subscribe((newResults: Messages[]) => {
-          this.messageList = this.messageList.concat(newResults);
+        .subscribe((newResults: Messages) => {
+          console.log("messageList", this.messageList);
+          console.log("cid", newResults.ChatRoomId)
+          const UserChatRoomId = this.messageList[0].ChatRoomId;
+          console.log("result", UserChatRoomId);
+
+          if(newResults.ChatRoomId == UserChatRoomId)
+          {
+            this.messageList = this.messageList.concat(newResults);
+            console.log("new",this.messageList)
+          }
+
           console.log("new result", newResults);
           console.log('Received updated message results:', this.messageList);
         });
     }
 
+
 }
+

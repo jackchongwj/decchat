@@ -28,4 +28,9 @@ export class DataShareService {
   updateTypingStatus(typing: boolean){
     this.IsTyping.next(typing);
   }
+
+  clearSelectedChatRoom()
+  {
+    this.SelectedChatRoom.next({} as ChatListVM);
+  }
 }
