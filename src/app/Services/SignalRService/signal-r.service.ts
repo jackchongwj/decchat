@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
@@ -117,5 +117,16 @@ export class SignalRService {
       }
     });
   }
-
+  
+  addNewGroupListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
+        this.ngZone.run(() => {
+          observer.next(chatListVM); // Emit the roomName to observers
+        });       
+        });
+      }
+    });
+  }
 }

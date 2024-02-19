@@ -29,6 +29,7 @@
     "@angular/platform-server": "^17.0.0",
     "@angular/router": "^17.0.0",
     "@angular/ssr": "^17.0.9",
+    "@auth0/angular-jwt": "^5.2.0",
     "@azure/storage-blob": "^12.17.0",
     "@microsoft/signalr": "^8.0.0",
     "cron-parser": "^4.9.0",
