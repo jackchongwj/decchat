@@ -115,13 +115,9 @@ export class SignalRService {
     return new Observable<any>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
-          // console.log('New group created:', roomName);
-          // observer.next(roomName); // Emit the roomName to observers
-        //pass to roomtype in chatlist
         this.ngZone.run(() => {
           observer.next(chatListVM); // Emit the roomName to observers
-        });
-        
+        });       
         });
       }
     });

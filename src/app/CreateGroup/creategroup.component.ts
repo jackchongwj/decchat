@@ -21,7 +21,7 @@ export class CreategroupComponent implements OnInit{
   privateChat: any[] = [];
   roomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
-  InitiatedBy=7; 
+  InitiatedBy=Number(this.localStorage.getItem("userId"));
   // userId: number = 7; // Assuming userId is a number property
   groupChats: any[] = [];
 
@@ -34,111 +34,14 @@ export class CreategroupComponent implements OnInit{
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
 
   ngOnInit(): void {
-
-    // this.chatlistService.getChatListByUserId(this.userId).subscribe(
-    //   {next: (res)=> {
-    //     this.privateChat = res.filter(
-    //       (chat:any) => chat.RoomType === false);
-    //     console.log("Private Chat:", this.privateChat);
-    //   }, 
-    //   error:(err)=>{console.log(err.message)
-    // }});
-    // this.signalRService.startConnection();
-    // this.signalRService.addNewGroupListener().subscribe((roomName: string) => {
-    //   console.log('New group created 1:', roomName);
-
-    // });
-
-    // this.signalRService.addNewGroupListener();
-        
-    // this.signalRService.addNewGroupListener((groupChat: any) => {
-    //   this.groupChats.push(groupChat); // Update group list when new group is created
-    // });
-    
-     // Create a Group instance with the userId
-    //  const group = new Group('', [], 0, this.userId); // Assuming other parameters are not relevant here
-
      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
       tap(chats => console.log(chats)), 
     ).subscribe((chats: ChatListVM[]) => {
       console.log("Friends Subscribed: "+ chats);
-      this.privateChat = chats.filter(chat => chat.RoomType === false); // Filter by roomType being false    
+      this.privateChat = chats.filter(chat => chat.RoomType === false);     
     });
   }
-
-
-  // createNewGroup(): void {
-  //   this.signalRService.createNewGroup(this.roomName, this.InitiatedBy, this.selectedUsers)
-  //     .subscribe(
-  //       (res:any) => {
-  //         console.log('New group created:' , res);
-  //         // Optionally, handle success (e.g., show a notification)
-  //       },
-  //       error => {
-  //         console.error('Error creating group:', error);
-  //         // Handle error (e.g., show an error message)
-  //       }
-  //     );
-  // }
-
-  // createNewGroup(): Observable<any> {
-  //   return new Observable<any>(observer => {
-  //     this.signalRService.createNewGroup(this.roomName, this.InitiatedBy, this.selectedUsers)
-  //       // .subscribe({
-  //       //   next: (res: any) => {
-  //       //     console.log(`New group created 2: ${res}`);
-  //       //     // Handle the new group creation, e.g., update UI
-  //       //     observer.next(res); // Emit the roomName to observers
-  //       //   },
-  //       //   error: error => {
-  //       //     console.error('Error creating group:', error);
-  //       //     observer.error(error); // Emit the error to observers
-  //       //   },
-  //       //   complete: () => {
-  //       //     observer.complete(); // Emit complete event to observers
-  //       //   }
-  //       // });
-  //   });
-  // }
-
-  // createNewGroup(): Observable<any> {
-  //   return new Observable<any>(observer => {
-  //     this.signalRService.createNewGroup(this.roomName, this.InitiatedBy, this.selectedUsers)
-  //       .subscribe(
-  //         (roomName: any) => {
-  //           console.log(`New group created: ${roomName}`);
-  //           // Handle the new group creation, e.g., update UI
-  //           observer.next(roomName); // Emit the roomName to observers
-  //         },
-  //         error => {
-  //           console.error('Error creating group:', error);
-  //           observer.error(error); // Emit the error to observers
-  //         },
-  //         () => {
-  //           observer.complete(); // Emit complete event to observers
-  //         }
-  //       );
-  //   });
-  // }
-
-  
-    // createNewGroup(): Observable<any> {
-    //   return this.signalRService.createNewGroup(this.roomName, this.InitiatedBy, this.selectedUsers)
-    //     .subscribe((roomName: any) => {
-    //       console.log(`New group created: ${roomName}`);
-    //       // Handle the new group creation, e.g., update UI
-    //     });
-    //   }
-
-    // this.chatlistService.getChatListByUserId(group).subscribe(
-    //   {next: (res)=> {
-    //     console.log(res);
-    //   this.privateChat = res.filter(
-    //     (chat:any) => chat.roomType === false);
-    // }, 
-    //   error:(err)=>{console.log(err.message)
-    // }});
-  
+ 
 
   showModal(): void {
     this.isVisible = true;
