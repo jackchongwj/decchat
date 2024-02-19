@@ -1,0 +1,18 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
+app-chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 100; 
+}
+
+app-messagebox {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;  
+}
+

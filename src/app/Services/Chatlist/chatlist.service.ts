@@ -15,12 +15,12 @@ export class ChatlistService {
 
   constructor(private http: HttpClient) {}
 
-  getChatListByUserId(userId: number): Observable<any> {
+  getChatListByUserId(userid: number): Observable<any> {
     // Construct HttpParams object with userId parameter
-    const params = new HttpParams().set('userId', userId);
+    const params = new HttpParams().set('userId', userid);
 
     // Use params object in the request
-    return this.http.get(`${this.url}getChatListByUserId`, { params: params });
+    return this.http.get(`${this.url}RetrieveChatListByUser`, { params: params });
   }
 
   createNewGroup(group: Group): Observable<any> {

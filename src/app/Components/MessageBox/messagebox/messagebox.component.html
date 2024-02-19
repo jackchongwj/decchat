@@ -1,0 +1,56 @@
+<div class="message-input-container" >
+  <!-- Uploaded File Preview -->
+  <div *ngIf="uploadedFiles" class="upload-list-container">
+    <div class="preview-item">
+      <!-- Image preview -->
+      <img *ngIf="isImage(uploadedFiles.name)" nz-image
+            width="200px"
+            height="200px"
+            [nzSrc]="previewFile"
+            alt="" class="preview-image"
+      >
+            
+      <!-- Video icon -->
+      <img *ngIf="isVideo(uploadedFiles.name)" src="assets/videoicon.png" alt="Video preview" class="preview-icon">
+
+      <!-- Document icon -->
+      <img *ngIf="isDocument(uploadedFiles.name)" src="assets/document-icon.png" alt="Document preview" class="preview-icon">
+      
+      <div class="file-details">
+        <span class="file-name">{{ uploadedFiles.name }}</span>
+        <button class="remove-button" (click)="removeFile()">Remove</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Message Text Field -->
+  <div class="input-button-container">
+    <!-- Attachment Button -->
+    <span nz-icon nzType="upload" nzTheme="outline" class="icon-upload" (click)="triggerFileInput()"></span>
+    <input type="file" name="file" id="fileInput" style="display: none;" (change)="onFileSelected($event)"
+    accept="image/jpeg, image/png, image/webp,
+    .mp4, .pdf, .doc, .docx, .txt"/>
+
+    <div class="message-field-input">
+      <!-- Message Input Field -->
+      <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
+      (keydown.enter)="onSendMessage($event)" (focus)="OnInputFocus()" (blur)="OnInputBlur()" placeholder="Type a message..." nzSize="default"/>
+
+      <!-- Voice Message Button -->
+      <span nz-icon nzType="audio" class="icon-voice" 
+      (click)="isRecording ? stopRecording() : startRecording()" *ngIf="!isRecording"></span>
+      <span nz-icon nzType="stop" class="icon-voice"
+      (click)="stopRecording()" *ngIf="isRecording"></span>
+    </div>
+    
+    <!-- Send Message Button -->
+    <button nz-button nzType="primary" #sendButton (click)="onSendMessage($event)"
+    [disabled]="!messageText.trim() && uploadedFiles === null || sendCooldownOn">
+      <span>Send</span>
+      <span nz-icon nzType="send" class="icon-send"></span>
+    </button>
+
+
+  </div>
+</div>

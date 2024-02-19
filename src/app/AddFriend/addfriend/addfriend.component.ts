@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { User } from '../../Models/User/user';
 import { FriendsService } from '../../Services/FriendService/friends.service';
@@ -14,19 +15,24 @@ import { UserService } from '../../Services/UserService/user.service';
   styleUrl: './addfriend.component.css'
 })
 export class AddfriendComponent implements OnInit {
-  constructor(private usersService: UserService, private friendService: FriendsService, private signalRService: SignalRFriendService,
-    private dataShareService: DataShareService, private localStorage: LocalstorageService) { }
+  constructor(
+    private usersService: UserService,
+    private friendService: FriendsService,
+    private signalRService: SignalRFriendService,
+    private dataShareService: DataShareService,
+    private localStorage: LocalstorageService
+    ) { }
 
   getFriendRequest: User[] = [];
   isVisible = false;
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
-  request: FriendRequest = { ReceivedId: 0, SenderId: 0, Status: 0 };
+  request: FriendRequest = { ReceiverId: 0, SenderId: 0, Status: 0 };
+  chatlist = {} as ChatListVM
 
   ngOnInit(): void {
     this.usersService.getFriendRequest(this.userId)
       .subscribe(response => {
         this.getFriendRequest = response;
-        console.log("Friend Request Result: ", response);
       });
 
     this.updateFriendRequestListener();
@@ -35,7 +41,7 @@ export class AddfriendComponent implements OnInit {
 
   acceptFriendRequest(senderId: number): void {
     this.request = {
-      ReceivedId: this.userId,
+      ReceiverId: this.userId,
       SenderId: senderId,
       Status: 2
     };
@@ -45,7 +51,7 @@ export class AddfriendComponent implements OnInit {
 
   rejectFriendRequest(senderId: number): void {
     this.request = {
-      ReceivedId: this.userId,
+      ReceiverId: this.userId,
       SenderId: senderId,
       Status: 3
     };
@@ -55,7 +61,7 @@ export class AddfriendComponent implements OnInit {
 
 
   private refreshRequest(): void {
-    this.usersService.getFriendRequest(7).subscribe(
+    this.usersService.getFriendRequest(this.userId).subscribe(
       (results) => {
         this.getFriendRequest = results;
         console.log('Request results refreshed:', results);
@@ -68,13 +74,21 @@ export class AddfriendComponent implements OnInit {
 
   //service
   private UpdateFriendRequest(FRequest: FriendRequest): void {
-    console.log(FRequest);
-    this.friendService.UpdateFriendRequest(FRequest)
+    this.friendService.UpdateFriendRequest(FRequest, this.userId)
       .subscribe(response => {
         console.log("Update Friend Request: ", response);
         this.refreshRequest();
-        FRequest.Status == 2 ? this.signalRService.acceptFriendRequest(response, FRequest.SenderId, this.userId) :
+        if(FRequest.Status == 2)
+        {
+          this.chatlist = response;
+
+          console.log("chatlist", parseInt(response[0].ChatRoomId))
+          this.signalRService.acceptFriendRequest(parseInt(response[0].ChatRoomId), FRequest.SenderId, this.userId);
+          this.signalRService.notifyUserUpdatePrivateChatlist(this.chatlist);
+        }else
+        {
           this.signalRService.rejectFriendRequest(FRequest.SenderId, this.userId);
+        }
       });
   }
 
@@ -88,16 +102,10 @@ export class AddfriendComponent implements OnInit {
       });
   }
 
-
   //Model
   showModal(): void {
     this.isVisible = true;
   }
-
-  // handleOk(): void {
-  //   console.log('Button ok clicked!');
-  //   this.isVisible = false;
-  // }
 
   handleCancel(): void {
     console.log('Button cancel clicked!');

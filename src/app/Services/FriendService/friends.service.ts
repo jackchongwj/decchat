@@ -19,8 +19,8 @@ export class FriendsService {
     return this.http.post<Friend>(`${this.url}AddFriend`, friends)
   }
 
-  UpdateFriendRequest(friendRequest: FriendRequest): Observable<any>
-  {
-    return this.http.post<FriendRequest>(`${this.url}UpdateFriendRequest`, friendRequest)
+  UpdateFriendRequest(friendRequest: FriendRequest, userId: number): Observable<any> {
+    console.log("request", friendRequest);
+    return this.http.post<number>(`${this.url}UpdateFriendRequest`, friendRequest, { params: { userId: userId.toString() } });
   }
 }
