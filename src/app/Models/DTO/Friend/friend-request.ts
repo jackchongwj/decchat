@@ -1,6 +1,6 @@
 export class FriendRequest {
     constructor(
-        public ReceivedId: number,
+        public ReceiverId: number,
         public SenderId: number,
         public Status: number
     ) {}

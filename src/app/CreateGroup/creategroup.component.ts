@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { NzSelectModule } from 'ng-zorro-antd/select'; // Import the NzSelectModule
+import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { Group } from '../Models/DTO/Group/group';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { Observable, tap } from 'rxjs';
@@ -21,15 +22,27 @@ export class CreategroupComponent implements OnInit{
   roomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
   InitiatedBy=7; 
-  userId: number = 7; // Assuming userId is a number property
+  // userId: number = 7; // Assuming userId is a number property
   groupChats: any[] = [];
 
   constructor(
     private chatlistService: ChatlistService, //privatelist
-    private signalRService:SignalRService,
+    private localStorage: LocalstorageService,
+    private signalRService:SignalRService
   ) {}
 
+  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+
   ngOnInit(): void {
+
+    // this.chatlistService.getChatListByUserId(this.userId).subscribe(
+    //   {next: (res)=> {
+    //     this.privateChat = res.filter(
+    //       (chat:any) => chat.RoomType === false);
+    //     console.log("Private Chat:", this.privateChat);
+    //   }, 
+    //   error:(err)=>{console.log(err.message)
+    // }});
     // this.signalRService.startConnection();
     // this.signalRService.addNewGroupListener().subscribe((roomName: string) => {
     //   console.log('New group created 1:', roomName);
@@ -127,39 +140,35 @@ export class CreategroupComponent implements OnInit{
     // }});
   
 
-    showModal(): void {
-      this.isVisible = true;
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(): void {
+    console.log('Group Name:', this.roomName);
+    console.log('Selected Users:', this.selectedUsers);
+    console.log('InitiatedBy:', this.InitiatedBy);
+
+  // Create a Group instance with the data
+  const newGroup = new Group(this.roomName, this.selectedUsers, this.InitiatedBy, 0); // Assuming UserId is not relevant here
+
+  // Send data to the backend
+  this.chatlistService.createNewGroup(newGroup).subscribe({
+    next: (response) => {
+      // Handle the response from the backend if needed
+      console.log('Backend response:', response);
+    },
+    error: (error) => {
+      console.log('Error from the backend:', error);
     }
+  });
 
-    handleOk(): void {
-      console.log('Group Name:', this.roomName);
-      console.log('Selected Users:', this.selectedUsers);
-      console.log('InitiatedBy:', this.InitiatedBy);
+    // console.log('Button ok clicked!');
+    this.isVisible = false;
+  }
 
-    // Create a Group instance with the data
-    const newGroup = new Group(this.roomName, this.selectedUsers, this.InitiatedBy, 0); // Assuming UserId is not relevant here
-
-    // Send data to the backend
-    this.chatlistService.createNewGroup(newGroup).subscribe({
-      next: (response) => {
-        // Handle the response from the backend if needed
-        console.log('Backend response:', response);
-      },
-      error: (error) => {
-        console.log('Error from the backend:', error);
-      }
-    });
-
-      // console.log('Button ok clicked!');
-      this.isVisible = false;
-    }
-
-    handleCancel(): void {
-      console.log('Button cancel clicked!');
-      this.isVisible = false;
-    }
+  handleCancel(): void {
+    console.log('Button cancel clicked!');
+    this.isVisible = false;
+  }
 }
-// function createNewGroup() {
-//   throw new Error('Function not implemented.');
-// }
-

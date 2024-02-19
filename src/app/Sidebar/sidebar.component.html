@@ -2,6 +2,7 @@
 
   <!-- SideBar Start-->
   <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+    
     <div class="sidebar-logo">
       <a target="_blank">
         <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
@@ -16,6 +17,9 @@
     <hr>
     <app-chatlist [isCollapsed]="isCollapsed"></app-chatlist>
     
+    <div class="sidebar-footer">
+      <app-user-profile></app-user-profile>
+    </div>
   </nz-sider>
   <!-- SideBar End-->
   <nz-layout class="message-layout">
@@ -34,30 +38,18 @@
 
     <!-- Message Area Start-->
     <nz-content>
-      <div class="inner-content">
-        <app-chatmessage></app-chatmessage>
 
+      <div class="inner-content">
         <ng-container *ngIf="IsSelected; else emptyPage">
-          <app-chatmessage></app-chatmessage>
+          <app-chatroomdisplay></app-chatroomdisplay>
         </ng-container>
 
         <ng-template #emptyPage>
           <app-user-login-page></app-user-login-page>
         </ng-template>
-        <!-- <ng-container *ngIf="IsSelected; else emptyPage">
-          
-        </ng-container>
-
-        <ng-template #emptyPage>
-          <app-chatmessage></app-chatmessage>
-        </ng-template> -->
-
-        <!-- <app-chatmessage></app-chatmessage>
-        <app-messagebox></app-messagebox> -->
 
       </div>
     </nz-content>
     <!-- Message Area End-->
-
   </nz-layout>
 </nz-layout>

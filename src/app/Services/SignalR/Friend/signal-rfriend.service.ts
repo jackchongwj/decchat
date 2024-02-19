@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserSearchDetails } from '../../../Models/DTO/User/user-search-details';
 import { SignalRService } from '../../SignalRService/signal-r.service';
 import { User } from '../../../Models/User/user';
+import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,19 @@ export class SignalRFriendService {
 
 
   //accept friend request
+
+  acceptFriendRequest(chatRoomId: number, userId: number, receiverId: number)
+  {
+    console.log("chatroomid",chatRoomId);
+    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      this.hubConnection.invoke('acceptFriendRequest', chatRoomId, userId, receiverId)
+        .then(() => console.log('notify accept successful'))
+        .catch(error => console.error('Error invoking acceptFriendRequest:', error));
+    } else {
+      console.error('SignalR connection is not in the "Connected" state.');
+    }
+  }
+
   updateSearchResultsAfterAccept(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -73,19 +87,19 @@ export class SignalRFriendService {
     });
   }
 
-  acceptFriendRequest(chatRoomId: number, userId: number, receiverId: number)
+  //reject friend request
+
+  rejectFriendRequest(userId: number, receiverId: number)
   {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      this.hubConnection.invoke('acceptFriendRequest', chatRoomId, userId, receiverId)
-        .then(() => console.log('notify accept successful'))
-        .catch(error => console.error('Error invoking acceptFriendRequest:', error));
+      this.hubConnection.invoke('rejectFriendRequest', userId, receiverId)
+        .then(() => console.log('notify reject successful'))
+        .catch(error => console.error('Error invoking rejectFriendRequest:', error));
     } else {
       console.error('SignalR connection is not in the "Connected" state.');
     }
   }
 
-
-  //reject friend request
   updateSearchResultsAfterReject(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -100,14 +114,30 @@ export class SignalRFriendService {
   }
   
 
-  rejectFriendRequest(userId: number, receiverId: number)
+  //update private chatlist
+  notifyUserUpdatePrivateChatlist(chatlist: ChatListVM)
   {
+    console.log("chatlist", this,chatlist);
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      this.hubConnection.invoke('rejectFriendRequest', userId, receiverId)
-        .then(() => console.log('notify reject successful'))
-        .catch(error => console.error('Error invoking rejectFriendRequest:', error));
+      console.log("private chatlist", chatlist);
+      this.hubConnection.invoke('NotifyUserUpdatePrivateChatlist', chatlist)
+        .then(() => console.log('notify private chatlist successful'))
+        .catch(error => console.error('Error invoking update private chatlist:', error));
     } else {
       console.error('SignalR connection is not in the "Connected" state.');
     }
+  }
+
+  updatePrivateChatlist(): Observable<ChatListVM> {
+    return new Observable<ChatListVM>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdatePrivateChatlist', (chatlist: ChatListVM) => {
+          console.log('Received new private chatlist:', chatlist); 
+          this.ngZone.run(() => {
+            observer.next(chatlist);
+          });
+        });
+      }
+    });
   }
 }

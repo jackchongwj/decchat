@@ -1,0 +1,191 @@
+:host{
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
+.chat-message-display {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  max-height: 100%;
+}
+  
+.message {
+  display: flex;
+  align-items: center;
+}
+
+.message-content {
+  width: 20%; 
+  padding: 8px 12px;
+  border-radius: 20px;
+  color: black; 
+}
+
+.profile-picture {
+  width: 50px; 
+  height: 50px; 
+  border-radius: 50%; 
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: bold;
+  margin-left: 10px;
+  margin-bottom: 3px;
+}
+
+/* ------------------------------------------------- Sender Side ------------------------------------------------- */
+
+.message-sent{
+  justify-content: flex-end;
+}
+
+.message-sent .message-content {
+  order: 1; 
+}
+
+.message-sent .profile-picture {
+  order: 2; 
+}
+
+.message-sent .timestamp{
+  align-self: flex-start;
+  float: left;
+  margin-left: 7px;
+}
+
+.message-sent .user-name {
+  text-align: right; /* Aligns text to the right */
+}
+
+.message-sent .message-text{
+  text-align: right;
+}
+
+/* ------------------------------------------------- Receiver Side ------------------------------------------------- */
+
+.message-received{
+  justify-content: flex-start;
+}
+
+.message-received .timestamp {
+  align-self: flex-end; 
+  float: right;
+  font-size: 1em;
+}
+
+.message-text {
+  border: 1px solid #ececec; 
+  padding: 10px;
+  border-radius: 10px; 
+  margin-left: 5px;
+  padding-left: 15px;
+  background-color: beige;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+/* ----------------------------------------------- Video Message Section CSS Start ----------------------------------------------- */
+.video-message-section {
+  width: 20%;  
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+.video-file-message-section{
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid #ececec; 
+  background-color: beige;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  max-width: 100%;
+}
+
+.filename{
+  margin: 0px 10px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 55%;
+}
+
+.video-preview {
+  width: 64px; 
+  height: 64px;
+  padding: 5px; 
+}
+
+.video-preview:hover {
+  transform: scale(1.03); 
+}
+
+
+/* ------------------------------------------------ Video Message Section CSS End ------------------------------------------------ */
+
+/* ----------------------------------------------- Audio Message Section CSS Start ----------------------------------------------- */
+
+.audio-message-section{
+  width: 20%; 
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+/* ------------------------------------------------ Audio Message Section CSS End ------------------------------------------------ */
+
+/* ----------------------------------------------- Image Message Section CSS Start ----------------------------------------------- */
+.image-message-section{
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  max-width: 30%; 
+}
+/* ------------------------------------------------ Image Message Section CSS End ------------------------------------------------ */
+
+/* ----------------------------------------------- Document Message Section CSS Start ----------------------------------------------- */
+.docs-message-section{
+  width: 20%; 
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+.doc-file-message-section{
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid #ececec; 
+  background-color: beige;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+}
+
+.doc-icon{
+  width: 64px; 
+  height: 64px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.doc-icon:hover {
+  transform: scale(1.03); 
+}
+
+.icon-download{
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.icon-download:hover {
+  transform: scale(1.03); 
+}
+/* ------------------------------------------------ Document Message Section CSS End ------------------------------------------------ */

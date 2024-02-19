@@ -96,6 +96,19 @@ nz-content {
   height: 100%; 
   border-radius: 20px;
   border: 1px solid black;
+  flex-grow: 1;
+}
+
+.message-layout{
+  height: 100%;
+}
+
+app-user-login-page {
+  flex-grow: 1;
+}
+
+app-chatroomdisplay{
+  flex-grow: 1;
 }
 
 p{
@@ -108,25 +121,35 @@ img {
   height: 20%;
 }
 
-/* imge */
-.circular-image {
-border-radius: 50%;
-width: 30px;  
-height: 30px; 
-object-fit: cover;
-margin-right: 8px;  
+img {
+  width: 15%; 
+  height: 20%;
 }
 
-/* addFriendButton */
+.circular-image {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
 .custom-button {
-  background-color: transparent; 
+  background-color: transparent;
   border: none;
   padding: 0;
 }
 
-/* user-add icon */
 .custom-icon {
   font-size: 18px;
   float: left;
   margin-left:8px ;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Add any additional styles for padding, background, etc., as needed */
+  /* Ensure that the footer has a defined height if necessary */
 }

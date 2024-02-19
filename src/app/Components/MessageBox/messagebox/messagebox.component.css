@@ -1,0 +1,192 @@
+.message-input-container {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: stretch;
+}
+
+.upload-list-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  max-width: 30%;
+  min-height: 50px;
+  justify-content: space-between;
+  position: relative; /* Position relative for absolute positioning inside */
+  background-color: #f5f5f5; /* Background color for the container */
+  border-radius: 8px; /* Rounded corners for the container */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  margin: 5px 0;
+}
+
+.preview-image {
+  width: 70px; 
+  height: 70px; 
+  object-fit: cover; 
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+.preview-icon{
+  display:flex;
+  align-items: center;
+  width: 50px; 
+  height: 50px;
+  margin: 5px;
+  background-color: #f5f5f5; /* Background color for the container */
+}
+
+.file-details {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 15px;
+}
+
+.file-name {
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px; 
+}
+
+.remove-button {
+  background-color: #ff4d4f; /* Red background color */
+  color: white; /* White text color */
+  border: none; /* No border */
+  padding: 6px 12px; /* Top and bottom padding of 6px, left and right padding of 12px */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Change cursor on hover */
+  font-weight: bold; /* Make the text bold */
+  text-transform: uppercase; /* Uppercase text */
+  font-size: 14px; /* Font size */
+  outline: none; /* Remove focus outline */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.remove-button:hover {
+  background-color: #ff7875;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.input-button-container{
+  display: flex; 
+  align-items: center; 
+  position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 25px;
+  padding-right: 25px;
+  background-color: beige;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.message-field-input {
+  position: relative;
+  flex-grow: 1; /* Input takes available space */
+}
+
+.message-input {
+  flex-grow: 1;
+  width: 100%;
+  margin-right: 10px; /* Space between input and button */
+  padding: 6px 12px;
+  border: 1px solid #d9d9d9; /* Border for input */
+  border-radius: 20px; /* Rounded corners */
+}
+
+/* Attachment Button */
+.icon-upload {
+  font-size: 2em; 
+  vertical-align: middle; 
+  margin-right: 12px;
+  margin-left: -10px;
+
+  color: #333; /* Dark gray for visibility against white */
+  cursor: pointer; /* Change cursor to indicate interactivity */
+
+  /* Optional: Add a subtle shadow */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+
+}
+
+.icon-upload:hover{
+color: #555; /* Slightly lighter shade on hover */
+}
+
+/* Additional styling for the file input itself */
+#fileInput {
+  display: none; /* Keep hidden as you have a custom upload trigger */
+}
+
+button[nz-button] {
+  display: flex;
+  align-items: center; /* Aligns text and icon vertically */
+  padding: 8px 15px; /* Padding inside the button */
+  margin-left: 10px;
+  margin-right: -10px;
+  color: white; /* Text color */
+  background-color: #007bff; /* Button background color */
+  border: 1px solid #0069d9; /* Remove default border */
+  font-size: 16px; /* Text size */
+  font-weight: bold; /* Text weight */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Cursor to pointer to indicate it's clickable */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transition for background and transform */
+}
+
+button[nz-button]:hover, button[nz-button]:focus {
+  background-color: #0069d9; /* Lighter shade on hover/focus */
+  box-shadow: 0 2px 4px 0 rgba(0,123,255,0.5);
+  transform: translateY(-2px); /* Slight raise effect */
+}
+
+.icon-send {
+  color: #6ba8a9; /* Soft teal color */
+  margin-left: 4px;
+}
+
+button[nz-button][disabled] {
+  color: #c0c0c0; /* Gray text color to indicate it's disabled */
+  background-color: #e6e6e6; /* Lighter background */
+  border: 1px solid #d4d4d4; /* Lighter border color */
+  cursor: not-allowed; /* Cursor to indicate the button is not clickable */
+}
+
+button[nz-button][disabled]:hover {
+  background-color: #e6e6e6; /* Maintain the same background color on hover */
+  box-shadow: none; /* Remove any hover effects like box-shadow if they exist */
+}
+
+/* Style the voice message icon */
+.icon-voice {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%) scale(1.5);
+  cursor: pointer;
+  color: black;
+  font-size: 15px;
+  transition: transform 0.3s ease;
+}
+
+.icon-voice:hover {
+  transform: translateY(-60%) scale(1.55); 
+}
+
+/* Additional styles for the send button and attachment icon */
+.icon-send, .icon-plus-circle {
+  cursor: pointer;
+}
