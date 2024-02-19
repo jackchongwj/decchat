@@ -20,7 +20,7 @@
     <!-- Display Audio Message -->
     
     <!-- Display Image Only -->
-    <div class="image-message-section" *ngIf="hasAttachmentOnly(message)&&isImage(message)">
+    <div class="image-message-section" *ngIf="isImage(message)">
       <div class="user-name">{{ message.ProfileName }}</div>
         <img nz-image
         width="200px"
@@ -33,7 +33,7 @@
     <!-- Display Image Only -->
 
     <!-- Display Video Only -->
-    <div class="video-message-section" *ngIf="hasAttachmentOnly(message)&&isVideo(message)">
+    <div class="video-message-section" *ngIf="isVideo(message)">
       <div class="user-name">{{ message.ProfileName }}</div>
       
       <div class="video-file-message-section">
@@ -46,19 +46,19 @@
     <!-- Display Video Only -->
 
     <!-- Display Document Only -->
-    <div class="docs-message-section" *ngIf="hasAttachmentOnly(message)&&isDocument(message)">
+    <div class="docs-message-section" *ngIf="isDocument(message)">
       <div class="user-name">{{ message.ProfileName }}</div>
       
       <div class="doc-file-message-section">
         <img 
           src="assets/document-icon.png"
           alt="Document Thumbnail"
-          (click)="openDocument()"
+          (click)="openDocument(message)"
           class="doc-icon"
         >
         
         <div class="filename">{{ getFileNameFromUrl(message.ResourceUrl) }}</div>
-        <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument()"></span>
+        <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument(message)"></span>
       </div>
       
       <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
@@ -76,12 +76,3 @@
   </div>
 </div>
 
-  <!-- <div class="document-container">
-    <img 
-      src="assets/docicon.jpg"
-      alt="Document Thumbnail"
-      (click)="openDocument()"
-    >
-
-    <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument()"></span>
-  </div> -->

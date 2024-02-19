@@ -24,7 +24,6 @@ export class ChatlistComponent implements OnInit{
 
   constructor(
     private chatlistService: ChatlistService,
-    private lsService: LocalstorageService,
     private dataShareService: DataShareService,
     private signalRService: SignalRService,
     private localStorage: LocalstorageService,
@@ -51,30 +50,31 @@ export class ChatlistComponent implements OnInit{
     });
   }
 
-    getChatList(){
-      // Create a Group instance with the userId
-      if (this.privateChat.length === 0 && this.groupChat.length === 0)
-      {
-        console.log(this.userId);
-        this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-          tap(), 
-        ).subscribe((chats: ChatListVM[]) => {
-          
-          this.privateChat = chats.filter(chat => chat.RoomType === false);
-          console.log(this.privateChat);
-          this.groupChat = chats.filter(chat => chat.RoomType === true);
-          console.log(this.groupChat);  
-  
-          console.log("privateGrouplist", chats);
-          // this.dataShareService.updateChatListData(chats);
-          this.signalRService.AddToGroup(chats);
-  
-          this.dataShareService.updateChatListData(chats);
-        });
-  
-        this.UpdatePrivateChatList();;
-      }
+  getChatList(){
+    // Create a Group instance with the userId
+    if (this.privateChat.length === 0 && this.groupChat.length === 0)
+    {
+      console.log(this.userId);
+      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+        tap(), 
+      ).subscribe((chats: ChatListVM[]) => {
+        
+        this.privateChat = chats.filter(chat => chat.RoomType === false);
+        console.log(this.privateChat);
+        this.groupChat = chats.filter(chat => chat.RoomType === true);
+        console.log(this.groupChat);  
+
+        console.log("privateGrouplist", chats);
+        // this.dataShareService.updateChatListData(chats);
+        this.signalRService.AddToGroup(chats);
+
+        this.dataShareService.updateChatListData(chats);
+      });
+
+      this.UpdatePrivateChatList();
     }
+
+  }
 
   getSelectedChatRoom(ChatRoom:ChatListVM)
   {

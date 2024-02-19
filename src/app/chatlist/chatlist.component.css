@@ -9,19 +9,20 @@
 
   /* Chat list styles */
 .chat-list {
-    border: 1px solid #001529; 
-    border-radius: 4px;
-    padding: 8px;
-    color: #fff; 
-    background-color: #001529;
-
-  }
+  border: 1px solid #001529; 
+  border-radius: 4px;
+  padding: 8px;
+  color: #fff; 
+  background-color: #001529;
+}
   
-  .chat-item-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+.chat-item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  max-height: 33vh;
+}
   
   .chat-item {
     display: flex;

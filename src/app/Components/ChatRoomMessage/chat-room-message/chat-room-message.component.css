@@ -111,9 +111,9 @@
 
 .filename{
   margin: 0px 10px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  max-width: 55%;
+  max-width: 50%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .video-preview {

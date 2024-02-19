@@ -6,8 +6,12 @@
       alt="" class="chatprofile">
     <h1>
       {{ currentChatRoom.ChatRoomName }}
-      <span *ngIf="IsCurrentChatUser" class="typing-indicator">
+      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
         is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-    </span>
+      </span>
+      
+      <span *ngIf="IsCurrentChatUser&&currentChatRoom.RoomType" class="typing-indicator">
+        Someone is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
     </h1>
 </div>
