@@ -1,0 +1,122 @@
+.user-profile-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the content horizontally */
+  text-align: center; /* Center the text inside the div */
+}
+
+.user-profile-image {
+  margin-right: 10px;
+}
+
+.user-profile-image nz-avatar {
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fff; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+  margin-bottom: 10px;
+}
+
+.user-profile-name h1 {
+  margin: 0;
+  font-size: 16px; 
+  color: #FFFFFF; 
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  font-weight: 500; 
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+
+/* Modal content */
+.profile-picture-overlay {
+  height: 160px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.modal-avatar {
+  width: 160px; 
+  height: 160px;
+  border-radius: 50%; 
+  display: block; 
+  margin: 0 auto; 
+  align-self: center;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #007bff;
+  cursor: pointer;
+  font-size: 45px;
+  display: none;
+  pointer-events: none;
+}
+
+.profile-picture-overlay:hover .edit-icon {
+  display: block;
+}
+
+/* Image options buttons */
+.image-options {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* User details styling */
+.user-details {
+  margin-top: 20px;
+}
+
+.user-details p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Profile name edit mode */
+.profile-name-edit {
+  display: flex;
+  align-items: center;
+}
+
+.profile-name-edit p {
+  margin: 0;
+}
+
+.nz-input-group {
+  margin-left: 8px;
+}
+
+/* Buttons */
+nz-button {
+  margin-right: 5px;
+}
+
+/* Modal footer custom content */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Ensure buttons in modal footer have some spacing */
+.modalFooter nz-button:not(:last-child) {
+  margin-right: 10px;
+}
+
+.user-details, .profile-name-edit, .user-details p {
+  text-align: center;
+  width: 100%; 
+}
+
+.ng-container {
+  display: flex;
+  justify-content: center; 
+  flex-direction: column;
+  align-items: center; 
+}

@@ -1,0 +1,17 @@
+<div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
+    <img nz-image
+      width="200px"
+      height="200px"
+      [nzSrc]="currentChatRoom.ProfilePicture"
+      alt="" class="chatprofile">
+    <h1>
+      {{ currentChatRoom.ChatRoomName }}
+      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
+        is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
+      
+      <span *ngIf="IsCurrentChatUser&&currentChatRoom.RoomType" class="typing-indicator">
+        Someone is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
+    </h1>
+</div>

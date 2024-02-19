@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { catchError, map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
@@ -23,8 +23,17 @@ export class TokenService {
     return this.localStorageService.getItem('accessToken');
   }
 
-  renewToken(): Observable<any> {
-    return this.http.get<any>(`${TokenUrl}RenewToken`, { withCredentials: true });
+  renewToken(): Observable<string | null> {
+    return this.http.post< {AccessToken: string} >(`${TokenUrl}RenewToken`, {}, { withCredentials: true })
+    .pipe(
+      map(response => {
+        return response.AccessToken;
+      }),
+      catchError(error => {
+        console.error('Error renewing token:', error);
+        return throwError(() => new Error('Failed to renew token'));
+      })
+    );
   }
   
 }

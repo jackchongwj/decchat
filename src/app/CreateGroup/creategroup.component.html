@@ -5,17 +5,18 @@
     
 <!-- Modal -->
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Create Group"
-          (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Okiee'">
+          (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Create'">
   <ng-container *nzModalContent>
 
     <div>
-      <label for="RoomName">Room Name:</label>
-      <input id="RoomName" type="text" nz-input [(ngModel)]="RoomName" />
+      <label for="roomName">Room Name:</label>
+      <input id="roomName" type="text" nz-input [(ngModel)]="roomName" />
     </div>
+    
     <div style="margin-top: 16px;">
       <label for="privateChatUsers">Select Private Chat Users:</label>
       <nz-select id="privateChatUsers" style="width: 100%;" nzMode="multiple" [(ngModel)]="selectedUsers">
-        <nz-option *ngFor="let user of privateChat" [nzLabel]="user.profileName" [nzValue]="user.userId"></nz-option>
+        <nz-option *ngFor="let user of privateChat" [nzLabel]="user.ChatRoomName" [nzValue]="user.UserId"></nz-option>  
       </nz-select>
     </div>
   </ng-container>

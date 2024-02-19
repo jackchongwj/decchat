@@ -1,49 +1,51 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
-import { Message } from '../../Models/Message/message';
-import { Messages } from '../../Models/DTO/Messages/messages';
-
-interface TypingStatus{
-  userName:string;
-  isTyping:boolean;
-}
+import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
+import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
-    
-  // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
-  constructor(private ngZone: NgZone,  private localStorage: LocalstorageService) {
-    this.buildConnection();
-   }
+  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  https: string = environment.signalRUrl;
 
-   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
-   https: string = environment.signalRUrl;
+  constructor(
+    private ngZone: NgZone,
+    private localStorage: LocalstorageService) 
+    {
+      //this.buildConnection();
+    }
 
-  private buildConnection = () => {
+  private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https+"?userId="+this.userId)
+                          .withUrl(this.https+"?userId="+Id)
                           .build();
   }
 
-  public startConnection(): Promise<void>
+  public startConnection(Id:number): Promise<void>
   {
-    if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-      return this.hubConnection.start()
-      .then(() => {
-        console.log("id",this.userId);
-        console.log('Connection started');
-      })
-      .catch(err => console.log('Error while starting connection: ' + err));
-  }
-    return Promise.resolve();
+    if(!isNaN(Id) && Id != 0)
+    {
+      this.buildConnection(Id);
+      if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+        return this.hubConnection.start()
+        .then(() => {
+          console.log("id", Id);
+          console.log('Connection started');
+        })
+        .catch(err => console.log('Error while starting connection: ' + err));
+      }
+      return Promise.resolve();
+    }
+    console.error("Invalid ID for signalR connection:", Id);
+    return Promise.reject("Invalid ID");
   }
 
   public stopConnection(): Promise<void> {
@@ -60,9 +62,9 @@ export class SignalRService {
     .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
   }
 
-  public InformUserTyping(name:string, typing:boolean)
+  public InformUserTyping(chatroomId:number, typing:boolean)
   {
-    this.hubConnection.invoke("CheckUserTyping", name, typing)
+    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing)
     //.then(() => console.log(''))
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
@@ -72,9 +74,9 @@ export class SignalRService {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
-        this.hubConnection.on("UserTyping", (userName:string, isTyping:boolean) => {
+        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean) => {
           this.ngZone.run(() => {
-            observer.next({ userName, isTyping });
+            observer.next({ChatRoomId, isTyping});
           })
         })
       }
@@ -86,7 +88,7 @@ export class SignalRService {
     return this.hubConnection;
   }
 
-  // notifyMessage(newMessage: Messages): void {
+  // notifyMessage(newMessage: ChatRoomMessages): void {
   //   console.log("connect", this.hubConnection.state);
   //   console.log("new message", newMessage);
   //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
@@ -103,10 +105,10 @@ export class SignalRService {
   // }
   
   
-  updateMessageListener(): Observable<Messages> {
-    return new Observable<Messages>(observer => {
+  updateMessageListener(): Observable<ChatRoomMessages> {
+    return new Observable<ChatRoomMessages>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('UpdateMessage', (newMessage: Messages) => {
+        this.hubConnection.on('UpdateMessage', (newMessage: ChatRoomMessages) => {
           console.log('Received new message:', newMessage); 
           this.ngZone.run(() => {
             observer.next(newMessage);
@@ -115,6 +117,16 @@ export class SignalRService {
       }
     });
   }
-
-
+  
+  addNewGroupListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
+        this.ngZone.run(() => {
+          observer.next(chatListVM); // Emit the roomName to observers
+        });       
+        });
+      }
+    });
+  }
 }

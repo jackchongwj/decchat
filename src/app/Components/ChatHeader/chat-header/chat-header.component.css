@@ -21,10 +21,53 @@
   
   .show-chat-room h1 {
     font-size: 1.5em; /* Increase the font size of the header */
-    margin: 0; /* Remove default margin */
+    margin: 0;
     color: #333; /* Darker text color for the title */
     font-weight: normal; /* Optional: normal font weight for a more modern look */
   }
+
+  .typing-indicator {
+    font-size: 16px; 
+    color: #000; 
+    display: inline;
+    bottom: 0; 
+    text-align: center; 
+    margin-left: 10px; 
+    background-color: transparent;
+    color: black;
+    font-style: italic;
+  }
+  
+  .typing-indicator .dot {
+    opacity: 0; 
+    animation: fadeDot 1.5s infinite ease-in-out;
+    margin-left: 4px; 
+    font-size: 30px;
+    color: #000;
+    text-shadow: 0px 0px 2px #fff;
+  }
+  
+  .typing-indicator .dot:nth-child(1) {
+    animation-delay: 0s; /* No delay for the first dot */
+  }
+  
+  .typing-indicator .dot:nth-child(2) {
+    animation-delay: 0.5s; /* 0.5 seconds delay for the second dot */
+  }
+  
+  .typing-indicator .dot:nth-child(3) {
+    animation-delay: 1s; /* 1 second delay for the third dot */
+  }
+  
+  @keyframes fadeDot {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  
 
 
   

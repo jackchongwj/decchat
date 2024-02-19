@@ -32,7 +32,6 @@ export class AddfriendComponent implements OnInit {
     this.usersService.getFriendRequest(this.userId)
       .subscribe(response => {
         this.getFriendRequest = response;
-        console.log("Friend Request Result: ", response);
       });
 
     this.updateFriendRequestListener();
@@ -78,16 +77,10 @@ export class AddfriendComponent implements OnInit {
       });
   }
 
-
   //Model
   showModal(): void {
     this.isVisible = true;
   }
-
-  // handleOk(): void {
-  //   console.log('Button ok clicked!');
-  //   this.isVisible = false;
-  // }
 
   handleCancel(): void {
     console.log('Button cancel clicked!');
