@@ -12,33 +12,40 @@ import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 })
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
-    
-  // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
-  constructor(private ngZone: NgZone,  private localStorage: LocalstorageService) {
-    this.buildConnection();
-   }
+  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  https: string = environment.signalRUrl;
 
-   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
-   https: string = environment.signalRUrl;
+  constructor(
+    private ngZone: NgZone,
+    private localStorage: LocalstorageService) 
+    {
+      //this.buildConnection();
+    }
 
-  private buildConnection = () => {
+  private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https+"?userId="+this.userId)
+                          .withUrl(this.https+"?userId="+Id)
                           .build();
   }
 
-  public startConnection(): Promise<void>
+  public startConnection(Id:number): Promise<void>
   {
-    if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-      return this.hubConnection.start()
-      .then(() => {
-        console.log("id",this.userId);
-        console.log('Connection started');
-      })
-      .catch(err => console.log('Error while starting connection: ' + err));
-  }
-    return Promise.resolve();
+    if(!isNaN(Id) && Id != 0)
+    {
+      this.buildConnection(Id);
+      if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+        return this.hubConnection.start()
+        .then(() => {
+          console.log("id", Id);
+          console.log('Connection started');
+        })
+        .catch(err => console.log('Error while starting connection: ' + err));
+      }
+      return Promise.resolve();
+    }
+    console.error("Invalid ID for signalR connection:", Id);
+    return Promise.reject("Invalid ID");
   }
 
   public AddToGroup(chatlists: ChatListVM[])

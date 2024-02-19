@@ -3,6 +3,7 @@ import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, Af
 import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
+import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
@@ -20,12 +21,12 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     private _dataShareService:DataShareService,
     private _messageService:MessageService,
     private _signalRService:SignalRService,
-    private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private lsService:LocalstorageService,
+    private ngZone: NgZone
   ){}
     
   currentChatRoom = {} as ChatListVM;
-  currentUser = Number(localStorage.getItem("userId"));
+  currentUser = Number(this.lsService.getItem("userId"));
   messageList : ChatRoomMessages[] = [];
 
   imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
@@ -84,10 +85,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     return message.Content != '' || message.Content != null ? true : false;
   }
 
-  hasAttachmentOnly(message:ChatRoomMessages):boolean{
-    return (message.ResourceUrl != "" || message.ResourceUrl != null) && (message.Content == '' || message.Content == null) ? true : false;
-  }
-
   isImage(fileName: ChatRoomMessages): boolean {
     return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName.ResourceUrl);
   }
@@ -127,15 +124,17 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     window.open(data.ResourceUrl, '_blank');
   }
 
-  openDocument(): void {
-    const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(this.docsUrl)}&embedded=true`
+  openDocument(message:ChatRoomMessages): void {
+    const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(message.ResourceUrl)}&embedded=true`
     window.open(viewerUrl, '_blank');
   }
 
-  downloadDocument(): void {
+  downloadDocument(message:ChatRoomMessages): void {
     const a = document.createElement('a');
-    a.href = this.docsUrl;
-    a.download = 'aa'; // You can set the default file name here
+    a.href = message.ResourceUrl;
+    const filename = this.getFileNameFromUrl(message.ResourceUrl);
+    a.download = filename; 
+    console.log("Docs File Name: ", a.download);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
