@@ -2,12 +2,61 @@
     <img nz-image
       width="200px"
       height="200px"
-      [nzSrc]="imageUrl"
+      [nzSrc]="currentChatRoom.ProfilePicture"
       alt="" class="chatprofile">
     <h1>{{ currentChatRoom.ChatRoomName }}</h1>
+
+     <!-- NZ-ZORRO Kebab menu -->
+     <div class="right-content">
+      <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="toggleModal()">Group Details</li>
+          <li nz-menu-item>Delete Group</li>
+          <li nz-menu-item>Add/Kick Member</li>
+        </ul>
+      </nz-dropdown-menu>
+      
+      <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu">
+        <i nz-icon nzType="more" nzTheme="outline"></i>
+      </button>
+    </div>
     
     <div *ngIf="IsCurrentChatUser" class="typing-indicator">
       User is typing
       <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
     </div>
   </div>
+
+  <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
+    <ng-container *nzModalContent>
+    <!-- Profile Picture with Edit Icon -->
+    <div class="profile-picture-overlay" >
+      <nz-avatar class="modal-avatar" [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
+      <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
+      <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+    </div>
+    <div *ngIf="previewImageUrl" class="image-options">
+      <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
+      <button nz-button nzType="default" (click)="cancelPreview()">✕</button>
+    </div>  
+  
+    <!-- Group Details Display -->
+    <div *ngIf="currentChatRoom" class="group-details">
+      <div class="profile-name-edit">
+        <p *ngIf="!editMode">Group Name: <span>{{ currentChatRoom.ChatRoomName }}</span>
+          <button nz-button nzType="link" (click)="toggleEditMode()">
+            <i nz-icon nzType="edit"></i>
+          </button>
+        </p>
+        <ng-container *ngIf="editMode">
+          <nz-input-group nzCompact>
+            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName"/>
+          </nz-input-group>
+          <button nz-button nzType="primary" (click)="saveGroupName()">Save</button>
+          <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
+        </ng-container>
+      </div>
+    </div>  
+    
+  </ng-container>
+  </nz-modal>

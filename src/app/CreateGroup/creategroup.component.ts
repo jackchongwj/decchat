@@ -33,7 +33,8 @@ export class CreategroupComponent {
     this.chatlistService.getChatListByUserId(this.userId).subscribe(
       {next: (res)=> {
       this.privateChat = res.filter(
-        (chat:any) => chat.roomType === false);
+        (chat:any) => chat.RoomType === false);
+        console.log(this.privateChat);
     }, 
       error:(err)=>{console.log(err.message)
     }});

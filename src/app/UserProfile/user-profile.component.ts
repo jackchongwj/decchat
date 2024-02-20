@@ -4,7 +4,9 @@ import { Router } from '@angular/router';
 import { UserService } from '../Services/UserService/user.service';
 import { User } from '../Models/User/user';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
-
+import { SignalRService } from '../Services/SignalRService/signal-r.service';
+import { DataShareService } from '../Services/ShareDate/data-share.service';
+import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -26,15 +28,17 @@ export class UserProfileComponent implements OnInit {
 
   constructor(
     private userService: UserService, 
-    private router: Router
+    private router: Router,
+    private SignalRService: SignalRService,
+    private _dataShareService:DataShareService,
+    private chatlistService: ChatlistService
+
   ) {
       this.userId = parseInt(localStorage.getItem('userId') || '0', 10);
   }
 
   ngOnInit() {
-    console.log('Opening user profile modal for user ID:', this.userId);
     this.fetchUserData();
-    console.log('userdetails',this.fetchUserData());
   }
   
   toggleEditMode() {
@@ -56,28 +60,25 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  saveProfileName(): void { 
+  saveProfileName(): void {
     this.userService.updateProfileName(this.userId, this.User.ProfileName).subscribe({
       next: () => {
-        console.log('Profile name updated successfully');
-        this.fetchUserData(); // Refresh user data
         this.editMode = false; // Exit edit mode
-        console.log("name edit",this.editMode);
       },
       error: (error) => {
         console.error('Error updating profile name:', error);
       }
     });
   }
-  
-  saveProfilePicture() {
+
+  saveProfilePicture(): void {
     if (this.selectedFile && this.userId) {
       this.userService.updateProfilePicture(this.userId, this.selectedFile).subscribe({
-        next: (event) => {
-          this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png'; // Update the main profile picture URL
-          this.previewImageUrl = null; // Clear the preview
-          this.showEditIcon = false; // Hide the edit icon
-          this.editMode = false; // Exit edit mode, ensuring a smooth user experience
+        next: () => {
+          this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png';
+          this.previewImageUrl = null;
+          this.showEditIcon = false;
+          this.editMode = false;
         },
         error: (error) => {
           console.error('Error uploading file:', error);
@@ -94,9 +95,7 @@ fetchUserData(): void {
 
   this.userService.getUserById(this.userId).subscribe({
     next: (data) => {
-      console.log('Fetched user data:', data);
       this.User = data;
-      console.log('USER',this.User);
     },
     error: (error) => {
       console.error('Error fetching user data:', error);

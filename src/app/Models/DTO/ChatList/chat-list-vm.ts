@@ -3,7 +3,7 @@ export class ChatListVM {
         public ChatRoomId: number = 0,
         public ChatRoomName: string = '',
         public ProfileName: string = '',
-        public ProfilePicture: string | null = null,
+        public ProfilePicture: string = '',
         public RoomType: boolean | null = null,
         public SelectedUsers: number[],
         public UserChatRoomId: number = 0,

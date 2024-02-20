@@ -6,7 +6,8 @@ import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { SignalRFriendService } from '../Services/SignalR/Friend/signal-rfriend.service';
-
+import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate';
+import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate';
 
 @Component({
   selector: 'app-chatlist',
@@ -56,7 +57,9 @@ export class ChatlistComponent implements OnInit{
         this.dataShareService.updateChatListData(chats);
       });
 
-      this.UpdatePrivateChatList();;
+      this.UpdatePrivateChatList();
+      this.ProfileDetailChanges();
+      this.GroupDetailChanges();
     }
   }
 
@@ -65,7 +68,6 @@ export class ChatlistComponent implements OnInit{
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
     console.log("Selected from chat list: ", ChatRoom);
   }  
-  
 
   private UpdatePrivateChatList(): void {
     this.signalRFService.updatePrivateChatlist()
@@ -76,4 +78,46 @@ export class ChatlistComponent implements OnInit{
       });
   }
 
+  private ProfileDetailChanges(): void {
+    this.signalRService.profileUpdateListener().subscribe({
+      next: (updateInfo: UserProfileUpdate) => {
+        console.log('Updating chatlist')
+        this.privateChat.forEach((chat) => {
+          console.log(updateInfo.ProfileName)
+          if(chat.UserId === updateInfo.UserId) {
+            if(updateInfo.ProfileName) {
+              console.log('update userId '+ chat.UserId)
+              chat.ChatRoomName = updateInfo.ProfileName;
+              
+            }
+            if(updateInfo.ProfilePicture) {
+              chat.ProfilePicture = updateInfo.ProfilePicture;
+            }
+          }
+        });
+      },
+      error: (error) => console.error('Error listening for profile updates:', error),
+    });
+  }
+
+  private GroupDetailChanges(): void {
+    this.signalRService.groupUpdateListener().subscribe({
+      next: (updateInfo: GroupProfileUpdate) => {
+        console.log('Updating chatlist')
+        this.privateChat.forEach((chat) => {
+          if(chat.UserId === updateInfo.ChatRoomId) {
+            if(updateInfo.GroupName) {
+              console.log('update userId '+ chat.UserId)
+              chat.ChatRoomName = updateInfo.GroupName;
+              
+            }
+            if(updateInfo.GroupPicture) {
+              chat.ProfilePicture = updateInfo.GroupPicture;
+            }
+          }
+        });
+      },
+      error: (error) => console.error('Error listening for profile updates:', error),
+    });
+  }
 }

@@ -39,4 +39,8 @@ export class DataShareService {
   private clearChatMessageHistory() {
     this.SelectedChatMessageHistory.next([]);
   }
+
+  public getCurrentChatList(): ChatListVM[] {
+    return this.ChatlistSubject.getValue();
+  }
 }
