@@ -22,7 +22,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/dist/my-project'
+    SourceFolder: '$(System.DefaultWorkingDirectory)/dist/module-proj'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: 'Copy files to artifact staging directory'
