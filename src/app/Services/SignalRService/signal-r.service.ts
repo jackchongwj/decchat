@@ -6,6 +6,7 @@ import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
 import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
+import { User } from '../../Models/User/user';
 
 @Injectable({
   providedIn: 'root'
@@ -88,22 +89,6 @@ export class SignalRService {
     return this.hubConnection;
   }
 
-  // notifyMessage(newMessage: ChatRoomMessages): void {
-  //   console.log("connect", this.hubConnection.state);
-  //   console.log("new message", newMessage);
-  //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-  //     this.hubConnection.invoke('SendMessageNotification',newMessage)
-  //       .then(() => {
-  //         console.log('notify successful');
-  //         return this.updateMessageListener(); 
-  //       })
-  //       .then(() => console.log('update Message successful'))
-  //       .catch(error => console.error('Error invoking update message:', error));
-  //   } else {
-  //     console.error('SignalR connection is not in the "Connected" state.');
-  //   }
-  // }
-  
   
   updateMessageListener(): Observable<ChatRoomMessages> {
     return new Observable<ChatRoomMessages>(observer => {
@@ -125,6 +110,86 @@ export class SignalRService {
         this.ngZone.run(() => {
           observer.next(chatListVM); // Emit the roomName to observers
         });       
+        });
+      }
+    });
+  }
+
+  updateSearchResultsListener(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdateSearchResults', (userId: number) => {
+          console.log('Received new search results:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
+        });
+      }
+    });
+  } 
+  
+
+  updateFriendRequestListener(): Observable<User[]> {
+    return new Observable<User[]>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdateFriendRequest', (newResults: User[]) => {
+          console.log('Received new Friend Request results:', newResults); 
+          this.ngZone.run(() => {
+            observer.next(newResults);
+          });
+        });
+      }
+    });
+  }
+
+  updateSearchResultsAfterAccept(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdateSearchResultsAfterAccept', (userId: number) => {
+          console.log('Received new search results After Accept:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
+        });
+      }
+    });
+  }
+
+
+  updateSearchResultsAfterReject(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdateSearchResultsAfterReject', (userId: number) => {
+          console.log('Received new search results After Reject:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
+        });
+      }
+    });
+  }
+
+  updatePrivateChatlist(): Observable<ChatListVM> {
+    return new Observable<ChatListVM>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UpdatePrivateChatlist', (chatlist: ChatListVM) => {
+          console.log('Received new private chatlist:', chatlist); 
+          this.ngZone.run(() => {
+            observer.next(chatlist);
+          });
+        });
+      }
+    });
+  }
+
+  DelteFriend(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('DeleteFriend', (userId: number) => {
+          console.log('Delete Friend Successfull:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
         });
       }
     });

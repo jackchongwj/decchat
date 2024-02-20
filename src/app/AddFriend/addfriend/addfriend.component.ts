@@ -5,7 +5,7 @@ import { User } from '../../Models/User/user';
 import { FriendsService } from '../../Services/FriendService/friends.service';
 import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
-import { SignalRFriendService } from '../../Services/SignalR/Friend/signal-rfriend.service';
+import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { UserService } from '../../Services/UserService/user.service';
 
 
@@ -18,7 +18,7 @@ export class AddfriendComponent implements OnInit {
   constructor(
     private usersService: UserService,
     private friendService: FriendsService,
-    private signalRService: SignalRFriendService,
+    private signalRService: SignalRService,
     private dataShareService: DataShareService,
     private localStorage: LocalstorageService) { }
 

@@ -3,9 +3,9 @@ import { Subject, of } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { FriendsService } from '../Services/FriendService/friends.service';
 import { UserService } from '../Services/UserService/user.service';
-import { SignalRFriendService } from '../Services/SignalR/Friend/signal-rfriend.service';
 import { UserSearchDetails } from '../Models/DTO/User/user-search-details';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
+import { SignalRService } from '../Services/SignalRService/signal-r.service';
 
 @Component({
   selector: 'app-searchbar',
@@ -17,9 +17,9 @@ export class SearchbarComponent implements OnInit {
   constructor(
     private friendService: FriendsService, 
     private search: UserService, 
-    private signalR: SignalRFriendService,
     private ngZone: NgZone, 
-    private localStorage: LocalstorageService) { }
+    private localStorage: LocalstorageService,
+    private signalR: SignalRService) { }
 
   //variable declare
   isCollapsed = false;
@@ -68,6 +68,7 @@ export class SearchbarComponent implements OnInit {
   private UpdateSearchToPending(): void {
     this.signalR.updateSearchResultsListener()
       .subscribe((UserId: number) => {
+        console.log("pending", this.userId);
         const newresult = this.searchResult.find(user => user.UserId == UserId)
         if (newresult) {
           newresult.Status = 1;
@@ -77,7 +78,7 @@ export class SearchbarComponent implements OnInit {
       });
   }
 
-  //signal: update data after accept friend request
+  //signal: update data after reject friend request
   private UpdateSearchAfterAceptFriend(): void {
     this.signalR.updateSearchResultsAfterReject()
       .subscribe((UserId: number) => {
