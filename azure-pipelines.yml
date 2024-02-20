@@ -1,0 +1,35 @@
+trigger:
+- master
+
+pool:
+  name: "ChatRoom"
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: |
+    echo "Cleaning workspace..."
+    rm -rf node_modules
+    echo "Reinstalling dependencies..."
+    npm install
+  displayName: 'Clean and Install Dependencies'
+
+- script: |
+    echo "Building the project..."
+    npm run build 
+  displayName: 'npm run build'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)/dist/my-project'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy files to artifact staging directory'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: 'my-chatroom-fe'
+    publishLocation: 'Container'
+  displayName: 'Publish artifact'
