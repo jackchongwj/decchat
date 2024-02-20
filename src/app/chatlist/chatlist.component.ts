@@ -105,7 +105,7 @@ export class ChatlistComponent implements OnInit{
       next: (updateInfo: GroupProfileUpdate) => {
         console.log('Updating chatlist')
         this.privateChat.forEach((chat) => {
-          if(chat.UserId === updateInfo.ChatRoomId) {
+          if(chat.ChatRoomId === updateInfo.ChatRoomId) {
             if(updateInfo.GroupName) {
               console.log('update userId '+ chat.UserId)
               chat.ChatRoomName = updateInfo.GroupName;
