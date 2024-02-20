@@ -30,16 +30,6 @@ export class ChatlistComponent implements OnInit{
     ) {}
 
   ngOnInit(): void {
-    // this.getChatList();
-  
-    // this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-    //   tap(chats => console.log(chats)), 
-    // ).subscribe((chats: ChatListVM[]) => {
-    //   console.log("Friends Subscribed: "+ chats);
-    //   this.privateChat = chats.filter(chat => chat.RoomType === false); // Filter by roomType being false  
-    //   this.groupChat = chats.filter(chat => chat.RoomType === true);  
-    // });
-
     this.signalRService.addNewGroupListener().subscribe(chatListVM => {
       console.log('Received new group :', chatListVM);
       // Add the new room to the groupChat array
