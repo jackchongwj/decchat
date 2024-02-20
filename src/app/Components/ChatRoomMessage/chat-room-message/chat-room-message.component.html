@@ -1,37 +1,78 @@
-<div class="chat-message-display">
+<div class="chat-message-display" #scroll>
   <!-- Normal Message Display -->
-  <div *ngFor="let message of messageList" class="message">
+  <div *ngFor="let message of messageList"
+        [ngClass]="{'message-sent': isUserSend(message), 'message-received': !isUserSend(message)}"
+        class="message">
     <img nz-image
-      width="200px"
-      height="200px"
-      [nzSrc]="imageUrl"
+      [nzSrc]="message.ProfilePicture"
       alt="" class="profile-picture"
     >
-    <div class="message-content">
-      <span class="user-name">{{ message.UserChatRoomId }}</span>
-      {{ message.Content }}
-    </div> 
+
+    <!-- Display Audio Message -->
+    <div class="audio-message-section" *ngIf="isAudio(message)">
+      <div class="user-name">{{ message.ProfileName }}</div>
+      <audio controls class="audio-file">
+        <source [src]="message.ResourceUrl" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+    </div>
+    <!-- Display Audio Message -->
+    
+    <!-- Display Image Only -->
+    <div class="image-message-section" *ngIf="isImage(message)">
+      <div class="user-name">{{ message.ProfileName }}</div>
+        <img nz-image
+        width="200px"
+        height="200px"
+        [nzSrc]="message.ResourceUrl"
+        alt="" class="image-message"
+        >
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+    </div>
+    <!-- Display Image Only -->
+
+    <!-- Display Video Only -->
+    <div class="video-message-section" *ngIf="isVideo(message)">
+      <div class="user-name">{{ message.ProfileName }}</div>
+      
+      <div class="video-file-message-section">
+        <img src="assets/videoicon.png" alt="Video Preview" class="video-preview" (click)="playVideo(message)">
+        <div class="filename">{{ getFileNameFromUrl(message.ResourceUrl) }}</div>
+      </div>
+      
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+    </div>
+    <!-- Display Video Only -->
+
+    <!-- Display Document Only -->
+    <div class="docs-message-section" *ngIf="isDocument(message)">
+      <div class="user-name">{{ message.ProfileName }}</div>
+      
+      <div class="doc-file-message-section">
+        <img 
+          src="assets/document-icon.png"
+          alt="Document Thumbnail"
+          (click)="openDocument(message)"
+          class="doc-icon"
+        >
+        
+        <div class="filename">{{ getFileNameFromUrl(message.ResourceUrl) }}</div>
+        <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument(message)"></span>
+      </div>
+      
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+    </div>
+    <!-- Display Document Only -->
+
+    <!-- Display Message Only -->
+    <div class="message-content" *ngIf="message.Content">
+      <div class="user-name">{{ message.ProfileName }}</div>
+      <div class="message-text">{{ message.Content }}</div>
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+    </div>
+    <!-- Display Message Only --> 
+    
   </div>
-
-  <!-- Video File Display -->
-  <!-- <div class="video-container">
-    <img nz-image
-      width="200px"
-      height="200px"
-      [nzSrc]="imageUrl"
-      alt="" class="profile-picture"
-    >
-    <img src="assets/videoicon.png" alt="Video Preview" class="video-preview" (click)="playVideo()">
-  </div> -->
-
-  <!-- <div class="document-container">
-    <img 
-      src="assets/docicon.jpg"
-      alt="Document Thumbnail"
-      (click)="openDocument()"
-    >
-
-    <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument()"></span>
-  </div> -->
-
 </div>
+

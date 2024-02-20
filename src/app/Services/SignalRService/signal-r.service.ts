@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
@@ -14,33 +14,41 @@ import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate';
   providedIn: 'root'
 })
 export class SignalRService {
-  private hubConnection!: signalR.HubConnection;
-
-  // userId: number = parseInt(localStorage.getItem('userId') || '', 10);
-  constructor(private ngZone: NgZone, private localStorage: LocalstorageService) {
-    this.buildConnection();
-  }
-
+  private hubConnection!:signalR.HubConnection; 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   https: string = environment.signalRUrl;
 
-  private buildConnection = () => {
+  constructor(
+    private ngZone: NgZone,
+    private localStorage: LocalstorageService) 
+    {
+      //this.buildConnection();
+    }
+
+  private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .configureLogging(signalR.LogLevel.Debug)
-      .withUrl(this.https + "?userId=" + this.userId)
-      .build();
+                          .configureLogging(signalR.LogLevel.Debug)
+                          .withUrl(this.https+"?userId="+Id)
+                          .build();
   }
 
-  public startConnection(): Promise<void> {
-    if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-      return this.hubConnection.start()
+  public startConnection(Id:number): Promise<void>
+  {
+    if(!isNaN(Id) && Id != 0)
+    {
+      this.buildConnection(Id);
+      if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+        return this.hubConnection.start()
         .then(() => {
-          console.log("id", this.userId);
+          console.log("id", Id);
           console.log('Connection started');
         })
         .catch(err => console.log('Error while starting connection: ' + err));
+      }
+      return Promise.resolve();
     }
-    return Promise.resolve();
+    console.error("Invalid ID for signalR connection:", Id);
+    return Promise.reject("Invalid ID");
   }
 
   public AddToGroup(chatlists: ChatListVM[]) {
@@ -107,7 +115,18 @@ export class SignalRService {
       }
     });
   }
-
+  
+  addNewGroupListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
+        this.ngZone.run(() => {
+          observer.next(chatListVM); // Emit the roomName to observers
+        });       
+        });
+      }
+    });
+  }
   public invokeHubMethod(methodName: string, updateInfo: any): void {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
       this.hubConnection.invoke(methodName, updateInfo)

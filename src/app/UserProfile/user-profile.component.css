@@ -10,9 +10,11 @@
 }
 
 .user-profile-image nz-avatar {
-  margin-right: 10px;
-  border: 2px solid #fff; /* White border for the avatar */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fff; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+  margin-bottom: 10px;
 }
 
 .user-profile-name h1 {

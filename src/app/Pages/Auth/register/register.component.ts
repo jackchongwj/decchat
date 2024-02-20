@@ -29,7 +29,15 @@ export class RegisterComponent {
     confirmPassword: FormControl<string>;
   }>;
 
-  constructor(private fb: NonNullableFormBuilder, private message: NzMessageService, private router: Router, private authService: AuthService, private userService: UserService) {
+  constructor
+  (
+    private fb: NonNullableFormBuilder, 
+    private message: NzMessageService, 
+    private router: Router, 
+    private authService: AuthService, 
+    private userService: UserService
+  ) 
+  {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, this.usernameValidator], [this.usernameAsyncValidator()]],
       password: ['', [Validators.required, this.passwordValidator]],
@@ -275,6 +283,10 @@ export class RegisterComponent {
     Promise.resolve().then(() => this.registerForm.controls.confirmPassword.updateValueAndValidity());
   }
 
+  redirectToLogin() {
+    this.router.navigate(['/login']);
+  }
+
   submitForm(): void {
     if (this.registerForm.valid) {
       this.isLoading = true;
@@ -285,14 +297,14 @@ export class RegisterComponent {
           this.isLoading = false;
           
           console.log('Registration successful!', res);
-          this.message.success('Registration successful!');
+          this.message.success(res.Message || 'Registration successful!');
           this.router.navigate(['/login']);
         },
         error: (e) => {
           this.isLoading = false;
 
           console.error('Registration failed:', e);
-          this.message.error(e.error['message']);
+          this.message.error(e.error.Error || 'Registration failed');
         }
       });
     } else {

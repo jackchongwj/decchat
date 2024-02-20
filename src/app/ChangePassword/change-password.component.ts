@@ -5,6 +5,7 @@ import { UserService } from '../Services/UserService/user.service';
 import { PasswordChange } from '../Models/DTO/User/password-change';
 import { AuthService } from '../Services/Auth/auth.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 
 @Component({
   selector: 'app-change-password',
@@ -13,18 +14,23 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class ChangePasswordComponent {
   changePasswordForm: FormGroup;
-  private userId: number = parseInt(localStorage.getItem('userId') || '0', 10);
+  private userId: number = parseInt(this.lsService.getItem('userId') || '0', 10);
 
-  constructor(private message: NzMessageService, private authService: AuthService, private router: Router) {
-    this.changePasswordForm = new FormGroup({
-      currentPassword: new FormControl('', [Validators.required]),
-      newPassword: new FormControl('', [
-        Validators.required,
-        this.passwordStrengthValidator()
-      ]),
-      confirmPassword: new FormControl('', [Validators.required])
-    }, { validators: this.passwordsMatchValidator() });
-  }
+  constructor(
+    private message: NzMessageService,
+    private authService: AuthService,
+    private router: Router,
+    private lsService:LocalstorageService) 
+    {
+      this.changePasswordForm = new FormGroup({
+        currentPassword: new FormControl('', [Validators.required]),
+        newPassword: new FormControl('', [
+          Validators.required,
+          this.passwordStrengthValidator()
+        ]),
+        confirmPassword: new FormControl('', [Validators.required])
+      }, { validators: this.passwordsMatchValidator() });
+    }
 
   passwordStrengthValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

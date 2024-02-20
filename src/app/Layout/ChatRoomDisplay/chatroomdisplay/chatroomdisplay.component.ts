@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 
 interface TypingStatus{
@@ -17,5 +17,4 @@ export class ChatRoomDisplayComponent implements OnInit {
 
   ngOnInit(){
   }
-
 }

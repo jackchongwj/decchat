@@ -29,6 +29,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   userId:number = Number(this._lsService.getItem("userId"));
   currentUserChatRoomId:number = 0;
   currentChatRoom:number = 0;
+  currentUserPN:string = "";
 
   // Limit Message Sending
   sendCooldownOn:boolean = false;
@@ -55,6 +56,10 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       this.currentUserChatRoomId = data.UserChatRoomId;
       this.currentChatRoom = data.ChatRoomId;
     });
+
+    this._dataShareService.LoginUserProfileName.subscribe( data => {
+      this.currentUserPN = data;
+    })
   }
 
   ngOnDestroy(): void {
@@ -126,11 +131,12 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     
     this.message.Content = this.messageText;
     this.message.UserChatRoomId = this.currentUserChatRoomId;
-    this.message.ResourceUrl = null;
+    this.message.ResourceUrl = '';
     this.message.MessageType = 1;
     this.message.IsDeleted = false;
     this.message.ChatRoomId = this.currentChatRoom;
     this.message.UserId = this.userId;
+    this.message.ProfileName = this.currentUserPN;
 
     console.log("message", this.message);
 
@@ -144,9 +150,10 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     }
 
     this._mService.sendMessage(formData).subscribe({
-      next: (res) => {
+      next: (res:ChatRoomMessages) => {
         console.log(res);
 
+        //this._sService.notifyMessage(res);
         // Limit message send rate
         this.sendCooldownOn = true; // Activate cooldown
         setTimeout(() => this.sendCooldownOn = false, 1000); 
@@ -158,6 +165,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
         console.error(e);
       }
     }); 
+
 
     this._sService.notifyMessage(this.message);
   }

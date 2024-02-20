@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../Services/UserService/user.service';
 import { User } from '../Models/User/user';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
+import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
@@ -14,7 +15,7 @@ import { ChatlistService } from '../Services/Chatlist/chatlist.service';
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
-  userId: number;
+  userId: number = 0;
   User = {} as User;
   editMode: boolean = false;
   showEditIcon: boolean = false;
@@ -25,19 +26,19 @@ export class UserProfileComponent implements OnInit {
   
   showDeleteConfirm = false;
 
-
   constructor(
     private userService: UserService, 
     private router: Router,
     private SignalRService: SignalRService,
     private _dataShareService:DataShareService,
-    private chatlistService: ChatlistService
+    private chatlistService: ChatlistService,
+    private lsService:LocalstorageService
 
   ) {
-      this.userId = parseInt(localStorage.getItem('userId') || '0', 10);
   }
 
   ngOnInit() {
+    this.userId = parseInt(this.lsService.getItem('userId') || '0', 10);
     this.fetchUserData();
   }
   
@@ -87,11 +88,12 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-fetchUserData(): void {
-  if (!this.userId) {
-    console.log('User ID not set');
-    return;
-  }
+  fetchUserData(): void 
+  {
+    if (!this.userId) {
+      console.log('User ID not set');
+      return;
+    }
 
   this.userService.getUserById(this.userId).subscribe({
     next: (data) => {
@@ -103,19 +105,19 @@ fetchUserData(): void {
   });
 }
 
-deleteAccount() {
-  // Use your userService to delete the account
-  this.userService.deleteUser(this.userId).subscribe({
-    next: () => {
-      this.showDeleteConfirm = false; // Close the modal on success
-      this.router.navigate(['/login']); // Redirect or handle as needed
-    },
-    error: error => {
-      this.showDeleteConfirm = false; // Close the modal on error
-      console.error('Error deleting account:', error);
-    }
-  });
-}
+  deleteAccount() {
+    // Use your userService to delete the account
+    this.userService.deleteUser(this.userId).subscribe({
+      next: () => {
+        this.showDeleteConfirm = false; // Close the modal on success
+        this.router.navigate(['/login']); // Redirect or handle as needed
+      },
+      error: error => {
+        this.showDeleteConfirm = false; // Close the modal on error
+        console.error('Error deleting account:', error);
+      }
+    });
+  }
 
   cancelPreview() {
     this.previewImageUrl = null;

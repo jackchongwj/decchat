@@ -6,8 +6,10 @@ import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { SignalRFriendService } from '../Services/SignalR/Friend/signal-rfriend.service';
+import { Group } from '../Models/DTO/Group/group';
 import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate';
 import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate';
+
 
 @Component({
   selector: 'app-chatlist',
@@ -21,10 +23,10 @@ export class ChatlistComponent implements OnInit{
   privateChat: ChatListVM[] = [];
   groupChat: ChatListVM[] = [];
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  // userId = 7;
 
   constructor(
     private chatlistService: ChatlistService,
-    private lsService: LocalstorageService,
     private dataShareService: DataShareService,
     private signalRService: SignalRService,
     private localStorage: LocalstorageService,
@@ -34,6 +36,21 @@ export class ChatlistComponent implements OnInit{
 
   ngOnInit(): void {
     // this.getChatList();
+  
+    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+      tap(chats => console.log(chats)), 
+    ).subscribe((chats: ChatListVM[]) => {
+      console.log("Friends Subscribed: "+ chats);
+      this.privateChat = chats.filter(chat => chat.RoomType === false); // Filter by roomType being false  
+      this.groupChat = chats.filter(chat => chat.RoomType === true);  
+    });
+
+    this.signalRService.addNewGroupListener().subscribe(chatListVM => {
+      console.log('Received new group :', chatListVM);
+      // Add the new room to the groupChat array
+      this.groupChat.push(chatListVM);
+
+    });
   }
 
   getChatList(){
@@ -59,8 +76,9 @@ export class ChatlistComponent implements OnInit{
 
       this.UpdatePrivateChatList();
       this.ProfileDetailChanges();
-      this.GroupDetailChanges();
+      this.GroupDetailChanges()
     }
+
   }
 
   getSelectedChatRoom(ChatRoom:ChatListVM)
@@ -77,7 +95,6 @@ export class ChatlistComponent implements OnInit{
         console.log('Received updated private ChatList:', this.privateChat);
       });
   }
-
   private ProfileDetailChanges(): void {
     this.signalRService.profileUpdateListener().subscribe({
       next: (updateInfo: UserProfileUpdate) => {

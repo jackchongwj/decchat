@@ -8,7 +8,6 @@ export class ChatListVM {
         public SelectedUsers: number[],
         public UserChatRoomId: number = 0,
         public UserId:number = 0
-        
     ){}
 }
 

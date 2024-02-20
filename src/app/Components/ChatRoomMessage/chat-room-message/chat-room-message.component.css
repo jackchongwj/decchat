@@ -1,108 +1,191 @@
+:host{
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
 .chat-message-display {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   padding: 10px;
-  position: relative;
-  padding-bottom: 20px;
+  max-height: 100%;
 }
   
 .message {
   display: flex;
-  margin-bottom: 15px; /* Adds space between messages */
+  align-items: center;
+}
+
+.message-content {
+  width: 20%; 
+  padding: 8px 12px;
+  border-radius: 20px;
+  color: black; 
 }
 
 .profile-picture {
   width: 50px; 
   height: 50px; 
   border-radius: 50%; 
-  margin-right: 10px;
+  object-fit: cover;
 }
 
 .user-name {
   font-weight: bold;
-  margin-right: 10px; /* Space after the user name */
-}
-
-.message-content {
-  max-width: 60%; 
-  padding: 8px 12px;
-  border-radius: 16px;
-  color: white; 
-  background-color: #0b93f6;
   margin-left: 10px;
+  margin-bottom: 3px;
 }
 
-.typing-indicator {
-  font-size: 16px; 
-  color: #000; 
+/* ------------------------------------------------- Sender Side ------------------------------------------------- */
+
+.message-sent{
+  justify-content: flex-end;
+}
+
+.message-sent .message-content {
+  order: 1; 
+}
+
+.message-sent .profile-picture {
+  order: 2; 
+}
+
+.message-sent .timestamp{
+  align-self: flex-start;
+  float: left;
+  margin-left: 7px;
+}
+
+.message-sent .user-name {
+  text-align: right; /* Aligns text to the right */
+}
+
+.message-sent .message-text{
+  text-align: right;
+}
+
+/* ------------------------------------------------- Receiver Side ------------------------------------------------- */
+
+.message-received{
+  justify-content: flex-start;
+}
+
+.message-received .timestamp {
+  align-self: flex-end; 
+  float: right;
+  font-size: 1em;
+}
+
+.message-text {
+  border: 1px solid #ececec; 
+  padding: 10px;
+  border-radius: 10px; 
+  margin-left: 5px;
+  padding-left: 15px;
+  background-color: beige;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+/* ----------------------------------------------- Video Message Section CSS Start ----------------------------------------------- */
+.video-message-section {
+  width: 20%;  
   display: flex;
-  position: absolute;
-  bottom: 0; 
-  text-align: center; 
-  margin-left: 75px; 
-  padding: 5px 0; 
-  background-color: transparent;
-  color: black;
-  font-style: italic;
+  flex-direction: column;
+  padding: 8px 12px;
 }
 
-.typing-indicator .dot {
-  opacity: 0; 
-  animation: fadeDot 1.5s infinite ease-in-out;
-  margin-left: 4px; 
-  font-size: 20px;
-  color: #000;
-  text-shadow: 0px 0px 2px #fff;
+.video-file-message-section{
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid #ececec; 
+  background-color: beige;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  max-width: 100%;
 }
 
-.typing-indicator .dot:nth-child(1) {
-  animation-delay: 0s; /* No delay for the first dot */
-}
-
-.typing-indicator .dot:nth-child(2) {
-  animation-delay: 0.5s; /* 0.5 seconds delay for the second dot */
-}
-
-.typing-indicator .dot:nth-child(3) {
-  animation-delay: 1s; /* 1 second delay for the third dot */
-}
-
-@keyframes fadeDot {
-  0%, 100% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-
-.video-container {
-  position: relative;
-  width: 320px;
-  height: 240px;
-  cursor: pointer;
+.filename{
+  margin: 0px 10px;
+  max-width: 50%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .video-preview {
-  width: 100%;
-  height: auto;
+  width: 64px; 
+  height: 64px;
+  padding: 5px; 
 }
 
-.video-play-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
+.video-preview:hover {
+  transform: scale(1.03); 
 }
 
-.video-container:hover .video-play-button {
-  display: block;
+
+/* ------------------------------------------------ Video Message Section CSS End ------------------------------------------------ */
+
+/* ----------------------------------------------- Audio Message Section CSS Start ----------------------------------------------- */
+
+.audio-message-section{
+  width: 20%; 
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
 }
 
-.video-player {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* ------------------------------------------------ Audio Message Section CSS End ------------------------------------------------ */
+
+/* ----------------------------------------------- Image Message Section CSS Start ----------------------------------------------- */
+.image-message-section{
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  max-width: 30%; 
 }
+/* ------------------------------------------------ Image Message Section CSS End ------------------------------------------------ */
+
+/* ----------------------------------------------- Document Message Section CSS Start ----------------------------------------------- */
+.docs-message-section{
+  width: 20%; 
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+.doc-file-message-section{
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid #ececec; 
+  background-color: beige;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+}
+
+.doc-icon{
+  width: 64px; 
+  height: 64px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.doc-icon:hover {
+  transform: scale(1.03); 
+}
+
+.icon-download{
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.icon-download:hover {
+  transform: scale(1.03); 
+}
+/* ------------------------------------------------ Document Message Section CSS End ------------------------------------------------ */

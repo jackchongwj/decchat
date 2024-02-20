@@ -4,7 +4,8 @@
       height="200px"
       [nzSrc]="currentChatRoom.ProfilePicture"
       alt="" class="chatprofile">
-    <h1>{{ currentChatRoom.ChatRoomName }}</h1>
+    <h1>
+      {{ currentChatRoom.ChatRoomName }}
 
      <!-- NZ-ZORRO Kebab menu -->
      <div class="right-content">
@@ -20,12 +21,15 @@
         <i nz-icon nzType="more" nzTheme="outline"></i>
       </button>
     </div>
-    
-    <div *ngIf="IsCurrentChatUser" class="typing-indicator">
-      User is typing
-      <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-    </div>
-  </div>
+      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
+        is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
+      
+      <span *ngIf="IsCurrentChatUser&&currentChatRoom.RoomType" class="typing-indicator">
+        Someone is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
+    </h1>
+</div>
 
   <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
     <ng-container *nzModalContent>

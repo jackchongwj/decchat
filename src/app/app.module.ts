@@ -20,7 +20,7 @@ import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
 import { LoginComponent } from './Pages/Auth/login/login.component';
 import { RegisterComponent } from './Pages/Auth/register/register.component';
-import { LogoutComponent } from './logout/logout.component';
+import { LogoutComponent } from './Logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
 import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
@@ -78,7 +78,7 @@ registerLocaleData(ms);
   providers: [
     provideClientHydration(),
     { provide: NZ_I18N, useValue: ms_MY },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
