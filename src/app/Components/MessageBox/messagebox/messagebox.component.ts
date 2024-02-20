@@ -35,9 +35,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   sendCooldownOn:boolean = false;
   previewVisible = false;
 
-  // Show User Typing Status
-  userActive:boolean = false;
-
   // File Uploads
   uploadedFiles: File | null = null;
   previewFile: string = '';

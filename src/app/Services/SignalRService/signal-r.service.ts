@@ -59,7 +59,6 @@ export class SignalRService {
   public InformUserTyping(chatroomId:number, typing:boolean)
   {
     this.hubConnection.invoke("CheckUserTyping", chatroomId, typing)
-    //.then(() => console.log(''))
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
@@ -68,6 +67,7 @@ export class SignalRService {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
+        //console.log("Reach FE Typing Status Listen");
         this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean) => {
           this.ngZone.run(() => {
             observer.next({ChatRoomId, isTyping});

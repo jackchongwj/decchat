@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Chatroom } from '../../Models/ChatRoom/chatroom';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
+import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
 
 @Injectable({
@@ -16,7 +17,7 @@ export class DataShareService {
   // BehaviorSubject for immediate access of current value
   private ChatlistSubject = new BehaviorSubject<ChatListVM[]>([]);
   private SelectedChatRoom = new BehaviorSubject<ChatListVM>({} as ChatListVM); 
-  private SelectedChatMessageHistory = new BehaviorSubject<ChatListVM[]>([]);
+  private SelectedChatMessageHistory = new BehaviorSubject<ChatRoomMessages[]>([]);
   private CurrentLoginUserProfileName = new BehaviorSubject<string>("PendingBackend");
   private userId = new BehaviorSubject<number>(Number(this.lsService.getItem("userId")));
 
@@ -36,15 +37,15 @@ export class DataShareService {
     this.clearChatMessageHistory();
   }
 
-  updateChatMessage(data:ChatListVM[]){
-    this.SelectedChatMessageHistory.next(data);
-  }
-  
   updateLoginUserPN(data:string){
     this.CurrentLoginUserProfileName.next(data);
   }
 
-  appendChatMessage(message: ChatListVM){
+  updateChatMessage(data:ChatRoomMessages[]){
+    this.SelectedChatMessageHistory.next(data);
+  }
+
+  appendChatMessage(message: ChatRoomMessages){
     const currentMessages = this.SelectedChatMessageHistory.getValue();
     this.SelectedChatMessageHistory.next([...currentMessages, message]);
   }
