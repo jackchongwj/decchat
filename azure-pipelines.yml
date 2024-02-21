@@ -20,16 +20,9 @@ steps:
     npm run build 
   displayName: 'npm run build'
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/dist/module-proj'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/Frontend'
-  displayName: 'Copy files to artifact staging directory'
-
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)/Frontend'
+    PathtoPublish: 'dist'
     ArtifactName: 'drop'
     publishLocation: 'Container'
   displayName: 'Publish artifact'
