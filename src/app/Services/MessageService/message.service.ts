@@ -16,6 +16,7 @@ export class MessageService {
 
   sendMessage(formData:FormData): Observable<ChatRoomMessages>
   {
+    console.log(AddMessageUrl);
     return this.http.post<ChatRoomMessages>(AddMessageUrl, formData, { withCredentials: true });
   }
 
