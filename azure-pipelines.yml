@@ -20,16 +20,9 @@ steps:
     npm run build 
   displayName: 'npm run build'
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/dist/my-project'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy files to artifact staging directory'
-
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: 'my-chatroom-fe'
+    PathtoPublish: 'dist'
+    ArtifactName: 'drop'
     publishLocation: 'Container'
   displayName: 'Publish artifact'
