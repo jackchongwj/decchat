@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable, of } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
 import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
@@ -13,7 +13,7 @@ import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
-  https: string = environment.signalRUrl;
+  https: string = environment.hubBaseUrl;
 
   constructor(
     private ngZone: NgZone,
