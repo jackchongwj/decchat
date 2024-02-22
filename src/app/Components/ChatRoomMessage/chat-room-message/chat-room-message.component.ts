@@ -41,6 +41,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       // HTTP Get Message Service
       this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
         this.messageList = response;
+        console.log(response);
         this.scrollLast();
       }, error => {
         console.error('Error fetching messages:', error);
