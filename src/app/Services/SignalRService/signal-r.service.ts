@@ -90,6 +90,7 @@ export class SignalRService {
   }
 
   
+  
   updateMessageListener(): Observable<ChatRoomMessages> {
     return new Observable<ChatRoomMessages>(observer => {
       if (this.hubConnection) {

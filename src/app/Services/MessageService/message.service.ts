@@ -23,6 +23,7 @@ export class MessageService {
   getMessage(ChatRoomId: number): Observable<any>
   {
     const params = new HttpParams().set('ChatRoomId', ChatRoomId);
+    console.log(`${MessageUrl}GetMessage`);
     return this.http.get(`${MessageUrl}GetMessage`, {params})
   }
 

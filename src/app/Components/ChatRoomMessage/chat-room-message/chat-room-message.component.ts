@@ -38,8 +38,13 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
       this.currentChatRoom = chatroom;
 
-      // HTTP Get Message Service\
-      this.retrieveMessage(this.currentChatRoom.ChatRoomId)
+      // HTTP Get Message Service
+      this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
+        this.messageList = response;
+        this.scrollLast();
+      }, error => {
+        console.error('Error fetching messages:', error);
+      });
 
     });
 
@@ -142,28 +147,14 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     console.log("------------")
     this._signalRService.updateMessageListener()
       .subscribe((newResults: ChatRoomMessages) => {
-        console.log("messageList", this.messageList);
-        console.log("cid", newResults.ChatRoomId)
-        console.log("result", this.currentChatRoom.ChatRoomId);
-        
+
         if(newResults.ChatRoomId == this.currentChatRoom.ChatRoomId)
         {
-           this.messageList.push(newResults);
-          console.log("new",this.messageList)
+          this.messageList.push(newResults);
+          this.scrollLast();
         }
+
       });
-  }
-
-  private retrieveMessage(chatroomId: number): void
-  {
-    this._messageService.getMessage(chatroomId).subscribe(response => {
-      this.messageList = response;
-      this.scrollLast();
-
-      console.log("Obtained messageList", this.messageList);
-    }, error => {
-      console.error('Error fetching messages:', error);
-    });
   }
 
 }

@@ -53,9 +53,7 @@ export class ChatlistComponent implements OnInit{
         console.log(this.privateChat);
         this.groupChat = chats.filter(chat => chat.RoomType === true);
         console.log(this.groupChat);  
-
-        console.log("privateGrouplist", chats);
-
+        
         // this.dataShareService.updateChatListData(chats);
         // this.signalRService.AddToGroup(chats);
 
@@ -70,7 +68,7 @@ export class ChatlistComponent implements OnInit{
   getSelectedChatRoom(ChatRoom:ChatListVM)
   {
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
-    console.log("Selected from chat list: ", ChatRoom);
+    console.log("Selected this chat room from chat list: ", ChatRoom.ChatRoomId);
   }  
   
 
