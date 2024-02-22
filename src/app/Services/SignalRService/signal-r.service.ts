@@ -122,4 +122,41 @@ export class SignalRService {
       }
     });
   }
+
+  // removeUserListener(): Observable<any> {
+  //   return new Observable<any>(observer => {
+  //     if (this.hubConnection) {
+  //       this.hubConnection.on('UserRemoved', ({ChatRoomId, UserId}) => {
+  //         console.log("reponse", {ChatRoomId, UserId})
+  //       this.ngZone.run(() => {
+  //         observer.next({ChatRoomId, UserId}); // Emit the roomName to observers
+  //       });       
+  //       });
+  //     }
+  //   });
+  // }
+
+  
+   removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('UserRemoved', (chatRoomId: number, userId: number) => {
+        console.log("RSR", { chatRoomId, userId })
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
+    });
+  }
+
+  quitGroupListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('QuitGroup', (chatRoomId: number, userId: number) => {
+        console.log("QSR", { chatRoomId, userId })
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
+    });
+  }
+
 }

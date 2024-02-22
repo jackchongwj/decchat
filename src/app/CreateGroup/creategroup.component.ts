@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+ import { Component, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -42,7 +42,6 @@ export class CreategroupComponent implements OnInit{
     });
   }
  
-
   showModal(): void {
     this.isVisible = true;
   }

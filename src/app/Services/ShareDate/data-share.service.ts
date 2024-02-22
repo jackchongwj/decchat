@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Chatroom } from '../../Models/ChatRoom/chatroom';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
+// import { ChatlistService } from '../Chatlist/chatlist.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,14 @@ export class DataShareService {
   private SelectedChatRoom = new BehaviorSubject<ChatListVM>({} as ChatListVM); 
   private SelectedChatMessageHistory = new BehaviorSubject<ChatListVM[]>([]);
   private CurrentLoginUserProfileName = new BehaviorSubject<string>("PendingBackend");
+  // private selectedUsersSubject: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
 
   // Observable for widely use
   public chatListData = this.ChatlistSubject.asObservable();
   public selectedChatRoomData = this.SelectedChatRoom.asObservable();
   public ChatHistory = this.SelectedChatMessageHistory.asObservable();
   public LoginUserProfileName = this.CurrentLoginUserProfileName.asObservable();
+  // public selectedUsers = this.selectedUsersSubject.asObservable();
 
   updateChatListData(data: ChatListVM[]){
     this.ChatlistSubject.next(data);
@@ -45,4 +48,8 @@ export class DataShareService {
   private clearChatMessageHistory() {
     this.SelectedChatMessageHistory.next([]);
   }
+
+  // setSelectedUsers(userId: number[]): void {
+  //   this.selectedUsersSubject.next(userId);
+  // }
 }

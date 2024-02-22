@@ -5,7 +5,7 @@ import { SearchbarComponent } from './Searchbar/searchbar.component';
 import { ChatlistComponent } from './chatlist/chatlist.component';
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
-import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { ms_MY } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import ms from '@angular/common/locales/ms';
@@ -77,7 +77,7 @@ registerLocaleData(ms);
   
   providers: [
     provideClientHydration(),
-    { provide: NZ_I18N, useValue: ms_MY },
+    { provide: NZ_I18N, useValue: en_US },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

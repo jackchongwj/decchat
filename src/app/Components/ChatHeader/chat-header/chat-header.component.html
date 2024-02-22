@@ -1,13 +1,39 @@
 <div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
-    <img nz-image
-      width="200px"
-      height="200px"
-      [nzSrc]="currentChatRoom.ProfilePicture"
-      alt="" class="chatprofile">
+
+  <button nz-button [nzType]="'primary'" (click)="ExitGroup()"><span>Exit Group</span></button> 
+  <button nz-button [nzType]="'primary'" (click)="showModal()" *ngIf="currentChatRoom.InitiatedBy == userId"><span>RemoveUser</span></button>
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="Group Members" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <ng-container *nzModalContent>
+
+      <div class="group-member-container">
+        <div *ngIf="groupMembers.length > 0" class="no-result-message">
+          <div *ngFor="let user of groupMembers" class="group-member-item">
+            <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image">
+
+            <div class="user-info">
+              <span class="profile-name">{{ user.ProfileName }}</span>
+
+              <div class="action-buttons">
+                <span nz-icon nzType="delete" nzTheme="outline" class="delete-icon" (click)="Delete(user.UserId)"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="groupMembers.length === 0" class="no-result-message">
+          No users selected.
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Chat room header -->
+    <img nz-image width="200px" height="200px" [nzSrc]="currentChatRoom.ProfilePicture" alt="" class="chatprofile">
     <h1>
       {{ currentChatRoom.ChatRoomName }}
       <span *ngIf="IsCurrentChatUser" class="typing-indicator">
         is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-    </span>
+      </span>
     </h1>
+
+  </nz-modal>
 </div>
