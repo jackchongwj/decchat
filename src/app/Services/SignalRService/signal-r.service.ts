@@ -105,10 +105,10 @@ export class SignalRService {
   }
   
   
-  updateMessageListener(): Observable<ChatRoomMessages[]> {
-    return new Observable<ChatRoomMessages[]>(observer => {
+  updateMessageListener(): Observable<ChatRoomMessages> {
+    return new Observable<ChatRoomMessages>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('UpdateMessage', (newMessage: ChatRoomMessages[]) => {
+        this.hubConnection.on('UpdateMessage', (newMessage: ChatRoomMessages) => {
           console.log('Received new message:', newMessage); 
           this.ngZone.run(() => {
             observer.next(newMessage);

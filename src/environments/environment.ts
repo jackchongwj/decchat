@@ -1,5 +1,5 @@
 export const environment = {
-    apiBaseUrl : 'https://chatroomfe-dec.azurewebsites.net/api/',
+    apiBaseUrl : 'https://chatroombe-dec.azurewebsites.net/api/',
 
-    hubBaseUrl : 'https://chatroomfe-dec.azurewebsites.net/chatHub'
+    hubBaseUrl : 'https://chatroombe-dec.azurewebsites.net/chatHub'
 };
