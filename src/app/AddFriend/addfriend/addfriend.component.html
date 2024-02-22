@@ -9,8 +9,8 @@
 </div>
   
 <!-- Modal -->
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Friend Request Lists"
-          (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Friend Request Lists" (nzOnCancel)="handleCancel()"
+  [nzCancelText]="'Cancel'">
   <ng-container *nzModalContent>
 
     <div class="friend-list-container">
@@ -20,17 +20,19 @@
           <div class="user-info">
             <span class="profile-name">{{ request.ProfileName }}</span>
             <div class="action-buttons">
-              <button mat-icon-button class="accept-button" color="primary" (click)="request.UserId !== null ? acceptFriendRequest(request.UserId) : null">
+              <button mat-icon-button class="accept-button" color="primary"
+                (click)="request.UserId !== null ? acceptFriendRequest(request.UserId) : null">
                 <i class="custom-icon" nz-icon nzType="check"></i> Accept
               </button>
-              <button mat-icon-button class="reject-button" color="warn" (click)="request.UserId !== null ? rejectFriendRequest(request.UserId) : null">
+              <button mat-icon-button class="reject-button" color="warn"
+                (click)="request.UserId !== null ? rejectFriendRequest(request.UserId) : null">
                 <i class="custom-icon" nz-icon nzType="close"></i> Reject
               </button>
             </div>
           </div>
         </div>
       </div>
-    
+
       <div *ngIf="getFriendRequest.length === 0" class="no-result-message">
         No Friend Requests!
       </div>
@@ -43,7 +45,3 @@
     </div>
   </div>
 </nz-modal>
-
-
- 
-

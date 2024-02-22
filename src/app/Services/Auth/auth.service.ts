@@ -2,7 +2,7 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { catchError, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
 import { TokenService } from '../Token/token.service';
 import { isPlatformBrowser } from '@angular/common';
@@ -24,6 +24,7 @@ export class AuthService {
   }
 
   login(loginData: any): Observable<any> {
+    console.log(AuthUrl);
     return this.http.post<any>(`${AuthUrl}login`, loginData, { withCredentials: true });
   }
 
