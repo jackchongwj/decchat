@@ -37,13 +37,13 @@ export class ChatlistComponent implements OnInit{
   ngOnInit(): void {
     // this.getChatList();
   
-    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-      tap(chats => console.log(chats)), 
-    ).subscribe((chats: ChatListVM[]) => {
-      console.log("Friends Subscribed: "+ chats);
-      this.privateChat = chats.filter(chat => chat.RoomType === false); // Filter by roomType being false  
-      this.groupChat = chats.filter(chat => chat.RoomType === true);  
-    });
+    // this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+    //   tap(chats => console.log(chats)), 
+    // ).subscribe((chats: ChatListVM[]) => {
+    //   console.log("Friends Subscribed: "+ chats);
+    //   this.privateChat = chats.filter(chat => chat.RoomType === false); // Filter by roomType being false  
+    //   this.groupChat = chats.filter(chat => chat.RoomType === true);  
+    // });
 
     this.signalRService.addNewGroupListener().subscribe(chatListVM => {
       console.log('Received new group :', chatListVM);
@@ -76,7 +76,7 @@ export class ChatlistComponent implements OnInit{
 
       this.UpdatePrivateChatList();
       this.ProfileDetailChanges();
-      this.GroupDetailChanges()
+      this.GroupDetailChanges();
     }
 
   }
@@ -95,10 +95,11 @@ export class ChatlistComponent implements OnInit{
         console.log('Received updated private ChatList:', this.privateChat);
       });
   }
+  
   private ProfileDetailChanges(): void {
     this.signalRService.profileUpdateListener().subscribe({
       next: (updateInfo: UserProfileUpdate) => {
-        console.log('Updating chatlist')
+        console.log('Updating private chatlist')
         this.privateChat.forEach((chat) => {
           console.log(updateInfo.ProfileName)
           if(chat.UserId === updateInfo.UserId) {
@@ -120,19 +121,27 @@ export class ChatlistComponent implements OnInit{
   private GroupDetailChanges(): void {
     this.signalRService.groupUpdateListener().subscribe({
       next: (updateInfo: GroupProfileUpdate) => {
-        console.log('Updating chatlist')
-        this.privateChat.forEach((chat) => {
-          if(chat.ChatRoomId === updateInfo.ChatRoomId) {
-            if(updateInfo.GroupName) {
-              console.log('update userId '+ chat.UserId)
-              chat.ChatRoomName = updateInfo.GroupName;
+        console.log('Updating group chatlist', this.groupChat)
+        var result = this.groupChat.findIndex(chatlist => chatlist.ChatRoomId == updateInfo.ChatRoomId)
+
+        if (updateInfo.GroupName !== undefined) {
+          this.groupChat[result].ChatRoomName = updateInfo.GroupName;
+        }
+        if (updateInfo.GroupPicture !== undefined) {
+          this.groupChat[result].ProfilePicture = updateInfo.GroupPicture;
+        }
+        // this.groupChat.forEach((chat) => {
+        //   if(chat.ChatRoomId === updateInfo.ChatRoomId) {
+        //     if(updateInfo.GroupName) {
+        //       console.log('update userId '+ chat.UserId)
+        //       chat.ChatRoomName = updateInfo.GroupName;
               
-            }
-            if(updateInfo.GroupPicture) {
-              chat.ProfilePicture = updateInfo.GroupPicture;
-            }
-          }
-        });
+        //     }
+        //     if(updateInfo.GroupPicture) {
+        //       chat.ProfilePicture = updateInfo.GroupPicture;
+        //     }
+        //   }
+        // });
       },
       error: (error) => console.error('Error listening for profile updates:', error),
     });

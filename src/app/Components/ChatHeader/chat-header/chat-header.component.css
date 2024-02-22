@@ -6,7 +6,7 @@
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     border-bottom: 2px solid #ececec; /* A subtle border to separate the header */
-    position: sticky;
+    position: relative;
     top: 0; 
     z-index: 100;
   }
@@ -70,11 +70,11 @@
   
 
   .dropdown-button {
-    float: right; /* Align the button to the right */
-    border: none; /* Remove border */
-    background: none; /* Remove default background */
-    padding: 10px; /* Add some padding */
-    cursor: pointer; /* Change cursor on hover */
+    position: absolute; /* Take the button out of the document flow and position it absolutely */
+    right: 10px; /* Position the button 10px from the right edge of its containing block */
+    top: 50%; /* Center it vertically */
+    transform: translateY(-50%); /* Offset by half its height to truly center it */
+    z-index: 100; /* Make sure it's above other elements */
   }
   
   .right-content {
@@ -123,8 +123,9 @@
   }
   
   /* User details styling */
-  .user-details {
+  .group-details {
     margin-top: 20px;
+    text-align: center;
   }
   
   .user-details p {
@@ -133,9 +134,10 @@
   }
   
   /* Profile name edit mode */
-  .profile-name-edit {
+  .group-name-edit {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   
   .profile-name-edit p {

@@ -5,10 +5,10 @@
 </div> -->
 <!-- userProfile.component.html -->
 <div class="user-profile-container">
-  <div class="user-profile-image">
-    <nz-avatar [nzSize]="56" nzIcon="user" [nzSrc]="User.ProfilePicture" (click)="showModal = true"></nz-avatar>
+  <div class="user-profile-image pointer-cursor">
+    <nz-avatar [nzSize]="isCollapsed ? 'default' : 'large'" nzIcon="user" [nzSrc]="User.ProfilePicture" (click)="showModal = true"></nz-avatar>
   </div>
-  <div class="user-profile-name">
+  <div class="user-profile-name" *ngIf="!isCollapsed">
     <h1>{{ User.ProfileName }}</h1>
   </div>
 </div>
@@ -59,6 +59,6 @@
 <nz-modal [(nzVisible)]="showDeleteConfirm" nzTitle="Confirm Delete" 
           (nzOnOk)="deleteAccount()" (nzOnCancel)="showDeleteConfirm=false">
   <ng-container *nzModalContent>
-    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+    <p>Are you sure? This action cannot be undone.</p>
   </ng-container>
 </nz-modal>

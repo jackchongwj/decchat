@@ -51,11 +51,6 @@ export class ChatHeaderComponent implements OnInit{
     this.showDropdown = !this.showDropdown; // Toggle the visibility of the dropdown
   }
 
-  // Placeholder methods for dropdown actions
-  groupDetails(): void {
-    // Logic for "Group details"
-  }
-
   saveGroupName(): void {
     this._chatRoomService.updateGroupName(this.currentChatRoom.ChatRoomId, this.currentChatRoom.ChatRoomName).subscribe({
       next: () => {

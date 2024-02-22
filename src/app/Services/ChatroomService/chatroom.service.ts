@@ -24,7 +24,6 @@ export class ChatroomService {
   updateGroupName(chatroomId: number, newGroupName: string): Observable<any> {
    
     const params = { chatroomId, newGroupName }; 
-    console.log(params);
     return this.http.post(`${GroupUrl}UpdateGroupName`, params);
   }
   
@@ -33,7 +32,6 @@ export class ChatroomService {
     formData.append('file', file, file.name);
     formData.append('id', chatroomId.toString());
     const params = { formData };
-    console.log(chatroomId,formData);
     return this.http.post<any>(`${GroupUrl}UpdateGroupPicture`, formData);
   }
   

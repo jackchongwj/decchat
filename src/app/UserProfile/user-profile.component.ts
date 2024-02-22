@@ -5,9 +5,9 @@ import { UserService } from '../Services/UserService/user.service';
 import { User } from '../Models/User/user';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
+import { AuthService } from '../Services/Auth/auth.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
-import { DataShareService } from '../Services/ShareDate/data-share.service';
-import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -20,7 +20,7 @@ export class UserProfileComponent implements OnInit {
   editMode: boolean = false;
   showEditIcon: boolean = false;
   showModal: boolean = false;
-  
+  @Input() isCollapsed: boolean = false;
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   
@@ -29,11 +29,10 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService, 
     private router: Router,
-    private SignalRService: SignalRService,
-    private _dataShareService:DataShareService,
-    private chatlistService: ChatlistService,
-    private lsService:LocalstorageService
-
+    private lsService:LocalstorageService,
+    private authService: AuthService,
+    private message: NzMessageService,
+    private signalRService: SignalRService
   ) {
   }
 
@@ -91,7 +90,6 @@ export class UserProfileComponent implements OnInit {
   fetchUserData(): void 
   {
     if (!this.userId) {
-      console.log('User ID not set');
       return;
     }
 
@@ -110,7 +108,9 @@ export class UserProfileComponent implements OnInit {
     this.userService.deleteUser(this.userId).subscribe({
       next: () => {
         this.showDeleteConfirm = false; // Close the modal on success
-        this.router.navigate(['/login']); // Redirect or handle as needed
+        this.authService.logout();
+        this.signalRService.stopConnection();
+        this.message.success('Account Deleted');
       },
       error: error => {
         this.showDeleteConfirm = false; // Close the modal on error

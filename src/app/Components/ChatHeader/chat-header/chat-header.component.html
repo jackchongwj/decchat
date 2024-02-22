@@ -8,19 +8,18 @@
       {{ currentChatRoom.ChatRoomName }}
 
      <!-- NZ-ZORRO Kebab menu -->
-     <div class="right-content">
+
+      <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button">
+        <i nz-icon nzType="more" nzTheme="outline"></i>
+      </button>
       <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
         <ul nz-menu>
-          <li nz-menu-item (click)="toggleModal()">Group Details</li>
+          <li nz-menu-item (click)="toggleModal()">Group Profile</li>
           <li nz-menu-item>Delete Group</li>
           <li nz-menu-item>Add/Kick Member</li>
         </ul>
       </nz-dropdown-menu>
-      
-      <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu">
-        <i nz-icon nzType="more" nzTheme="outline"></i>
-      </button>
-    </div>
+
       <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
         is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
       </span>
@@ -46,7 +45,7 @@
   
     <!-- Group Details Display -->
     <div *ngIf="currentChatRoom" class="group-details">
-      <div class="profile-name-edit">
+      <div class="group-name-edit">
         <p *ngIf="!editMode">Group Name: <span>{{ currentChatRoom.ChatRoomName }}</span>
           <button nz-button nzType="link" (click)="toggleEditMode()">
             <i nz-icon nzType="edit"></i>
@@ -60,6 +59,7 @@
           <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
         </ng-container>
       </div>
+      <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
     </div>  
     
   </ng-container>

@@ -20,7 +20,7 @@
 .user-profile-name h1 {
   margin: 0;
   font-size: 16px; /* Adjust the font size as needed */
-  color: rgb(25, 146, 41); /* Dark text color for readability */
+  color: rgb(242, 247, 243); /* Dark text color for readability */
   font-weight: 500; /* Medium font weight */
   white-space: nowrap; /* Prevents the name from wrapping */
   overflow: hidden; /* Hide overflow */
@@ -118,4 +118,8 @@ nz-button {
   justify-content: center; 
   flex-direction: column;
   align-items: center; 
+}
+
+.pointer-cursor {
+  cursor: pointer;
 }

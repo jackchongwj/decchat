@@ -7,7 +7,8 @@ export class ChatListVM {
         public RoomType: boolean | null = null,
         public SelectedUsers: number[],
         public UserChatRoomId: number = 0,
-        public UserId:number = 0
+        public UserId:number = 0,
+        public InitiatorProfileName: string = ''
     ){}
 }
 

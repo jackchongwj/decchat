@@ -102,7 +102,6 @@ export class SignalRService {
     }
   }
 
-
   updateMessageListener(): Observable<ChatRoomMessages[]> {
     return new Observable<ChatRoomMessages[]>(observer => {
       if (this.hubConnection) {
@@ -127,12 +126,13 @@ export class SignalRService {
       }
     });
   }
-  public invokeHubMethod(methodName: string, updateInfo: any): void {
-    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      this.hubConnection.invoke(methodName, updateInfo)
-        .catch(error => console.error('Error invoking method on hub:', methodName, error));
-    }
-  }
+  
+  // public invokeHubMethod(methodName: string, updateInfo: any): void {
+  //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+  //     this.hubConnection.invoke(methodName, updateInfo)
+  //       .catch(error => console.error('Error invoking method on hub:', methodName, error));
+  //   }
+  // }
   
   public profileUpdateListener(): Observable<UserProfileUpdate> {
     return new Observable<UserProfileUpdate>(observer => {
@@ -148,7 +148,9 @@ export class SignalRService {
 
   public groupUpdateListener(): Observable<GroupProfileUpdate> {
     return new Observable<GroupProfileUpdate>(observer => {
+
       if (this.hubConnection) {
+        
         this.hubConnection.on('ReceiveGroupProfileUpdate', (updateInfo: GroupProfileUpdate) => {
           this.ngZone.run(() => {
             observer.next(updateInfo);

@@ -25,6 +25,7 @@ export class SearchbarComponent implements OnInit {
   private searchSubject: Subject<string> = new Subject<string>()
   // get username form local storage
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  showSearchModal = false;
 
   ngOnInit(): void {
     this.searchSubject.pipe(

@@ -14,6 +14,8 @@
   z-index: 10;
   min-height: 100vh;
   box-shadow: 2px 0 6px rgba(0,21,41,.35);
+  padding-bottom: 70px;
+  overflow-y: auto;
 }
 
 .header-trigger {
@@ -150,6 +152,13 @@ img {
   position: absolute;
   bottom: 0;
   width: 100%;
-  /* Add any additional styles for padding, background, etc., as needed */
-  /* Ensure that the footer has a defined height if necessary */
+  padding: 10px; /* Your desired padding */
+  background: #052d53; /* Optional: if you want a different background */
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.15); /* Optional: if you want a shadow */
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  padding: 4px; /* Or whatever padding you want */
 }
