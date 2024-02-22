@@ -51,6 +51,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this.updateMessageListenerListener();
   }
 
+  
   ngAfterViewChecked(): void {
     
   }
@@ -143,6 +144,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   }
 
   private updateMessageListenerListener(): void {
+    console.log("------------")
     this._signalRService.updateMessageListener()
       .subscribe((newResults: ChatRoomMessages) => {
 

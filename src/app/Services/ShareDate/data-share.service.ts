@@ -19,6 +19,7 @@ export class DataShareService {
   private SelectedChatMessageHistory = new BehaviorSubject<ChatRoomMessages[]>([]);
   private CurrentLoginUserProfileName = new BehaviorSubject<string>("PendingBackend");
   private userId = new BehaviorSubject<number>(Number(this.lsService.getItem("userId")));
+  private IsSelected =  new BehaviorSubject<boolean>(false);
 
   // Observable for widely use
   public chatListData = this.ChatlistSubject.asObservable();
@@ -26,6 +27,7 @@ export class DataShareService {
   public ChatHistory = this.SelectedChatMessageHistory.asObservable();
   public LoginUserProfileName = this.CurrentLoginUserProfileName.asObservable();
   public checkLogin = this.userId.asObservable();
+  public IsSlectedData = this.IsSelected.asObservable();
 
   updateChatListData(data: ChatListVM[]){
     this.ChatlistSubject.next(data);
@@ -52,5 +54,10 @@ export class DataShareService {
   // Clears the chat message history
   private clearChatMessageHistory() {
     this.SelectedChatMessageHistory.next([]);
+  }
+
+  clearSelectedChatRoom(data: boolean)
+  {
+    this.IsSelected.next(data);
   }
 }

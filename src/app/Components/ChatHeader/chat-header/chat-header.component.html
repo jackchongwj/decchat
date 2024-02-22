@@ -14,4 +14,31 @@
         Someone is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
       </span>
     </h1>
+
+      <button class="custom-button" (click)="showModal()" *ngIf="currentChatRoom.RoomType == false">
+        <i class="custom-icon" nz-icon nzType="delete">
+        </i>
+      </button>
+    
+      <!-- Modal -->
+      <nz-modal [(nzVisible)]="isVisible" nzTitle="Delete Friend"
+      (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Okiee'">
+    
+        <ng-container *nzModalContent>
+    
+          <div class="friend-list-container">
+            DO YOU WANT TO DELETE THIS FRIEND
+          </div>
+          
+        </ng-container>
+        <div nz-row nzGutter="16">
+          <div nz-col nzSpan="12">
+            <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+          </div>
+          <div nz-col nzSpan="12">
+            <button nz-button nzType="primary" (click)="handleOk()">Delete Friend</button>
+          </div>
+        </div>
+      </nz-modal>
+    
 </div>
