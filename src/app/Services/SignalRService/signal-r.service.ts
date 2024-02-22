@@ -55,13 +55,13 @@ export class SignalRService {
     .catch(err => console.error('Error while closing connection'));
   }
   
-  public AddToGroup(chatlists: ChatListVM[])
-  {
-    console.log("list", chatlists);
-    this.hubConnection.invoke("AddToGroup", chatlists, null, null)
-    .then(() => console.log('AddToGroup invoked successfully'))
-    .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
-  }
+  // public AddToGroup(chatlists: ChatListVM[])
+  // {
+  //   console.log("list", chatlists);
+  //   this.hubConnection.invoke("AddToGroup", chatlists, null, null)
+  //   .then(() => console.log('AddToGroup invoked successfully'))
+  //   .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
+  // }
 
   public InformUserTyping(chatroomId:number, typing:boolean)
   {

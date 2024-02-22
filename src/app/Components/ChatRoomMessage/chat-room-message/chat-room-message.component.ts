@@ -39,21 +39,15 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
       this.currentChatRoom = chatroom;
 
-      // HTTP Get Message Service
-      this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
-        this.messageList = response;
-        this.scrollLast();
-
-        console.log("Obtained messageList", this.messageList);
-      }, error => {
-        console.error('Error fetching messages:', error);
-      });
+      // HTTP Get Message Service\
+      this.retrieveMessage(this.currentChatRoom.ChatRoomId)
 
     });
 
     this.updateMessageListenerListener();
   }
 
+  
   ngAfterViewChecked(): void {
     
   }
@@ -146,11 +140,31 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   }
 
   private updateMessageListenerListener(): void {
+    console.log("------------")
     this._signalRService.updateMessageListener()
       .subscribe((newResults: ChatRoomMessages) => {
-        this.messageList = this.messageList.concat(newResults);
-        this.scrollLast();
+        console.log("messageList", this.messageList);
+        console.log("cid", newResults.ChatRoomId)
+        console.log("result", this.currentChatRoom.ChatRoomId);
+        
+        if(newResults.ChatRoomId == this.currentChatRoom.ChatRoomId)
+        {
+           this.messageList.push(newResults);
+          console.log("new",this.messageList)
+        }
       });
+  }
+
+  private retrieveMessage(chatroomId: number): void
+  {
+    this._messageService.getMessage(chatroomId).subscribe(response => {
+      this.messageList = response;
+      this.scrollLast();
+
+      console.log("Obtained messageList", this.messageList);
+    }, error => {
+      console.error('Error fetching messages:', error);
+    });
   }
 
 }

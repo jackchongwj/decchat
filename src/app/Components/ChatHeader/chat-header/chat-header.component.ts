@@ -56,7 +56,6 @@ export class ChatHeaderComponent implements OnInit{
     console.log("delete friend")
     this.friendService.DeleteFriend(this.request).subscribe(response => {
       console.log('Friend Deleted successful: ', response);
-      this._dataShareService.clearSelectedChatRoom();
     });
   }
 

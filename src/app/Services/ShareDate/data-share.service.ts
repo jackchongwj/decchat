@@ -56,8 +56,8 @@ export class DataShareService {
     this.SelectedChatMessageHistory.next([]);
   }
 
-  clearSelectedChatRoom()
+  clearSelectedChatRoom(data: boolean)
   {
-    this.IsSelected.next(false);
+    this.IsSelected.next(data);
   }
 }
