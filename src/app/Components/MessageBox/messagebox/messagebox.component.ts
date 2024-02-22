@@ -123,6 +123,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     (
       data =>{
         this.currentUserChatRoomId = data.UserChatRoomId;
+        console.log(this.currentUserChatRoomId);
       }
     )
     
