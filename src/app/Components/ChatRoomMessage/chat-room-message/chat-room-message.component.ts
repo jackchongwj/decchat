@@ -42,8 +42,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
         this.messageList = response;
         this.scrollLast();
-
-        console.log("Obtained messageList", this.messageList);
       }, error => {
         console.error('Error fetching messages:', error);
       });
@@ -146,9 +144,14 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
 
   private updateMessageListenerListener(): void {
     this._signalRService.updateMessageListener()
-      .subscribe((newResults: ChatRoomMessages[]) => {
-        this.messageList = this.messageList.concat(newResults);
-        this.scrollLast();
+      .subscribe((newResults: ChatRoomMessages) => {
+
+        if(newResults.ChatRoomId == this.currentChatRoom.ChatRoomId)
+        {
+          this.messageList.push(newResults);
+          this.scrollLast();
+        }
+
       });
   }
 
