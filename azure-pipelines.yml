@@ -1,0 +1,28 @@
+trigger:
+- master
+
+pool:
+  name: "ChatRoom"
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: |
+    echo "Cleaning workspace..."
+    rm -rf node_modules
+    echo "Reinstalling dependencies..."
+    npm install
+  displayName: 'Clean and Install Dependencies'
+
+- script: |
+    echo "Building the project..."
+    npm run build 
+  displayName: 'npm run build'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'dist'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish artifact'

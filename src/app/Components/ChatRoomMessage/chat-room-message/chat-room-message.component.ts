@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
-import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';

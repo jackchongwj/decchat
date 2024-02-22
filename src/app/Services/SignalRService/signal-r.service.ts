@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable, of } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
 import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
@@ -14,7 +14,7 @@ import { User } from '../../Models/User/user';
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
-  https: string = environment.signalRUrl;
+  https: string = environment.hubBaseUrl;
 
   constructor(
     private ngZone: NgZone,
@@ -66,7 +66,6 @@ export class SignalRService {
   public InformUserTyping(chatroomId:number, typing:boolean)
   {
     this.hubConnection.invoke("CheckUserTyping", chatroomId, typing)
-    //.then(() => console.log(''))
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
@@ -75,6 +74,7 @@ export class SignalRService {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
+        //console.log("Reach FE Typing Status Listen");
         this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean) => {
           this.ngZone.run(() => {
             observer.next({ChatRoomId, isTyping});
