@@ -153,7 +153,7 @@ img {
   bottom: 0;
   width: 100%;
   padding: 10px; /* Your desired padding */
-  background: #052d53; /* Optional: if you want a different background */
+  background: #001529; /* Optional: if you want a different background */
   box-shadow: 0 -2px 8px rgba(0,0,0,0.15); /* Optional: if you want a shadow */
 }
 
@@ -161,4 +161,17 @@ img {
   display: flex;
   flex-direction: column; /* Stack children vertically */
   padding: 4px; /* Or whatever padding you want */
+}
+
+.search-button {
+  display: flex;
+  align-items: center;
+}
+
+.search-button-collapsed .search-button-text {
+  display: none;
+}
+
+.search-button-collapsed .search-icon {
+  margin: auto; /* This centers the icon horizontally */
 }

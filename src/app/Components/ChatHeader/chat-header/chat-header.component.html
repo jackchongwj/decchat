@@ -59,7 +59,7 @@
 
   <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
     <ng-container *nzModalContent>
-    <!-- Profile Picture with Edit Icon -->
+    <!-- Group Picture with Edit Icon -->
     <div class="profile-picture-overlay" >
       <nz-avatar class="modal-avatar" [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
       <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>

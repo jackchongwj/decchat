@@ -7,6 +7,7 @@
 
 .user-profile-image {
   margin-right: 10px;
+  cursor:pointer;
 }
 
 .user-profile-image nz-avatar {
@@ -120,6 +121,3 @@ nz-button {
   align-items: center; 
 }
 
-.pointer-cursor {
-  cursor: pointer;
-}

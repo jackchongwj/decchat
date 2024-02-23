@@ -4,17 +4,17 @@
   <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
     <!-- Friend Request Row -->
     <div class="sidebar-section">
-      <app-addfriend></app-addfriend>
+      <app-addfriend [isCollapsed]="isCollapsed"></app-addfriend>
     </div>
 
     <!-- Search Bar Row -->
     <div class="sidebar-section">
-      <app-searchbar></app-searchbar>
+      <app-searchbar [iSCollapsed]="isCollapsed"></app-searchbar>
     </div>
 
     <!-- Create Group Row -->
     <div class="sidebar-section">
-      <app-creategroup></app-creategroup>
+      <app-creategroup [isCollapsed]="isCollapsed"></app-creategroup>
     </div>
     <hr> 
     <app-chatlist [isCollapsed]="isCollapsed"></app-chatlist>

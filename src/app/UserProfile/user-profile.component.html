@@ -5,7 +5,7 @@
 </div> -->
 <!-- userProfile.component.html -->
 <div class="user-profile-container">
-  <div class="user-profile-image pointer-cursor">
+  <div class="user-profile-image">
     <nz-avatar [nzSize]="isCollapsed ? 'default' : 'large'" nzIcon="user" [nzSrc]="User.ProfilePicture" (click)="showModal = true"></nz-avatar>
   </div>
   <div class="user-profile-name" *ngIf="!isCollapsed">

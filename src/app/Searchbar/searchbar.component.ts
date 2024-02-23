@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, Input } from '@angular/core';
 import { Subject, of } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { FriendsService } from '../Services/FriendService/friends.service';
@@ -29,7 +29,7 @@ export class SearchbarComponent implements OnInit {
   public searchResult: UserSearchDetails[] = []; 
   private isVisible = false;
   private searchSubject: Subject<string> = new Subject<string>()
-
+  @Input() iSCollapsed: boolean = false;
   // get username form local storage
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   showSearchModal = false;

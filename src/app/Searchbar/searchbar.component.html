@@ -11,46 +11,56 @@
   </button>
 </div> -->
 
-<div>
-  <nz-input-group class="search-bar" nzTheme="dark">
-    <ng-container *nzPrefix  >
-      <i nz-icon nzType="search" nzTheme="outline"></i>
-    </ng-container>
-    <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" 
-    placeholder="Search..." class="centered-placeholder"/>
-  </nz-input-group>
+<div class="search-button-container" [ngClass]="{'search-button-collapsed': isCollapsed}">
+  <button nz-button nzType="default" class="search-button" (click)="showSearchModal = true">
+    <i nz-icon  nzType="search" class="search-icon"  ></i>
+    <span class="search-button-text" *ngIf="!iSCollapsed">Search to Add Friend</span>
+  </button>
 </div>
 
-<div *ngIf="searchValue != '' ">
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="People" nzIcon="user">
-        <div *ngIf="searchResult.length > 0">
-          <ul>
-            <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
-              <img [src]="result.ProfilePicture" alt="Image" class="circular-image">
-              {{ result.ProfileName }}
-              <div class="st" *ngIf= "result.Status == 1">
-                Pending
-              </div> 
-              <div class="st" *ngIf= "result.Status  == 2">
-                Friend
-              </div> 
+<nz-modal [(nzVisible)]="showSearchModal" nzTitle="Search" (nzOnCancel)="showSearchModal = false" (nzOnOk)="showSearchModal = false">
+  <div *nzModalContent>
+    <!-- Place the search bar code here, as you initially defined -->
+    <nz-input-group class="search-bar" nzTheme="dark">
+      <ng-container *nzPrefix>
+        <i nz-icon nzType="search" nzTheme="outline"></i>
+      </ng-container>
+      <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()" placeholder="Find by Profile Name..." class="centered-placeholder"/>
+    </nz-input-group>
 
-              <div class="add" *ngIf= "result.Status  == 0 || result.Status  == 3 || result.Status  == 4">
-                <button class="custom-button" (click)="OnSendFriendRequest(result.UserId)">
-                  <i class="custom-icon" nz-icon nzType="user-add"></i>
-                </button>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div *ngIf="searchResult.length == 0">
-          <ul>
-            <li nz-menu-item nzMatchRouter>
-              No Result Found !!!
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
-</div> 
+    <!-- Conditional display of search results, as you initially had it -->
+    <div *ngIf="searchValue != '' " class="search-results-container">
+      <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+        <li nz-submenu nzOpen nzTitle="People" nzIcon="user">
+          <div *ngIf="searchResult.length > 0">
+            <ul>
+              <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
+                <img [src]="result.ProfilePicture" alt="Image" class="circular-image">
+                {{ result.ProfileName }}
+                <div class="st" *ngIf= "result.Status == 1">
+                  Pending
+                </div> 
+                <div class="st" *ngIf= "result.Status  == 2">
+                  Friend
+                </div> 
+  
+                <div class="add" *ngIf= "result.Status  == 0 || result.Status  == 3 || result.Status  == 4">
+                  <button class="custom-button" (click)="OnSendFriendRequest(result.UserId)">
+                    <i class="custom-icon" nz-icon nzType="user-add"></i>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div *ngIf="searchResult.length == 0">
+            <ul>
+              <li nz-menu-item nzMatchRouter>
+                No Result Found !!!
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nz-modal>
