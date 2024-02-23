@@ -45,8 +45,4 @@ export class DataShareService {
   {
     this.IsSelected.next(data);
   }
-
-  public getCurrentChatList(): ChatListVM[] {
-    return this.ChatlistSubject.getValue();
-  }
 }

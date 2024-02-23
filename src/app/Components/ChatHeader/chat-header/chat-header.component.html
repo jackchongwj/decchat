@@ -9,7 +9,7 @@
 
    <!-- NZ-ZORRO Kebab menu -->
 
-   <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
+   <!-- <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
     <i nz-icon nzType="more" nzTheme="outline"></i>
   </button>
   <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
@@ -18,11 +18,15 @@
       <li nz-menu-item>Delete Group</li>
       <li nz-menu-item>Add/Kick Member</li>
     </ul>
-  </nz-dropdown-menu>
-  
+  </nz-dropdown-menu> -->
+  <button class="custom-button" (click)="showModalHeader()" *ngIf="!currentChatRoom.RoomType">
+    <i class="custom-icon" nz-icon nzType="user-delete">
+    </i>
+  </button>
+
   <!-- Modal 1: Delete Friend Modal -->
   <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()" (nzOnOk)="handleOkDeleteFriend()"
-      [nzOkText]="'Create'">
+      [nzOkText]="'Confirm'">
 
       <ng-container *nzModalContent>
 
@@ -72,14 +76,9 @@
     </ng-container>
   </nz-modal>
 
-    
-
-    <button class="custom-button" (click)="showModalHeader()" *ngIf="currentChatRoom.RoomType == false">
-      <i class="custom-icon" nz-icon nzType="delete">
-      </i>
-    </button>
 
   <!-- Dropdown -->
+  <div *ngIf="currentChatRoom.RoomType">
   <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy == userId">
     <i nz-icon nzType="more" nzTheme="outline"></i>
   </button>
@@ -100,7 +99,7 @@
       <li nz-menu-item (click)="ExitGroup()">Quit</li>
     </ul>
   </nz-dropdown-menu>
-
+  </div>
 
   <!-- Modal 3: Remove User Confirmation Modal -->
 

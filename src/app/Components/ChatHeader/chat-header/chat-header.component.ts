@@ -182,7 +182,8 @@ export class ChatHeaderComponent implements OnInit {
 
   //showModalHeader
   showModalHeader(): void {
-    this.isVisible = true;
+    console.log("show");
+    this.isVisibleDeleteFriendModal = true;
   }
 
   showModalRemoveUser(): void {
