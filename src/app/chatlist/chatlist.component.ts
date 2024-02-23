@@ -3,6 +3,7 @@ import { LocalstorageService } from '../Services/LocalStorage/local-storage.serv
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
+import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 
 
 @Component({
