@@ -6,30 +6,42 @@ import { FriendsService } from '../../../Services/FriendService/friends.service'
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
+import { Group } from '../../../Models/DTO/Group/group';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { GroupMemberList } from '../../../Models/DTO/GroupMember/group-member-list';
+import { GroupMemberServiceService } from '../../../Services/GroupMember/group-member-service.service';
+
 
 @Component({
   selector: 'app-chat-header',
   templateUrl: './chat-header.component.html',
   styleUrl: './chat-header.component.css'
 })
-export class ChatHeaderComponent implements OnInit{
+export class ChatHeaderComponent implements OnInit {
+  isVisibleDeleteFriendModal: boolean = false; // Visibility property for Delete Friend modal
+  isVisibleRemoveUserModal: boolean = false; // Visibility property for Remove User modal
+  isVisible: boolean = false;
+  userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  groupMembers: GroupMemberList[] = [];
+  groupChat: ChatListVM[] = [];
 
   constructor(
-    private _dataShareService:DataShareService,
-    private localStorage: LocalstorageService,
+    private _dataShareService: DataShareService,
     private friendService: FriendsService,
-    private _signalRService: SignalRService
-    ){}
-  
+    private _signalRService: SignalRService,
+    private modalService: NzModalService,
+    private localStorage: LocalstorageService,
+    private groupMemberServiceService: GroupMemberServiceService
+  ) { }
+
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
-  isVisible = false;
   currentChatRoom = {} as ChatListVM;
   IsCurrentChatUser: boolean = false;
   InComingUsers: string[] =[];
 
   ngOnInit(): void {
-    this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
+    this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
       this.currentChatRoom = chatroom;
       this.IsCurrentChatUser = false;
     });
@@ -77,20 +89,78 @@ export class ChatHeaderComponent implements OnInit{
     });
   }
 
-    //Model
-    showModal(): void {
-      this.isVisible = true;
-    }
-  
-    handleOk(): void {
-      this.DeleteFriend();
-      console.log('Button ok clicked!');
-      this.isVisible = false;
-    }
-  
-    handleCancel(): void {
-      console.log('Button cancel clicked!');
-      this.isVisible = false;
-    }
+  // Show or hide Delete Friend modal
+  showModalDeleteFriend(): void {
+    this.isVisibleDeleteFriendModal = true;
+  }
 
+  handleOkDeleteFriend(): void {
+    this.DeleteFriend();
+    console.log('Button ok clicked!');
+    this.isVisibleDeleteFriendModal = false;
+  }
+
+  handleCancelDeleteFriend(): void {
+    console.log('Button cancel clicked!');
+    this.isVisibleDeleteFriendModal = false;
+  }
+
+  //showModalHeader
+  showModalHeader(): void {
+    this.isVisible = true;
+  }
+
+  toggleModal(): void {
+    this.isVisible = !this.isVisible;
+  }
+
+  showModalRemoveUser(): void {
+    this.isVisibleRemoveUserModal = true;
+
+    console.log("clicked");
+    // this.getGroupMembers();
+
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    ).subscribe(groupMembers => {
+      console.log(groupMembers);
+      this.groupMembers = groupMembers;
+      console.log(this.groupMembers);
+    });
+  }
+
+  Delete(userId: number): void {
+    console.log(userId);
+
+    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.userId).subscribe({
+      next: (response) => {
+        // Handle the response from the backend if needed
+        console.log('Backend response:', response);
+      },
+      error: (error) => {
+        console.log('Error from the backend:', error);
+      }
+    });
+  }
+
+  ExitGroup(): void {
+    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
+      next: (response) => {
+        // Handle the response from the backend if needed
+        console.log('Backend response:', response);
+      },
+      error: (error) => {
+        console.log('Error from the backend:', error);
+      }
+    });
+  }
+
+  handleOkRemoveUser(): void {
+    console.log('Button ok clicked!');
+    this.isVisibleRemoveUserModal = false;
+  }
+
+  handleCancelRemoveUser(): void {
+    console.log('Button cancel clicked!');
+    this.isVisibleRemoveUserModal = false;
+  }
 }

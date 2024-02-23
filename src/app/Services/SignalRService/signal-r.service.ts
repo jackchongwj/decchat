@@ -92,18 +92,6 @@ export class SignalRService {
       }
     });
   }
-  
-  addNewGroupListener(): Observable<any> {
-    return new Observable<any>(observer => {
-      if (this.hubConnection) {
-        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
-        this.ngZone.run(() => {
-          observer.next(chatListVM); // Emit the roomName to observers
-        });       
-        });
-      }
-    });
-  }
 
   //searchh signalR
   updateSearchResultsListener(): Observable<number> {
@@ -198,6 +186,40 @@ export class SignalRService {
           });
         });
       }
+    });
+  }
+
+  addNewGroupListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
+        this.ngZone.run(() => {
+          observer.next(chatListVM); // Emit the roomName to observers
+        });       
+        });
+      }
+    });
+  }
+  
+   removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('UserRemoved', (chatRoomId: number, userId: number) => {
+        console.log("RSR", { chatRoomId, userId })
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
+    });
+  }
+
+  quitGroupListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('QuitGroup', (chatRoomId: number, userId: number) => {
+        console.log("QSR", { chatRoomId, userId })
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
     });
   }
 }

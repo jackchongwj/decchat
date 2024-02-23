@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Chatroom } from '../../Models/ChatRoom/chatroom';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
 import { User } from '../../Models/User/user';

@@ -11,8 +11,8 @@ import { SignalRService } from '../Services/SignalRService/signal-r.service';
   styleUrl: './chatlist.component.css'
 })
 
-export class ChatlistComponent implements OnInit{
-  @Input() isCollapsed : boolean = false;
+export class ChatlistComponent implements OnInit {
+  @Input() isCollapsed: boolean = false;
   showChatList = false;
   privateChat: ChatListVM[] = [];
   groupChat: ChatListVM[] = [];
@@ -20,29 +20,30 @@ export class ChatlistComponent implements OnInit{
   isSelectedData: boolean = false;
 
   constructor(
+    private chatlistService: ChatlistService,
     private dataShareService: DataShareService,
     private signalRService: SignalRService,
     private localStorage: LocalstorageService,
-    private ngZone: NgZone 
-    ) {}
+    private ngZone: NgZone
+  ) { }
 
   ngOnInit(): void {
     this.getChatList();
   }
 
-  getChatList(){
+  getChatList() {
     // Create a Group instance with the userId
     if (this.privateChat.length === 0 && this.groupChat.length === 0)
     {
       this.RetrieveChatlist();
       this.UpdatePrivateChatList();
+      this.updateGroupChatList();
       this.UpdateDeletePrivateChatlist();
+      this.updateQuitGroup();
     }
-
   }
 
-  getSelectedChatRoom(ChatRoom:ChatListVM)
-  {
+  getSelectedChatRoom(ChatRoom: ChatListVM) {
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
   }  
   
@@ -60,7 +61,7 @@ export class ChatlistComponent implements OnInit{
     this.signalRService.DelteFriend()
       .subscribe((userId: number) => {
         console.log("p", this.privateChat);
-        console.log("Delete {userId}",userId);
+        console.log("Delete {userId}", userId);
         this.privateChat = this.privateChat.filter(chat => chat.UserId != userId);
         this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
         console.log('Received updated private ChatList:', this.privateChat);
@@ -77,4 +78,34 @@ export class ChatlistComponent implements OnInit{
     });
   }
 
+  private updateGroupChatList(): void {
+    this.signalRService.removeUserListener()
+      .subscribe(({ chatRoomId, userId }) => {
+        console.log("removeuser", chatRoomId, userId)
+        if (this.userId == userId) {
+          this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
+        }
+        this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
+      });
+  }
+
+  private updateQuitGroup(): void {
+    this.signalRService.quitGroupListener()
+      .subscribe(({ chatRoomId, userId }) => {
+        console.log("quited", chatRoomId, userId)
+        if (this.userId == userId) {
+          this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
+        }
+        this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
+      });
+  }
+
+  private addNewGroupListener(): void {
+    this.signalRService.addNewGroupListener().subscribe(chatListVM => {
+      console.log('Received new group :', chatListVM);
+      // Add the new room to the groupChat array
+      this.groupChat.push(chatListVM);
+
+    });
+  }
 }
