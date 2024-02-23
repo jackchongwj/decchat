@@ -135,8 +135,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     this.message.UserId = this.userId;
     this.message.ProfileName = this.currentUserPN;
 
-    console.log("message", this.message);
-
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
     formData.append('message', JSON.stringify(this.message));

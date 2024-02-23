@@ -140,7 +140,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   }
 
   transformDate(date:string) {
-    const datePipe = new DatePipe('en-US');
+    const datePipe = new DatePipe('ms-MY');
     return datePipe.transform(date, 'yyyy-MM-dd HH:mm');
   }
 

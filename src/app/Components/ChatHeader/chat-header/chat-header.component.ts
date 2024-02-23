@@ -35,48 +35,34 @@ export class ChatHeaderComponent implements OnInit{
     });
 
     this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
-
-      // if(status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId)
-      // {
-      //   this.IsCurrentChatUser = true;
-      //   if(this.currentChatRoom.RoomType)
-      //   {
-      //     if (!this.InComingUsers.includes(status.currentUserProfileName) && this.currentChatRoom.RoomType) {
-      //       this.InComingUsers.push(status.currentUserProfileName);
-      //     }
-      //   }
-      // }
-      // else if(!status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId)
-      // {
-      //   this.IsCurrentChatUser = true;
-      //   if(this.currentChatRoom.RoomType)
-      //   {
-      //     this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
-      //   }
-      // }
-      // else
-      // {
-      //   this.IsCurrentChatUser = false;
-      // }
-
-      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) {
-        this.IsCurrentChatUser = true;
-        if (status.isTyping && this.currentChatRoom.RoomType) {
-          // Add the user if they are typing and not already present in the list
-          if (!this.InComingUsers.includes(status.currentUserProfileName)) {
-            this.InComingUsers.push(status.currentUserProfileName);
-          }
-        } 
-        else if(!status.isTyping && this.currentChatRoom.RoomType)
+      //Check If Current Chat Room
+      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) 
+      {
+        // For Group Chat
+        if(this.currentChatRoom.RoomType)
         {
-          this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
+          this.IsCurrentChatUser = true;
+          if (status.isTyping) {
+            // Add the user if they are typing and not already present in the list
+            if (!this.InComingUsers.includes(status.currentUserProfileName)) {
+              this.InComingUsers.push(status.currentUserProfileName);
+            }
+          } 
+          else{
+            this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
+          }
+        }
+        // For One-On-One Chat
+        else{
+          this.IsCurrentChatUser = status.isTyping;
         }
       }
+      // Different Chat Room
       else{
         this.IsCurrentChatUser = false;
       }
     });
-    
+
   }
 
   DeleteFriend(): void {
