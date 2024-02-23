@@ -28,7 +28,7 @@ export class SidebarComponent implements OnInit {
       }
     });
 
-    this._dataShareService.IsSlectedData.subscribe( selected => {
+    this._dataShareService.IsSelectedData.subscribe( selected => {
       this.IsSelected = selected;
     });
   }

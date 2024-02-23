@@ -9,10 +9,6 @@
       <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
         is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
       </span>
-      
-      <span *ngIf="IsCurrentChatUser&&currentChatRoom.RoomType" class="typing-indicator">
-        Someone is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-      </span>
     </h1>
 
       <button class="custom-button" (click)="showModal()" *ngIf="currentChatRoom.RoomType == false">
@@ -42,3 +38,11 @@
       </nz-modal>
     
 </div>
+
+<span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers[0] }} is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>
+
+<span *ngIf="InComingUsers.length > 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>

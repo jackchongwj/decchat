@@ -20,10 +20,8 @@ export class ChatlistComponent implements OnInit{
   groupChat: ChatListVM[] = [];
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
   isSelectedData: boolean = false;
-  // userId = 7;
 
   constructor(
-    private chatlistService: ChatlistService,
     private dataShareService: DataShareService,
     private signalRService: SignalRService,
     private localStorage: LocalstorageService,
@@ -31,12 +29,6 @@ export class ChatlistComponent implements OnInit{
     ) {}
 
   ngOnInit(): void {
-    // this.signalRService.addNewGroupListener().subscribe(chatListVM => {
-    //   console.log('Received new group :', chatListVM);
-    //   // Add the new room to the groupChat array
-    //   this.groupChat.push(chatListVM);
-
-    // });
     this.getChatList();
   }
 
@@ -54,7 +46,6 @@ export class ChatlistComponent implements OnInit{
   getSelectedChatRoom(ChatRoom:ChatListVM)
   {
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
-    console.log("Selected this chat room from chat list: ", ChatRoom.ChatRoomId);
   }  
   
 
@@ -80,16 +71,12 @@ export class ChatlistComponent implements OnInit{
 
   private RetrieveChatlist() : void
   {
-
     this.signalRService.retrieveChatlistListener()
     .subscribe((chats: ChatListVM[]) => {
-      console.log("chatlist", chats);
+      console.log("Reach component retrieve chat list");
       this.privateChat = chats.filter(chat => chat.RoomType === false);
-      console.log(this.privateChat);
-      this.groupChat = chats.filter(chat => chat.RoomType === true);
-      console.log(this.groupChat);  
-
-      console.log('Received updated private ChatList:', this.privateChat);
+      this.groupChat = chats.filter(chat => chat.RoomType === true); 
     });
   }
+
 }

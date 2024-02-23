@@ -25,8 +25,8 @@ export class ChatHeaderComponent implements OnInit{
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   isVisible = false;
   currentChatRoom = {} as ChatListVM;
-  imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
   IsCurrentChatUser: boolean = false;
+  InComingUsers: string[] =[];
 
   ngOnInit(): void {
     this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
@@ -35,25 +35,57 @@ export class ChatHeaderComponent implements OnInit{
     });
 
     this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      if(status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId)
-      {
+
+      // if(status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId)
+      // {
+      //   this.IsCurrentChatUser = true;
+      //   if(this.currentChatRoom.RoomType)
+      //   {
+      //     if (!this.InComingUsers.includes(status.currentUserProfileName) && this.currentChatRoom.RoomType) {
+      //       this.InComingUsers.push(status.currentUserProfileName);
+      //     }
+      //   }
+      // }
+      // else if(!status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId)
+      // {
+      //   this.IsCurrentChatUser = true;
+      //   if(this.currentChatRoom.RoomType)
+      //   {
+      //     this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
+      //   }
+      // }
+      // else
+      // {
+      //   this.IsCurrentChatUser = false;
+      // }
+
+      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) {
         this.IsCurrentChatUser = true;
+        if (status.isTyping && this.currentChatRoom.RoomType) {
+          // Add the user if they are typing and not already present in the list
+          if (!this.InComingUsers.includes(status.currentUserProfileName)) {
+            this.InComingUsers.push(status.currentUserProfileName);
+          }
+        } 
+        else if(!status.isTyping && this.currentChatRoom.RoomType)
+        {
+          this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
+        }
       }
       else{
         this.IsCurrentChatUser = false;
       }
     });
+    
   }
 
-
-  
   DeleteFriend(): void {
     this.request = {
       ChatRoomId: this.currentChatRoom.ChatRoomId,
       UserId1: this.userId1,
       UserId2: this.currentChatRoom.UserId
     };
-    console.log("delete friend")
+    
     this.friendService.DeleteFriend(this.request).subscribe(response => {
       console.log('Friend Deleted successful: ', response);
     });

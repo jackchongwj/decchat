@@ -48,7 +48,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   recordingInProgress = new Subject<boolean>();
 
   ngOnInit(): void {
-    console.log("Ignore OnInit");
     this._dataShareService.selectedChatRoomData.subscribe(data => {
       this.currentUserChatRoomId = data.UserChatRoomId;
       this.currentChatRoom = data.ChatRoomId;
@@ -239,18 +238,17 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   }
 
   OnInputFocus(): void {
-    console.log("CurrentChatRoom MSGBox: ", this.currentChatRoom);
-    this._sService.InformUserTyping(this.currentChatRoom, true);
+    this._sService.InformUserTyping(this.currentChatRoom, true, this.currentUserPN);
   }
 
   OnInputBlur(): void {
-    this._sService.InformUserTyping(this.currentChatRoom, false);
+    this._sService.InformUserTyping(this.currentChatRoom, false, this.currentUserPN);
   }
 
   // Handle Event Show User Status = 1 After Refresh
   @HostListener('window:beforeunload')
   onBeforeUnload(): void {
-    this._sService.InformUserTyping(this.currentChatRoom, false);
+    this._sService.InformUserTyping(this.currentChatRoom, false, this.currentUserPN);
   }
 
   // Voice Message Recording Session
