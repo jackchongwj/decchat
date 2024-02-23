@@ -44,21 +44,7 @@ export class ChatlistComponent implements OnInit{
     // Create a Group instance with the userId
     if (this.privateChat.length === 0 && this.groupChat.length === 0)
     {
-      console.log(this.userId);
-      this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-        tap(), 
-      ).subscribe((chats: ChatListVM[]) => {
-        
-        this.privateChat = chats.filter(chat => chat.RoomType === false);
-        console.log(this.privateChat);
-        this.groupChat = chats.filter(chat => chat.RoomType === true);
-        console.log(this.groupChat);  
-        
-        // this.dataShareService.updateChatListData(chats);
-        // this.signalRService.AddToGroup(chats);
-
-        this.dataShareService.updateChatListData(chats);
-      });
+      this.RetrieveChatlist();
       this.UpdatePrivateChatList();
       this.UpdateDeletePrivateChatlist();
     }
@@ -75,7 +61,7 @@ export class ChatlistComponent implements OnInit{
   private UpdatePrivateChatList(): void {
     this.signalRService.updatePrivateChatlist()
       .subscribe((chatlist: ChatListVM) => {
-        console.log("list",chatlist)
+        console.log("Plist",chatlist)
         this.privateChat.push(chatlist);
         console.log('Received updated private ChatList:', this.privateChat);
       });
@@ -92,4 +78,18 @@ export class ChatlistComponent implements OnInit{
       });
   }
 
+  private RetrieveChatlist() : void
+  {
+
+    this.signalRService.retrieveChatlistListener()
+    .subscribe((chats: ChatListVM[]) => {
+      console.log("chatlist", chats);
+      this.privateChat = chats.filter(chat => chat.RoomType === false);
+      console.log(this.privateChat);
+      this.groupChat = chats.filter(chat => chat.RoomType === true);
+      console.log(this.groupChat);  
+
+      console.log('Received updated private ChatList:', this.privateChat);
+    });
+  }
 }
