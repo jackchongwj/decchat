@@ -115,14 +115,6 @@
   {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
 </span>
 
-<span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
-  {{ InComingUsers[0] }} is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-</span>
-
-<span *ngIf="InComingUsers.length > 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
-  {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-</span>
-
   <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
     <ng-container *nzModalContent>
     <!-- Group Picture with Edit Icon -->
@@ -155,5 +147,5 @@
       <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
     </div>  
     
-  </ng-container>
+    </ng-container>
   </nz-modal>
