@@ -9,8 +9,11 @@
 </div>
   
 <!-- Modal -->
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Friend Request Lists" (nzOnCancel)="handleCancel()"
-  [nzCancelText]="'Cancel'">
+<nz-modal 
+  [(nzVisible)]="isVisible" 
+  zTitle="Friend Request Lists"
+  [nzFooter]="footerTemplate">
+  
   <ng-container *nzModalContent>
 
     <div class="friend-list-container">
@@ -39,9 +42,8 @@
     </div>
   </ng-container>
 
-  <div nz-row nzGutter="16">
-    <div nz-col nzSpan="12">
-      <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-    </div>
-  </div>
+  <ng-template #footerTemplate>
+      <button nz-button nzType="default" (click)="handleCancel()" class="cancel-button">Cancel</button>
+  </ng-template>
+
 </nz-modal>

@@ -76,6 +76,10 @@
   margin-right: 10px;
 }
 
+.cancel-button{
+  background-color: skyblue;
+}
+
 .nz-badge {
   margin-right: 4px; /* Space before the text */
 }

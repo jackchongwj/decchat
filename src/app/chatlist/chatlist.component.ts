@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, inject, Inject, Input, OnInit, NgZone } from '@angular/core';
-import { tap } from 'rxjs';
-import { ChatlistService } from '../../app/Services/Chatlist/chatlist.service';
+import { Component, inject, Inject, Input, OnInit, NgZone } from '@angular/core';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
+import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { Group } from '../Models/DTO/Group/group';
 import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate';
 import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate';
