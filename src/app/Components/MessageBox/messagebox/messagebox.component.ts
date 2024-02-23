@@ -122,7 +122,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     (
       data =>{
         this.currentUserChatRoomId = data.UserChatRoomId;
-        console.log(this.currentUserChatRoomId);
       }
     )
     
@@ -146,8 +145,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
 
     this._mService.sendMessage(formData).subscribe({
       next: (res:ChatRoomMessages) => {
-        console.log(res);
-
         //this._sService.notifyMessage(res);
         // Limit message send rate
         this.sendCooldownOn = true; // Activate cooldown

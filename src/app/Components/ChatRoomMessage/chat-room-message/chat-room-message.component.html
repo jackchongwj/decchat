@@ -9,7 +9,7 @@
     >
 
     <!-- Display Audio Message -->
-    <div class="audio-message-section" *ngIf="isAudio(message)">
+    <div class="message-section" *ngIf="isAudio(message)">
       <div class="user-name">{{ message.ProfileName }}</div>
       <audio controls class="audio-file">
         <source [src]="message.ResourceUrl" type="audio/mpeg">
@@ -20,7 +20,7 @@
     <!-- Display Audio Message -->
     
     <!-- Display Image Only -->
-    <div class="image-message-section" *ngIf="isImage(message)">
+    <div class="message-section" *ngIf="isImage(message)">
       <div class="user-name">{{ message.ProfileName }}</div>
         <img nz-image
         width="200px"
@@ -33,7 +33,7 @@
     <!-- Display Image Only -->
 
     <!-- Display Video Only -->
-    <div class="video-message-section" *ngIf="isVideo(message)">
+    <div class="message-section" *ngIf="isVideo(message)">
       <div class="user-name">{{ message.ProfileName }}</div>
       
       <div class="video-file-message-section">
@@ -46,7 +46,7 @@
     <!-- Display Video Only -->
 
     <!-- Display Document Only -->
-    <div class="docs-message-section" *ngIf="isDocument(message)">
+    <div class="message-section" *ngIf="isDocument(message)">
       <div class="user-name">{{ message.ProfileName }}</div>
       
       <div class="doc-file-message-section">

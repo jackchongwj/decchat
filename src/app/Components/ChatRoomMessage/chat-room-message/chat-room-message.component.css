@@ -15,8 +15,15 @@
   align-items: center;
 }
 
+.message-section{
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
 .message-content {
-  width: 20%; 
+  width: 25%; 
   padding: 8px 12px;
   border-radius: 20px;
   color: black; 
@@ -39,6 +46,10 @@
 
 .message-sent{
   justify-content: flex-end;
+}
+
+.message-sent .message-section {
+  align-items: flex-end;
 }
 
 .message-sent .message-content {
@@ -69,6 +80,10 @@
   justify-content: flex-start;
 }
 
+.message-received .message-section{
+  align-items: flex-start;
+}
+
 .message-received .timestamp {
   align-self: flex-end; 
   float: right;
@@ -89,14 +104,9 @@
 }
 
 /* ----------------------------------------------- Video Message Section CSS Start ----------------------------------------------- */
-.video-message-section {
-  width: 20%;  
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
-}
 
-.video-file-message-section{
+
+.message-section .video-file-message-section{
   display: flex;
   flex-direction: row;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -106,6 +116,8 @@
   align-items: center;
   justify-content: center;
   padding: 8px 12px;
+  max-width: 100%;
+  width: 100%; 
   max-width: 100%;
 }
 
@@ -126,38 +138,28 @@
   transform: scale(1.03); 
 }
 
-
 /* ------------------------------------------------ Video Message Section CSS End ------------------------------------------------ */
 
 /* ----------------------------------------------- Audio Message Section CSS Start ----------------------------------------------- */
 
-.audio-message-section{
-  width: 20%; 
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
+.message-section .audio-file {
+  width: 100%; 
+  max-width: 100%;
 }
 
 /* ------------------------------------------------ Audio Message Section CSS End ------------------------------------------------ */
 
 /* ----------------------------------------------- Image Message Section CSS Start ----------------------------------------------- */
-.image-message-section{
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
-  max-width: 30%; 
+
+.image-message{
+  margin: 2px 0px;
 }
+
 /* ------------------------------------------------ Image Message Section CSS End ------------------------------------------------ */
 
 /* ----------------------------------------------- Document Message Section CSS Start ----------------------------------------------- */
-.docs-message-section{
-  width: 20%; 
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
-}
 
-.doc-file-message-section{
+.message-section .doc-file-message-section{
   display: flex;
   flex-direction: row;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -167,6 +169,8 @@
   align-items: center;
   justify-content: center;
   padding: 8px 12px;
+  width: 100%; 
+  max-width: 100%;
 }
 
 .doc-icon{
