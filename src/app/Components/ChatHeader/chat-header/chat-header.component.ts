@@ -17,46 +17,45 @@ import { GroupMemberServiceService } from '../../../Services/GroupMember/group-m
   templateUrl: './chat-header.component.html',
   styleUrl: './chat-header.component.css'
 })
-export class ChatHeaderComponent implements OnInit{
+export class ChatHeaderComponent implements OnInit {
   isVisibleDeleteFriendModal: boolean = false; // Visibility property for Delete Friend modal
   isVisibleRemoveUserModal: boolean = false; // Visibility property for Remove User modal
   isVisible: boolean = false;
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
   groupMembers: GroupMemberList[] = [];
   groupChat: ChatListVM[] = [];
-  
+
   constructor(
-    private _dataShareService:DataShareService,
+    private _dataShareService: DataShareService,
     private friendService: FriendsService,
-    private _signalRService: SignalRService, 
-    private modalService: NzModalService, 
+    private _signalRService: SignalRService,
+    private modalService: NzModalService,
     private localStorage: LocalstorageService,
     private groupMemberServiceService: GroupMemberServiceService
-    ){}
-  
+  ) { }
+
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   currentChatRoom = {} as ChatListVM;
-  imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
+  imageUrl: string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
   IsCurrentChatUser: boolean = false;
 
   ngOnInit(): void {
-    this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
+    this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
       this.currentChatRoom = chatroom;
       this.IsCurrentChatUser = false;
     });
 
-    this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
-      if(status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId)
-      {
+    this._signalRService.UserTypingStatus().subscribe((status: TypingStatus) => {
+      if (status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId) {
         this.IsCurrentChatUser = true;
       }
-      else{
+      else {
         this.IsCurrentChatUser = false;
       }
     });
-  }  
-  
+  }
+
   DeleteFriend(): void {
     this.request = {
       ChatRoomId: this.currentChatRoom.ChatRoomId,
@@ -69,92 +68,92 @@ export class ChatHeaderComponent implements OnInit{
     });
   }
 
-    // Show or hide Delete Friend modal
-    showModalDeleteFriend(): void {
-      this.isVisibleDeleteFriendModal  = true;
-    }
-  
-    handleOkDeleteFriend(): void {
-      this.DeleteFriend();
-      console.log('Button ok clicked!');
-      this.isVisibleDeleteFriendModal  = false;
-    }
-  
-    handleCancelDeleteFriend(): void {
-      console.log('Button cancel clicked!');
-      this.isVisibleDeleteFriendModal  = false;
-    }
+  // Show or hide Delete Friend modal
+  showModalDeleteFriend(): void {
+    this.isVisibleDeleteFriendModal = true;
+  }
 
-    //showModalHeader
-    showModalHeader(): void {
+  handleOkDeleteFriend(): void {
+    this.DeleteFriend();
+    console.log('Button ok clicked!');
+    this.isVisibleDeleteFriendModal = false;
+  }
+
+  handleCancelDeleteFriend(): void {
+    console.log('Button cancel clicked!');
+    this.isVisibleDeleteFriendModal = false;
+  }
+
+  //showModalHeader
+  showModalHeader(): void {
     this.isVisible = true;
-    }
-  
-    toggleModal(): void {
-      this.isVisible = !this.isVisible;
-    }
-  
-    showModalRemoveUser():void{
-      this.isVisibleRemoveUserModal  = true;
-  
-      console.log("clicked");
-      // this.getGroupMembers();
-  
-      this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
-        ).subscribe(groupMembers => {
-          console.log(groupMembers);
-          this.groupMembers = groupMembers;
-          console.log(this.groupMembers);
-        });
-          
-        this._signalRService.removeUserListener()
-        .subscribe(({ chatRoomId, userId }) => {
-          console.log("userid", userId);
-          this.groupMembers = this.groupMembers.filter(list => list.UserId != userId);
-          console.log("list", this.groupMembers);
-          // console.log('Received updated friend request result/s:', this.getFriendRequest);
-        });
+  }
 
-        this._signalRService.quitGroupListener()
-        .subscribe(({ chatRoomId, userId }) => {
-          console.log("quited", chatRoomId,userId)
-            this.groupMembers = this.groupMembers.filter(chat => chat.UserId != userId);
-        });
-      }
+  toggleModal(): void {
+    this.isVisible = !this.isVisible;
+  }
 
-      Delete(userId: number): void {
-        console.log(userId);
-      
-        this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.userId).subscribe({
-          next: (response) => {
-            // Handle the response from the backend if needed
-            console.log('Backend response:', response);
-          },
-          error: (error) => {
-            console.log('Error from the backend:', error);
-          }
-        });
+  showModalRemoveUser(): void {
+    this.isVisibleRemoveUserModal = true;
+
+    console.log("clicked");
+    // this.getGroupMembers();
+
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    ).subscribe(groupMembers => {
+      console.log(groupMembers);
+      this.groupMembers = groupMembers;
+      console.log(this.groupMembers);
+    });
+
+    // this._signalRService.removeUserListener()
+    //   .subscribe(({ chatRoomId, userId }) => {
+    //     console.log("userid", userId);
+    //     this.groupMembers = this.groupMembers.filter(list => list.UserId != userId);
+    //     console.log("list", this.groupMembers);
+    //     // console.log('Received updated friend request result/s:', this.getFriendRequest);
+    //   });
+
+    // this._signalRService.quitGroupListener()
+    //   .subscribe(({ chatRoomId, userId }) => {
+    //     console.log("quited", chatRoomId, userId)
+    //     this.groupMembers = this.groupMembers.filter(chat => chat.UserId != userId);
+    //   });
+  }
+
+  Delete(userId: number): void {
+    console.log(userId);
+
+    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.userId).subscribe({
+      next: (response) => {
+        // Handle the response from the backend if needed
+        console.log('Backend response:', response);
+      },
+      error: (error) => {
+        console.log('Error from the backend:', error);
       }
-         
-      ExitGroup():void{  
-        this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
-          next: (response) => {
-            // Handle the response from the backend if needed
-            console.log('Backend response:', response);
-          },
-          error: (error) => {
-            console.log('Error from the backend:', error);
-          }
-        });
+    });
+  }
+
+  ExitGroup(): void {
+    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
+      next: (response) => {
+        // Handle the response from the backend if needed
+        console.log('Backend response:', response);
+      },
+      error: (error) => {
+        console.log('Error from the backend:', error);
       }
-    
-      handleOkRemoveUser(): void {
-          console.log('Button ok clicked!');
-          this.isVisibleRemoveUserModal  = false;
-        }
-      
-        handleCancelRemoveUser(): void {
-          console.log('Button cancel clicked!');
-          this.isVisibleRemoveUserModal = false;
-        }         
+    });
+  }
+
+  handleOkRemoveUser(): void {
+    console.log('Button ok clicked!');
+    this.isVisibleRemoveUserModal = false;
+  }
+
+  handleCancelRemoveUser(): void {
+    console.log('Button cancel clicked!');
+    this.isVisibleRemoveUserModal = false;
+  }
 }
