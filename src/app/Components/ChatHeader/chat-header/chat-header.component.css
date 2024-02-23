@@ -68,6 +68,25 @@
     }
   }
   
+
+
+  
+/* addFriendButton */
+.custom-button {
+  background-color: transparent;
+  border: none;
+  float: right;
+}
+
+/* user-add icon */
+.custom-icon {
+  font-size: 18px;
+  float: left;
+  margin-left: 8px;
+  color: red;
+  position: relative;
+}
+
   nz-button-group {
     margin: 0 8px 8px 0;} 
 

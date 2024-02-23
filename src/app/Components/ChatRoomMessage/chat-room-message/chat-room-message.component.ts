@@ -1,8 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
-import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
+import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
@@ -20,12 +20,12 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     private _dataShareService:DataShareService,
     private _messageService:MessageService,
     private _signalRService:SignalRService,
-    private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private lsService:LocalstorageService,
+    private ngZone: NgZone
   ){}
     
   currentChatRoom = {} as ChatListVM;
-  currentUser = Number(localStorage.getItem("userId"));
+  currentUser = Number(this.lsService.getItem("userId"));
   messageList : ChatRoomMessages[] = [];
 
   imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
@@ -41,9 +41,8 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       // HTTP Get Message Service
       this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
         this.messageList = response;
+        console.log(response);
         this.scrollLast();
-
-        console.log("Obtained messageList", this.messageList);
       }, error => {
         console.error('Error fetching messages:', error);
       });
@@ -53,6 +52,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this.updateMessageListenerListener();
   }
 
+  
   ngAfterViewChecked(): void {
     
   }
@@ -82,10 +82,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   hasMessage(message:ChatRoomMessages):boolean{
     console.log("Message Context: ", message.Content);
     return message.Content != '' || message.Content != null ? true : false;
-  }
-
-  hasAttachmentOnly(message:ChatRoomMessages):boolean{
-    return (message.ResourceUrl != "" || message.ResourceUrl != null) && (message.Content == '' || message.Content == null) ? true : false;
   }
 
   isImage(fileName: ChatRoomMessages): boolean {
@@ -127,15 +123,17 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     window.open(data.ResourceUrl, '_blank');
   }
 
-  openDocument(): void {
-    const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(this.docsUrl)}&embedded=true`
+  openDocument(message:ChatRoomMessages): void {
+    const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(message.ResourceUrl)}&embedded=true`
     window.open(viewerUrl, '_blank');
   }
 
-  downloadDocument(): void {
+  downloadDocument(message:ChatRoomMessages): void {
     const a = document.createElement('a');
-    a.href = this.docsUrl;
-    a.download = 'aa'; // You can set the default file name here
+    a.href = message.ResourceUrl;
+    const filename = this.getFileNameFromUrl(message.ResourceUrl);
+    a.download = filename; 
+    console.log("Docs File Name: ", a.download);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -147,10 +145,16 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   }
 
   private updateMessageListenerListener(): void {
+    console.log("------------")
     this._signalRService.updateMessageListener()
-      .subscribe((newResults: ChatRoomMessages[]) => {
-        this.messageList = this.messageList.concat(newResults);
-        this.scrollLast();
+      .subscribe((newResults: ChatRoomMessages) => {
+
+        if(newResults.ChatRoomId == this.currentChatRoom.ChatRoomId)
+        {
+          this.messageList.push(newResults);
+          this.scrollLast();
+        }
+
       });
   }
 

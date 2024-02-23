@@ -5,7 +5,6 @@ import { LocalstorageService } from '../Services/LocalStorage/local-storage.serv
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
-import { SignalRFriendService } from '../Services/SignalR/Friend/signal-rfriend.service';
 import { Group } from '../Models/DTO/Group/group';
 
 @Component({
@@ -20,6 +19,7 @@ export class ChatlistComponent implements OnInit{
   privateChat: ChatListVM[] = [];
   groupChat: ChatListVM[] = [];
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  isSelectedData: boolean = false;
   // userId = 7;
 
   constructor(
@@ -33,16 +33,13 @@ export class ChatlistComponent implements OnInit{
     ) {}
 
   ngOnInit(): void {
-    // this.getChatList();
-  
-    // this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-    //   tap(chats => console.log(chats)), 
-    // ).subscribe((chats: ChatListVM[]) => {
-    //   console.log("Friends Subscribed: "+ chats);
-    //   this.privateChat = chats.filter(chat => chat.RoomType === false); // Filter by roomType being false  
-    //   this.groupChat = chats.filter(chat => chat.RoomType === true);  
-    // });
+    // this.signalRService.addNewGroupListener().subscribe(chatListVM => {
+    //   console.log('Received new group :', chatListVM);
+    //   // Add the new room to the groupChat array
+    //   this.groupChat.push(chatListVM);
 
+    // });
+    this.getChatList();
   }
 
     getChatList(){
@@ -76,18 +73,30 @@ export class ChatlistComponent implements OnInit{
   getSelectedChatRoom(ChatRoom:ChatListVM)
   {
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
-    console.log("Selected from chat list: ", ChatRoom);
+    console.log("Selected this chat room from chat list: ", ChatRoom.ChatRoomId);
   }  
   
 
   private UpdatePrivateChatList(): void {
-    this.signalRFService.updatePrivateChatlist()
+    this.signalRService.updatePrivateChatlist()
       .subscribe((chatlist: ChatListVM) => {
         console.log("list",chatlist)
-        this.privateChat = this.privateChat.concat(chatlist);
+        this.privateChat.push(chatlist);
         console.log('Received updated private ChatList:', this.privateChat);
       });
   }
+
+  private UpdateDeletePrivateChatlist(): void {
+    this.signalRService.DelteFriend()
+      .subscribe((userId: number) => {
+        console.log("p", this.privateChat);
+        console.log("Delete {userId}",userId);
+        this.privateChat = this.privateChat.filter(chat => chat.UserId != userId);
+        this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
+        console.log('Received updated private ChatList:', this.privateChat);
+      });
+  }
+
 
   private updateGroupChatList():void {
     this.signalRService.removeUserListener()

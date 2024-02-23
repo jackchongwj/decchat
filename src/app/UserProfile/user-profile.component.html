@@ -6,12 +6,13 @@
 <!-- userProfile.component.html -->
 <div class="user-profile-container">
   <div class="user-profile-image">
-    <nz-avatar [nzSize]="56" nzIcon="user" [nzSrc]="User.ProfilePicture || 'default-profile-picture-url.png'" (click)="showModal = true"></nz-avatar>
+    <nz-avatar [nzSize]="56" nzIcon="user" [nzSrc]="User.ProfilePicture" (click)="showModal = true"></nz-avatar>
   </div>
   <div class="user-profile-name">
     <h1>{{ User.ProfileName }}</h1>
   </div>
 </div>
+
   <!-- Profile Modal Content -->
   <!-- Use the NZ-MODAL component for the user profile modal -->
 <nz-modal [(nzVisible)]="showModal" nzTitle="User Profile" (nzOnCancel)="toggleModal()" nzClosable [nzFooter]="modalFooter">

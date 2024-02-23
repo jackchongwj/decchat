@@ -1,6 +1,12 @@
 {
   "name": "module-proj",
   "version": "0.0.0",
+  "browser": {
+    "http": false,
+    "https": false,
+    "url": false,
+    "util": false
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -38,6 +44,7 @@
     "ngx-cookie-service": "^17.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "util": "^0.12.5",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
@@ -55,4 +62,5 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.2.2"
   }
+  
 }

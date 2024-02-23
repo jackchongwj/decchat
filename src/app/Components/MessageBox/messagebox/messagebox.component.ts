@@ -35,9 +35,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   sendCooldownOn:boolean = false;
   previewVisible = false;
 
-  // Show User Typing Status
-  userActive:boolean = false;
-
   // File Uploads
   uploadedFiles: File | null = null;
   previewFile: string = '';
@@ -126,6 +123,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     (
       data =>{
         this.currentUserChatRoomId = data.UserChatRoomId;
+        console.log(this.currentUserChatRoomId);
       }
     )
     
@@ -166,8 +164,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
     }); 
 
-
-    this._sService.notifyMessage(this.message);
+    // this._sService.notifyMessage(this.message);
   }
 
   private resizeAndPreviewImage(file: File): void 
