@@ -90,3 +90,7 @@
 .reject-button {
   margin-right: 10px;
 }
+
+.cancel-button{
+  background-color: skyblue;
+}
