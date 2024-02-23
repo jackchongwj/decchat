@@ -6,7 +6,7 @@
       is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
     </span>
   </h1>
-  
+
   <!-- Modal 1: Delete Friend Modal -->
   <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()" (nzOnOk)="handleOkDeleteFriend()"
       [nzOkText]="'Create'">
@@ -59,7 +59,7 @@
     </ng-container>
   </nz-modal>
 
-    
+
 
     <button class="custom-button" (click)="showModalHeader()" *ngIf="currentChatRoom.RoomType == false">
       <i class="custom-icon" nz-icon nzType="delete">

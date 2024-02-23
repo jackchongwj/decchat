@@ -15,5 +15,7 @@
   cursor: pointer;
 }
 
-
+[nz-button] {
+  margin-right: 8px;
+}
   

@@ -10,6 +10,8 @@ import { Group } from '../Models/DTO/Group/group';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { Observable, tap } from 'rxjs';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
+import { Message } from '../Models/Message/message';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-creategroup',
@@ -28,21 +30,13 @@ export class CreategroupComponent implements OnInit{
   constructor(
     private chatlistService: ChatlistService, //privatelist
     private localStorage: LocalstorageService,
-    private signalRService:SignalRService
+    private signalRService:SignalRService, 
+    private message: NzMessageService // Inject NzMessageService
   ) {}
 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
 
-  ngOnInit(): void {
-
-    //  this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-    //   tap(chats => console.log(chats)), 
-    // ).subscribe((chats: ChatListVM[]) => {
-    //   console.log("Friends Subscribed: "+ chats);
-    //   this.privateChat = chats.filter(chat => chat.RoomType === false);     
-    // });
-
-  }
+  ngOnInit(): void {}
  
   showModal(): void {
     this.isVisible = true;
@@ -62,6 +56,7 @@ export class CreategroupComponent implements OnInit{
     next: (response) => {
       // Handle the response from the backend if needed
       console.log('Backend response:', response);
+      this.message.success('Group created successfully');
     },
     error: (error) => {
       console.log('Error from the backend:', error);

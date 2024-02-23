@@ -10,6 +10,7 @@ import { Group } from '../../../Models/DTO/Group/group';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { GroupMemberList } from '../../../Models/DTO/GroupMember/group-member-list';
 import { GroupMemberServiceService } from '../../../Services/GroupMember/group-member-service.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 
 @Component({
@@ -31,14 +32,15 @@ export class ChatHeaderComponent implements OnInit {
     private _signalRService: SignalRService,
     private modalService: NzModalService,
     private localStorage: LocalstorageService,
-    private groupMemberServiceService: GroupMemberServiceService
+    private groupMemberServiceService: GroupMemberServiceService, 
+    private message: NzMessageService // Inject NzMessageService
   ) { }
 
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   currentChatRoom = {} as ChatListVM;
   IsCurrentChatUser: boolean = false;
-  InComingUsers: string[] =[];
+  InComingUsers: string[] = [];
 
   ngOnInit(): void {
     this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
@@ -46,31 +48,29 @@ export class ChatHeaderComponent implements OnInit {
       this.IsCurrentChatUser = false;
     });
 
-    this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    this._signalRService.UserTypingStatus().subscribe((status: TypingStatus) => {
       //Check If Current Chat Room
-      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) 
-      {
+      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) {
         // For Group Chat
-        if(this.currentChatRoom.RoomType)
-        {
+        if (this.currentChatRoom.RoomType) {
           this.IsCurrentChatUser = true;
           if (status.isTyping) {
             // Add the user if they are typing and not already present in the list
             if (!this.InComingUsers.includes(status.currentUserProfileName)) {
               this.InComingUsers.push(status.currentUserProfileName);
             }
-          } 
-          else{
+          }
+          else {
             this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
           }
         }
         // For One-On-One Chat
-        else{
+        else {
           this.IsCurrentChatUser = status.isTyping;
         }
       }
       // Different Chat Room
-      else{
+      else {
         this.IsCurrentChatUser = false;
       }
     });
@@ -83,9 +83,11 @@ export class ChatHeaderComponent implements OnInit {
       UserId1: this.userId1,
       UserId2: this.currentChatRoom.UserId
     };
-    
+
     this.friendService.DeleteFriend(this.request).subscribe(response => {
       console.log('Friend Deleted successful: ', response);
+      this.message.success('User deleted successfully');
+
     });
   }
 
@@ -135,6 +137,8 @@ export class ChatHeaderComponent implements OnInit {
       next: (response) => {
         // Handle the response from the backend if needed
         console.log('Backend response:', response);
+        this.message.success('User removed successfully');
+
       },
       error: (error) => {
         console.log('Error from the backend:', error);
@@ -147,6 +151,8 @@ export class ChatHeaderComponent implements OnInit {
       next: (response) => {
         // Handle the response from the backend if needed
         console.log('Backend response:', response);
+        this.message.success('Group quit successfully');
+
       },
       error: (error) => {
         console.log('Error from the backend:', error);
@@ -163,4 +169,6 @@ export class ChatHeaderComponent implements OnInit {
     console.log('Button cancel clicked!');
     this.isVisibleRemoveUserModal = false;
   }
+
+
 }
