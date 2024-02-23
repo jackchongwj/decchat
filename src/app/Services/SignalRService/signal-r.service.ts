@@ -38,7 +38,6 @@ export class SignalRService {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
         return this.hubConnection.start()
         .then(() => {
-          console.log("id", Id);
           console.log('Connection started');
         })
         .catch(err => console.log('Error while starting connection: ' + err));
@@ -55,9 +54,9 @@ export class SignalRService {
     .catch(err => console.error('Error while closing connection'));
   }
 
-  public InformUserTyping(chatroomId:number, typing:boolean)
+  public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
   {
-    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing)
+    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing, profilename)
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
@@ -66,10 +65,9 @@ export class SignalRService {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
-        //console.log("Reach FE Typing Status Listen");
-        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean) => {
+        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean, currentUserProfileName:string) => {
           this.ngZone.run(() => {
-            observer.next({ChatRoomId, isTyping});
+            observer.next({ChatRoomId, isTyping, currentUserProfileName});
           })
         })
       }
@@ -81,7 +79,6 @@ export class SignalRService {
     return this.hubConnection;
   }
 
-  
   
   updateMessageListener(): Observable<ChatRoomMessages> {
     return new Observable<ChatRoomMessages>(observer => {
@@ -96,6 +93,7 @@ export class SignalRService {
     });
   }
 
+  //searchh signalR
   updateSearchResultsListener(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -109,7 +107,7 @@ export class SignalRService {
     });
   } 
   
-
+  //friend request signalR
   updateFriendRequestListener(): Observable<User[]> {
     return new Observable<User[]>(observer => {
       if (this.hubConnection) {
@@ -148,7 +146,22 @@ export class SignalRService {
       }
     });
   }
+  
+  //delete friend
+  DelteFriend(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('DeleteFriend', (userId: number) => {
+          console.log('Delete Friend Successfull:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
+        });
+      }
+    });
+  }
 
+  //update private chatlist
   updatePrivateChatlist(): Observable<ChatListVM> {
     return new Observable<ChatListVM>(observer => {
       if (this.hubConnection) {
@@ -162,13 +175,14 @@ export class SignalRService {
     });
   }
 
-  DelteFriend(): Observable<number> {
-    return new Observable<number>(observer => {
+  // chatlist
+  retrieveChatlistListener(): Observable<ChatListVM[]> {
+    return new Observable<ChatListVM[]>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('DeleteFriend', (userId: number) => {
-          console.log('Delete Friend Successfull:', userId); 
+        this.hubConnection.on('Chatlist', (newResults: ChatListVM[]) => {
+          console.log('Received chatlist', newResults); 
           this.ngZone.run(() => {
-            observer.next(userId);
+            observer.next(newResults);
           });
         });
       }

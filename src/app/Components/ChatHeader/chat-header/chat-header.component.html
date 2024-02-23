@@ -1,6 +1,12 @@
 <div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
   <img nz-image width="200px" height="200px" [nzSrc]="currentChatRoom.ProfilePicture" alt="" class="chatprofile">
-
+  <h1>
+    {{ currentChatRoom.ChatRoomName }}
+    <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
+      is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    </span>
+  </h1>
+  
   <!-- Modal 1: Delete Friend Modal -->
   <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()" (nzOnOk)="handleOkDeleteFriend()"
       [nzOkText]="'Create'">
@@ -53,16 +59,7 @@
     </ng-container>
   </nz-modal>
 
-    <h1>
-      {{ currentChatRoom.ChatRoomName }}
-      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
-        is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-      </span>
-
-      <span *ngIf="IsCurrentChatUser&&currentChatRoom.RoomType" class="typing-indicator">
-        Someone is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-      </span>
-    </h1>
+    
 
     <button class="custom-button" (click)="showModalHeader()" *ngIf="currentChatRoom.RoomType == false">
       <i class="custom-icon" nz-icon nzType="delete">
@@ -96,3 +93,11 @@
 
     
 </div>
+
+<span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers[0] }} is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>
+
+<span *ngIf="InComingUsers.length > 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>

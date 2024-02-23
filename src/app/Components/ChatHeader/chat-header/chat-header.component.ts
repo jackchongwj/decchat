@@ -37,8 +37,8 @@ export class ChatHeaderComponent implements OnInit {
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   currentChatRoom = {} as ChatListVM;
-  imageUrl: string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
   IsCurrentChatUser: boolean = false;
+  InComingUsers: string[] =[];
 
   ngOnInit(): void {
     this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
@@ -46,14 +46,35 @@ export class ChatHeaderComponent implements OnInit {
       this.IsCurrentChatUser = false;
     });
 
-    this._signalRService.UserTypingStatus().subscribe((status: TypingStatus) => {
-      if (status.isTyping && status.ChatRoomId == this.currentChatRoom.ChatRoomId) {
-        this.IsCurrentChatUser = true;
+    this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
+      //Check If Current Chat Room
+      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) 
+      {
+        // For Group Chat
+        if(this.currentChatRoom.RoomType)
+        {
+          this.IsCurrentChatUser = true;
+          if (status.isTyping) {
+            // Add the user if they are typing and not already present in the list
+            if (!this.InComingUsers.includes(status.currentUserProfileName)) {
+              this.InComingUsers.push(status.currentUserProfileName);
+            }
+          } 
+          else{
+            this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
+          }
+        }
+        // For One-On-One Chat
+        else{
+          this.IsCurrentChatUser = status.isTyping;
+        }
       }
-      else {
+      // Different Chat Room
+      else{
         this.IsCurrentChatUser = false;
       }
     });
+
   }
 
   DeleteFriend(): void {
@@ -62,7 +83,7 @@ export class ChatHeaderComponent implements OnInit {
       UserId1: this.userId1,
       UserId2: this.currentChatRoom.UserId
     };
-    console.log("delete friend")
+    
     this.friendService.DeleteFriend(this.request).subscribe(response => {
       console.log('Friend Deleted successful: ', response);
     });
@@ -105,20 +126,6 @@ export class ChatHeaderComponent implements OnInit {
       this.groupMembers = groupMembers;
       console.log(this.groupMembers);
     });
-
-    // this._signalRService.removeUserListener()
-    //   .subscribe(({ chatRoomId, userId }) => {
-    //     console.log("userid", userId);
-    //     this.groupMembers = this.groupMembers.filter(list => list.UserId != userId);
-    //     console.log("list", this.groupMembers);
-    //     // console.log('Received updated friend request result/s:', this.getFriendRequest);
-    //   });
-
-    // this._signalRService.quitGroupListener()
-    //   .subscribe(({ chatRoomId, userId }) => {
-    //     console.log("quited", chatRoomId, userId)
-    //     this.groupMembers = this.groupMembers.filter(chat => chat.UserId != userId);
-    //   });
   }
 
   Delete(userId: number): void {

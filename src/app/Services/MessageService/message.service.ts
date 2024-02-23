@@ -16,14 +16,12 @@ export class MessageService {
 
   sendMessage(formData:FormData): Observable<ChatRoomMessages>
   {
-    console.log(AddMessageUrl);
     return this.http.post<ChatRoomMessages>(AddMessageUrl, formData, { withCredentials: true });
   }
 
   getMessage(ChatRoomId: number): Observable<any>
   {
     const params = new HttpParams().set('ChatRoomId', ChatRoomId);
-    console.log(`${MessageUrl}GetMessage`);
     return this.http.get(`${MessageUrl}GetMessage`, {params})
   }
 
