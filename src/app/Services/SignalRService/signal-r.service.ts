@@ -41,7 +41,6 @@ export class SignalRService {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
         return this.hubConnection.start()
         .then(() => {
-          console.log("id", Id);
           console.log('Connection started');
         })
         .catch(err => console.log('Error while starting connection: ' + err));
@@ -52,16 +51,15 @@ export class SignalRService {
     return Promise.reject("Invalid ID");
   }
 
-  // public AddToGroup(chatlists: ChatListVM[])
-  // {
-  //   console.log("list", chatlists);
-  //   this.hubConnection.invoke("AddToGroup", chatlists, null, null)
-  //   .then(() => console.log('AddToGroup invoked successfully'))
-  //   .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
-  // }
+  public stopConnection(): Promise<void> {
+    return this.hubConnection.stop()
+    .then(() => console.log('SignalR connection closed'))
+    .catch(err => console.error('Error while closing connection'));
+  }
 
-  public InformUserTyping(chatroomId: number, typing: boolean) {
-    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing)
+  public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
+  {
+    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing, profilename)
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
@@ -69,20 +67,13 @@ export class SignalRService {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
-        //console.log("Reach FE Typing Status Listen");
-        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean) => {
+        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean, currentUserProfileName:string) => {
           this.ngZone.run(() => {
-            observer.next({ ChatRoomId, isTyping });
+            observer.next({ChatRoomId, isTyping, currentUserProfileName});
           })
         })
       }
     })
-  }
-
-  public stopConnection(): Promise<void> {
-    return this.hubConnection.stop()
-    .then(() => console.log('SignalR connection closed'))
-    .catch(err => console.error('Error while closing connection'));
   }
 
   public getHubConnection(): signalR.HubConnection
@@ -90,7 +81,6 @@ export class SignalRService {
     return this.hubConnection;
   }
 
-  
   
   updateMessageListener(): Observable<ChatRoomMessages> {
     return new Observable<ChatRoomMessages>(observer => {
@@ -104,19 +94,8 @@ export class SignalRService {
       }
     });
   }
-  
-  addNewGroupListener(): Observable<any> {
-    return new Observable<any>(observer => {
-      if (this.hubConnection) {
-        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
-        this.ngZone.run(() => {
-          observer.next(chatListVM); // Emit the roomName to observers
-        });       
-        });
-      }
-    });
-  }
 
+  //searchh signalR
   updateSearchResultsListener(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -130,7 +109,7 @@ export class SignalRService {
     });
   } 
   
-
+  //friend request signalR
   updateFriendRequestListener(): Observable<User[]> {
     return new Observable<User[]>(observer => {
       if (this.hubConnection) {
@@ -157,7 +136,6 @@ export class SignalRService {
     });
   }
 
-
   updateSearchResultsAfterReject(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -170,7 +148,22 @@ export class SignalRService {
       }
     });
   }
+  
+  //delete friend
+  DelteFriend(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('DeleteFriend', (userId: number) => {
+          console.log('Delete Friend Successfull:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
+        });
+      }
+    });
+  }
 
+  //update private chatlist
   updatePrivateChatlist(): Observable<ChatListVM> {
     return new Observable<ChatListVM>(observer => {
       if (this.hubConnection) {
@@ -184,16 +177,51 @@ export class SignalRService {
     });
   }
 
-  DelteFriend(): Observable<number> {
-    return new Observable<number>(observer => {
+  // chatlist
+  retrieveChatlistListener(): Observable<ChatListVM[]> {
+    return new Observable<ChatListVM[]>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('DeleteFriend', (userId: number) => {
-          console.log('Delete Friend Successfull:', userId); 
+        this.hubConnection.on('Chatlist', (newResults: ChatListVM[]) => {
+          console.log('Received chatlist', newResults); 
           this.ngZone.run(() => {
-            observer.next(userId);
+            observer.next(newResults);
           });
         });
       }
+    });
+  }
+
+  addNewGroupListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
+        this.ngZone.run(() => {
+          observer.next(chatListVM); // Emit the roomName to observers
+        });       
+        });
+      }
+    });
+  }
+  
+   removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('UserRemoved', (chatRoomId: number, userId: number) => {
+        console.log("RSR", { chatRoomId, userId })
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
+    });
+  }
+
+  quitGroupListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('QuitGroup', (chatRoomId: number, userId: number) => {
+        console.log("QSR", { chatRoomId, userId })
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
     });
   }
   

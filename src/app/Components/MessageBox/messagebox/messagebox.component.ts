@@ -48,7 +48,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   recordingInProgress = new Subject<boolean>();
 
   ngOnInit(): void {
-    console.log("Ignore OnInit");
     this._dataShareService.selectedChatRoomData.subscribe(data => {
       this.currentUserChatRoomId = data.UserChatRoomId;
       this.currentChatRoom = data.ChatRoomId;
@@ -135,8 +134,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     this.message.UserId = this.userId;
     this.message.ProfileName = this.currentUserPN;
 
-    console.log("message", this.message);
-
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
     formData.append('message', JSON.stringify(this.message));
@@ -148,8 +145,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
 
     this._mService.sendMessage(formData).subscribe({
       next: (res:ChatRoomMessages) => {
-        console.log(res);
-
         //this._sService.notifyMessage(res);
         // Limit message send rate
         this.sendCooldownOn = true; // Activate cooldown
@@ -238,18 +233,17 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   }
 
   OnInputFocus(): void {
-    console.log("CurrentChatRoom MSGBox: ", this.currentChatRoom);
-    this._sService.InformUserTyping(this.currentChatRoom, true);
+    this._sService.InformUserTyping(this.currentChatRoom, true, this.currentUserPN);
   }
 
   OnInputBlur(): void {
-    this._sService.InformUserTyping(this.currentChatRoom, false);
+    this._sService.InformUserTyping(this.currentChatRoom, false, this.currentUserPN);
   }
 
   // Handle Event Show User Status = 1 After Refresh
   @HostListener('window:beforeunload')
   onBeforeUnload(): void {
-    this._sService.InformUserTyping(this.currentChatRoom, false);
+    this._sService.InformUserTyping(this.currentChatRoom, false, this.currentUserPN);
   }
 
   // Voice Message Recording Session

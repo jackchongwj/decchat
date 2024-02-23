@@ -1,61 +1,127 @@
 <div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
-    <img nz-image
-      width="200px"
-      height="200px"
-      [nzSrc]="currentChatRoom.ProfilePicture"
-      alt="" class="chatprofile">
-    <h1>
-      {{ currentChatRoom.ChatRoomName }}
+  <img nz-image width="200px" height="200px" [nzSrc]="currentChatRoom.ProfilePicture" alt="" class="chatprofile">
+  <h1>
+    {{ currentChatRoom.ChatRoomName }}
+    <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
+      is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    </span>
+  </h1>
 
-     <!-- NZ-ZORRO Kebab menu -->
+   <!-- NZ-ZORRO Kebab menu -->
 
-      <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
-        <i nz-icon nzType="more" nzTheme="outline"></i>
-      </button>
-      <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
-        <ul nz-menu>
-          <li nz-menu-item (click)="toggleModal()">Group Profile</li>
-          <li nz-menu-item>Delete Group</li>
-          <li nz-menu-item>Add/Kick Member</li>
-        </ul>
-      </nz-dropdown-menu>
+   <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
+    <i nz-icon nzType="more" nzTheme="outline"></i>
+  </button>
+  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
+      <li nz-menu-item>Delete Group</li>
+      <li nz-menu-item>Add/Kick Member</li>
+    </ul>
+  </nz-dropdown-menu>
+  
+  <!-- Modal 1: Delete Friend Modal -->
+  <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()" (nzOnOk)="handleOkDeleteFriend()"
+      [nzOkText]="'Create'">
 
-      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
-        is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-      </span>
-      
-      <span *ngIf="IsCurrentChatUser&&currentChatRoom.RoomType" class="typing-indicator">
-        Someone is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-      </span>
-    </h1>
+      <ng-container *nzModalContent>
 
-      <button class="custom-button" (click)="showModalFn()" *ngIf="currentChatRoom.RoomType == false">
-        <i class="custom-icon" nz-icon nzType="user-delete">
-        </i>
-      </button>
-    
-      <!-- Modal -->
-      <nz-modal [(nzVisible)]="isVisible" nzTitle="Delete Friend"
-      (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'" (nzOnOk)="handleOk()" [nzOkText]="'Confirm'">
-    
-        <ng-container *nzModalContent>
-    
-          <div class="friend-list-container">
-            Unfriend this person?
-          </div>
-          
-        </ng-container>
-        <div nz-row nzGutter="16">
-          <div nz-col nzSpan="12">
-            <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-          </div>
-          <div nz-col nzSpan="12">
-            <button nz-button nzType="primary" (click)="handleOk()">Delete Friend</button>
+        <div class="friend-list-container">
+          DO YOU WANT TO DELETE THIS FRIEND
+        </div>
+
+      </ng-container>
+      <div nz-row nzGutter="16">
+        <div nz-col nzSpan="12">
+          <button nz-button nzType="default" (click)="handleCancelDeleteFriend()">Cancel</button>
+        </div>
+        <div nz-col nzSpan="12">
+          <button nz-button nzType="primary" (click)="handleOkDeleteFriend()">Delete Friend</button>
+        </div>
+      </div>
+    </nz-modal>
+
+  <!-- Modal 2: Group Members Modal -->
+  <!-- <button nz-button [nzType]="'primary'" (click)="ExitGroup()"><span>Exit Group</span></button>
+  <button (click)="showModalRemoveUser()"
+    *ngIf="currentChatRoom.InitiatedBy == userId"><span>RemoveUser</span></button> -->
+  <nz-modal [(nzVisible)]="isVisibleRemoveUserModal" nzTitle="Group Members" (nzOnCancel)="handleCancelRemoveUser()"
+    (nzOnOk)="handleOkRemoveUser()">
+    <ng-container *nzModalContent>
+
+      <div class="group-member-container">
+        <div *ngIf="groupMembers.length > 0" class="no-result-message">
+          <div *ngFor="let user of groupMembers" class="group-member-item">
+            <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image">
+
+            <div class="user-info">
+              <span class="profile-name">{{ user.ProfileName }}</span>
+
+              <div class="action-buttons">
+                <span nz-icon nzType="delete" nzTheme="outline" class="delete-icon"
+                  (click)="Delete(user.UserId)"></span>
+              </div>
+            </div>
           </div>
         </div>
-      </nz-modal>
+
+        <div *ngIf="groupMembers.length === 0" class="no-result-message">
+          No users selected.
+        </div>
+      </div>
+    </ng-container>
+  </nz-modal>
+
+    
+
+    <button class="custom-button" (click)="showModalHeader()" *ngIf="currentChatRoom.RoomType == false">
+      <i class="custom-icon" nz-icon nzType="delete">
+      </i>
+    </button>
+
+  <!-- Dropdown -->
+  <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy == userId">
+    <i nz-icon nzType="more" nzTheme="outline"></i>
+  </button>
+  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
+      <li nz-menu-item (click)="showModalRemoveUser()">Remove User</li>
+      <li nz-menu-item (click)="ExitGroup()">Quit</li>
+    </ul>
+  </nz-dropdown-menu>
+
+  <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy != userId">
+    <i nz-icon nzType="more" nzTheme="outline"></i>
+  </button>
+  <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
+      <li nz-menu-item (click)="ExitGroup()">Quit</li>
+    </ul>
+  </nz-dropdown-menu>
+
+
+  <!-- Modal 3: Remove User Confirmation Modal -->
+
     
 </div>
+
+<span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers[0] }} is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>
+
+<span *ngIf="InComingUsers.length > 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>
+
+<span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers[0] }} is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>
+
+<span *ngIf="InComingUsers.length > 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
+  {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+</span>
 
   <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
     <ng-container *nzModalContent>

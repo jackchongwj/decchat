@@ -89,6 +89,67 @@
   position: relative;
 }
 
+  nz-button-group {
+    margin: 0 8px 8px 0;} 
+
+  /* imge */
+  .circular-image {
+    border-radius: 50%;
+    width: 30px;  
+    height: 30px; 
+    object-fit: cover;
+    margin-right: 8px;  
+  }
+  
+/* modal */
+/* imge */
+.circular-image {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
+.group-member-container {
+  text-align: center;
+  margin: 10px;
+}
+
+.group-member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Add this line */
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-weight: bold;
+}
+
+.action-buttons {
+  margin-top: 10px;
+}
+
+.delete-icon {
+  cursor: pointer;
+  color: #ff4d4f; /* Customize the color if needed */
+}
 
   .dropdown-button {
     position: absolute; /* Take the button out of the document flow and position it absolutely */

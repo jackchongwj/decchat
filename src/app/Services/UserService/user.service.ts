@@ -20,7 +20,6 @@ export class UserService {
 
   getFriendRequest(userId: Number): Observable<any>
   {
-    console.log("f", userId);
     const params = new HttpParams().set('userId',userId.toString());
     return this.http.get(`${UserUrl}FriendRequest`, {params})
   }

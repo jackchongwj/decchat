@@ -5,6 +5,7 @@ import { UserService } from '../Services/UserService/user.service';
 import { User } from '../Models/User/user';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
+import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { AuthService } from '../Services/Auth/auth.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
@@ -30,6 +31,7 @@ export class UserProfileComponent implements OnInit {
     private userService: UserService, 
     private router: Router,
     private lsService:LocalstorageService,
+    private dsService:DataShareService,
     private authService: AuthService,
     private message: NzMessageService,
     private signalRService: SignalRService
@@ -93,15 +95,17 @@ export class UserProfileComponent implements OnInit {
       return;
     }
 
-  this.userService.getUserById(this.userId).subscribe({
-    next: (data) => {
-      this.User = data;
-    },
-    error: (error) => {
-      console.error('Error fetching user data:', error);
-    }
-  });
-}
+    this.userService.getUserById(this.userId).subscribe({
+      next: (data) => {
+        this.User = data;
+        console.log("Current user data: ", data);
+        this.dsService.updateLoginUserPN(data.ProfileName);
+      },
+      error: (error) => {
+        console.error('Error fetching user data:', error);
+      }
+    });
+  }
 
   deleteAccount() {
     // Use your userService to delete the account
