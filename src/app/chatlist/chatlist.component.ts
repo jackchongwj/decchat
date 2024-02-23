@@ -22,7 +22,6 @@ export class ChatlistComponent implements OnInit{
   isSelectedData: boolean = false;
 
   constructor(
-    private chatlistService: ChatlistService,
     private dataShareService: DataShareService,
     private signalRService: SignalRService,
     private localStorage: LocalstorageService,
@@ -30,6 +29,7 @@ export class ChatlistComponent implements OnInit{
     ) {}
 
   ngOnInit(): void {
+    this.getChatList();
   }
 
   getChatList(){
@@ -71,11 +71,12 @@ export class ChatlistComponent implements OnInit{
 
   private RetrieveChatlist() : void
   {
-
     this.signalRService.retrieveChatlistListener()
     .subscribe((chats: ChatListVM[]) => {
+      console.log("Reach component retrieve chat list");
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.groupChat = chats.filter(chat => chat.RoomType === true); 
     });
   }
+
 }
