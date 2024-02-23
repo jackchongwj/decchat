@@ -38,7 +38,6 @@ export class SignalRService {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
         return this.hubConnection.start()
         .then(() => {
-          console.log("id", Id);
           console.log('Connection started');
         })
         .catch(err => console.log('Error while starting connection: ' + err));
@@ -54,18 +53,10 @@ export class SignalRService {
     .then(() => console.log('SignalR connection closed'))
     .catch(err => console.error('Error while closing connection'));
   }
-  
-  // public AddToGroup(chatlists: ChatListVM[])
-  // {
-  //   console.log("list", chatlists);
-  //   this.hubConnection.invoke("AddToGroup", chatlists, null, null)
-  //   .then(() => console.log('AddToGroup invoked successfully'))
-  //   .catch(err => console.log('Error while invoking "AddToGroup": ' + err));
-  // }
 
-  public InformUserTyping(chatroomId:number, typing:boolean)
+  public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
   {
-    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing)
+    this.hubConnection.invoke("CheckUserTyping", chatroomId, typing, profilename)
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
@@ -74,10 +65,9 @@ export class SignalRService {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
-        //console.log("Reach FE Typing Status Listen");
-        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean) => {
+        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean, currentUserProfileName:string) => {
           this.ngZone.run(() => {
-            observer.next({ChatRoomId, isTyping});
+            observer.next({ChatRoomId, isTyping, currentUserProfileName});
           })
         })
       }

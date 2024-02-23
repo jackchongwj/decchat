@@ -5,6 +5,7 @@ import { UserService } from '../Services/UserService/user.service';
 import { User } from '../Models/User/user';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
+import { DataShareService } from '../Services/ShareDate/data-share.service';
 
 
 @Component({
@@ -27,7 +28,8 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService, 
     private router: Router,
-    private lsService:LocalstorageService
+    private lsService:LocalstorageService,
+    private dsService:DataShareService
   ) 
   {}
 
@@ -94,9 +96,9 @@ export class UserProfileComponent implements OnInit {
 
     this.userService.getUserById(this.userId).subscribe({
       next: (data) => {
-        console.log('Fetched user data:', data);
         this.User = data;
-        console.log('USER',this.User);
+        console.log("Current user data: ", data);
+        this.dsService.updateLoginUserPN(data.ProfileName);
       },
       error: (error) => {
         console.error('Error fetching user data:', error);

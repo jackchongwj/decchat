@@ -34,17 +34,20 @@ export class CreategroupComponent implements OnInit{
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
 
   ngOnInit(): void {
-     this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-      tap(chats => console.log(chats)), 
-    ).subscribe((chats: ChatListVM[]) => {
-      console.log("Friends Subscribed: "+ chats);
-      this.privateChat = chats.filter(chat => chat.RoomType === false);     
-    });
+
+    //  this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+    //   tap(chats => console.log(chats)), 
+    // ).subscribe((chats: ChatListVM[]) => {
+    //   console.log("Friends Subscribed: "+ chats);
+    //   this.privateChat = chats.filter(chat => chat.RoomType === false);     
+    // });
+
   }
  
 
   showModal(): void {
     this.isVisible = true;
+    this.getFriendList();
   }
 
   handleOk(): void {
@@ -73,5 +76,15 @@ export class CreategroupComponent implements OnInit{
   handleCancel(): void {
     console.log('Button cancel clicked!');
     this.isVisible = false;
+  }
+
+  getFriendList(){
+    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+      tap(chats => console.log(chats)), 
+    ).subscribe((chats: ChatListVM[]) => {
+      console.log("Friends Subscribed: "+ chats);
+      this.privateChat = chats.filter(chat => chat.RoomType === false);     
+    });
+
   }
 }
