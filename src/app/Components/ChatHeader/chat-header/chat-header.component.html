@@ -9,7 +9,7 @@
 
      <!-- NZ-ZORRO Kebab menu -->
 
-      <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button">
+      <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
         <i nz-icon nzType="more" nzTheme="outline"></i>
       </button>
       <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
@@ -30,18 +30,18 @@
     </h1>
 
       <button class="custom-button" (click)="showModalFn()" *ngIf="currentChatRoom.RoomType == false">
-        <i class="custom-icon" nz-icon nzType="delete">
+        <i class="custom-icon" nz-icon nzType="user-delete">
         </i>
       </button>
     
       <!-- Modal -->
       <nz-modal [(nzVisible)]="isVisible" nzTitle="Delete Friend"
-      (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Okiee'">
+      (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'" (nzOnOk)="handleOk()" [nzOkText]="'Confirm'">
     
         <ng-container *nzModalContent>
     
           <div class="friend-list-container">
-            DO YOU WANT TO DELETE THIS FRIEND
+            Unfriend this person?
           </div>
           
         </ng-container>

@@ -71,18 +71,20 @@
 
 
   
-/* addFriendButton */
+/* DeleteFriendButton */
 .custom-button {
-  background-color: transparent;
-  border: none;
-  float: right;
+  position: absolute; /* Take the button out of the document flow and position it absolutely */
+  right: 20px; /* Position the button 10px from the right edge of its containing block */
+  top: 50%; /* Center it vertically */
+  transform: translateY(-50%); /* Offset by half its height to truly center it */
+  z-index: 100; /* Make sure it's above other elements */
+  background: transparent;
+  border:none;
 }
 
-/* user-add icon */
+/* user-delete icon */
 .custom-icon {
-  font-size: 18px;
-  float: left;
-  margin-left: 8px;
+  font-size: 25px;
   color: red;
   position: relative;
 }
@@ -90,7 +92,7 @@
 
   .dropdown-button {
     position: absolute; /* Take the button out of the document flow and position it absolutely */
-    right: 10px; /* Position the button 10px from the right edge of its containing block */
+    right: 20px; /* Position the button 10px from the right edge of its containing block */
     top: 50%; /* Center it vertically */
     transform: translateY(-50%); /* Offset by half its height to truly center it */
     z-index: 100; /* Make sure it's above other elements */

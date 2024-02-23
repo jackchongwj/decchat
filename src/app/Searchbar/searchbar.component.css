@@ -3,14 +3,6 @@
     margin-top: 15px; 
     margin-bottom: 15px; 
   }
-
-  .search-bar input {
-    border: 1px solid #111111; 
-    border-radius: 4px;
-    padding: 8px;
-    color: #000000; 
-    background-color: #b9c2ca;
-  }
   
   .search-bar input::placeholder {
     color: #131010; 
@@ -27,6 +19,12 @@
   }
 
   .search-bar input {
+    border: 1px solid #111111; 
+    border-radius: 8px;
+    padding: 8px;
+    padding-left: 18px;
+    color: #000000; 
+    background-color: #fff;
     transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
   }
   
@@ -36,14 +34,11 @@
     background-color: #fff; */
     color: #000000; /* Brighter text color for better contrast on dark backgrounds */
     border-color: #64B5F6; /* A lighter shade of blue for the border */
-    background-color: #7a7777; /* A slightly lighter background to highlight the focus */
+    background-color: #e6dede; /* A slightly lighter background to highlight the focus */
     box-shadow: 0 0 8px 0 rgba(24, 144, 255, 0.5); /* Adding a subtle glow effect */
     outline: none; /* Removing the default focus outline */
   }
 
-  .centered-placeholder::placeholder {
-    text-align: center;
-  }
 
   /* imge */
   .circular-image {
@@ -80,21 +75,13 @@
     right: 20px; 
     top: 0; 
   }
-
-  /* button */
-
-  .custom-button {
-    color: white;
-    border: none;
-    margin-top: 10px;
-  }
   
   .search-button-container {
     display: flex;
     justify-content: center; /* Centers horizontally */
     align-items: center; /* Centers vertically */
     padding: 6px; /* Adjust the padding as needed */
-    margin-left: 30px;
+    margin-left: 21px;
 }
 
 .search-button {
@@ -116,10 +103,10 @@
   max-height: 200px; /* Adjust the height as needed */
   overflow-y: auto; /* Adds a scrollbar if the content exceeds the container height */
   width: 100%; /* Adjust if needed, ensures the container fits the width of its parent */
-  
+  border-radius: 8px;
 }
 
-.search-button-container:hover .sidebar-icon{
+.search-button-container:hover .search-icon{
   color:aqua
 }
 

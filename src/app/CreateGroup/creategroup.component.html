@@ -6,7 +6,7 @@
   
 <!-- Modal -->
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Create Group"
-          (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Create'">
+          (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'" (nzOnOk)="handleOk()" [nzOkText]="'Create'">
   <ng-container *nzModalContent>
 
     <div>
