@@ -20,7 +20,6 @@ export class ChatlistComponent implements OnInit{
   groupChat: ChatListVM[] = [];
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
   isSelectedData: boolean = false;
-  // userId = 7;
 
   constructor(
     private chatlistService: ChatlistService,
@@ -28,17 +27,10 @@ export class ChatlistComponent implements OnInit{
     private dataShareService: DataShareService,
     private signalRService: SignalRService,
     private localStorage: LocalstorageService,
-    private signalRFService: SignalRFriendService,
     private ngZone: NgZone 
     ) {}
 
   ngOnInit(): void {
-    // this.signalRService.addNewGroupListener().subscribe(chatListVM => {
-    //   console.log('Received new group :', chatListVM);
-    //   // Add the new room to the groupChat array
-    //   this.groupChat.push(chatListVM);
-
-    // });
     this.getChatList();
   }
 
@@ -58,7 +50,7 @@ export class ChatlistComponent implements OnInit{
   
           console.log("Grouplist", this.groupChat);
           // this.dataShareService.updateChatListData(chats);
-          this.signalRService.AddToGroup(chats);
+          // this.signalRService.AddToGroup(chats);
   
           this.dataShareService.updateChatListData(chats);
         });
@@ -97,7 +89,6 @@ export class ChatlistComponent implements OnInit{
       });
   }
 
-
   private updateGroupChatList():void {
     this.signalRService.removeUserListener()
         .subscribe(({ chatRoomId, userId }) => {
@@ -108,7 +99,6 @@ export class ChatlistComponent implements OnInit{
           }
         });
   }
-
 
   private updateQuitGroup():void {
     this.signalRService.quitGroupListener()
@@ -121,9 +111,6 @@ export class ChatlistComponent implements OnInit{
         });
   }
 
-
-
-
   private addNewGroupListener(): void
   {  
     this.signalRService.addNewGroupListener().subscribe(chatListVM => {
@@ -133,5 +120,4 @@ export class ChatlistComponent implements OnInit{
   
     });
   }
-
 }

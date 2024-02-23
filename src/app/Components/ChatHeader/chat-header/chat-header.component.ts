@@ -18,12 +18,13 @@ import { GroupMemberServiceService } from '../../../Services/GroupMember/group-m
   styleUrl: './chat-header.component.css'
 })
 export class ChatHeaderComponent implements OnInit{
-  isVisible: boolean = false; // Define the isVisible property here
+  isVisibleDeleteFriendModal: boolean = false; // Visibility property for Delete Friend modal
+  isVisibleRemoveUserModal: boolean = false; // Visibility property for Remove User modal
+  isVisible: boolean = false;
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
   groupMembers: GroupMemberList[] = [];
   groupChat: ChatListVM[] = [];
-
-
+  
   constructor(
     private _dataShareService:DataShareService,
     private friendService: FriendsService,
@@ -43,10 +44,6 @@ export class ChatHeaderComponent implements OnInit{
     this._dataShareService.selectedChatRoomData.subscribe( chatroom => {
       this.currentChatRoom = chatroom;
       this.IsCurrentChatUser = false;
-      // console.log("ccroom",this.currentChatRoom);
-      // this.fetchSelectedUsers();
-      // this.getGroupMembers();
-
     });
 
     this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
@@ -72,24 +69,33 @@ export class ChatHeaderComponent implements OnInit{
     });
   }
 
-    //Model
-    showModal(): void {
-      this.isVisible = true;
+    // Show or hide Delete Friend modal
+    showModalDeleteFriend(): void {
+      this.isVisibleDeleteFriendModal  = true;
     }
   
-    handleOk(): void {
+    handleOkDeleteFriend(): void {
       this.DeleteFriend();
       console.log('Button ok clicked!');
-      this.isVisible = false;
+      this.isVisibleDeleteFriendModal  = false;
     }
   
-    handleCancel(): void {
+    handleCancelDeleteFriend(): void {
       console.log('Button cancel clicked!');
-      this.isVisible = false;
+      this.isVisibleDeleteFriendModal  = false;
     }
 
-    showModaleRemove():void{
-      this.isVisible = true;
+    //showModalHeader
+    showModalHeader(): void {
+    this.isVisible = true;
+    }
+  
+    toggleModal(): void {
+      this.isVisible = !this.isVisible;
+    }
+  
+    showModalRemoveUser():void{
+      this.isVisibleRemoveUserModal  = true;
   
       console.log("clicked");
       // this.getGroupMembers();
@@ -129,8 +135,7 @@ export class ChatHeaderComponent implements OnInit{
           }
         });
       }
-    
-      
+         
       ExitGroup():void{  
         this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
           next: (response) => {
@@ -143,17 +148,13 @@ export class ChatHeaderComponent implements OnInit{
         });
       }
     
-        handleOk(): void {
+      handleOkRemoveUser(): void {
           console.log('Button ok clicked!');
-          this.isVisible = false;
+          this.isVisibleRemoveUserModal  = false;
         }
       
-        handleCancel(): void {
+        handleCancelRemoveUser(): void {
           console.log('Button cancel clicked!');
-          this.isVisible = false;
-        }
-  
-        
-
-          
+          this.isVisibleRemoveUserModal = false;
+        }         
 }
