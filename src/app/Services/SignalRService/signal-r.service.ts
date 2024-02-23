@@ -80,7 +80,6 @@ export class SignalRService {
   }
 
   
-  
   updateMessageListener(): Observable<ChatRoomMessages> {
     return new Observable<ChatRoomMessages>(observer => {
       if (this.hubConnection) {
@@ -106,6 +105,7 @@ export class SignalRService {
     });
   }
 
+  //searchh signalR
   updateSearchResultsListener(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -119,7 +119,7 @@ export class SignalRService {
     });
   } 
   
-
+  //friend request signalR
   updateFriendRequestListener(): Observable<User[]> {
     return new Observable<User[]>(observer => {
       if (this.hubConnection) {
@@ -146,7 +146,6 @@ export class SignalRService {
     });
   }
 
-
   updateSearchResultsAfterReject(): Observable<number> {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
@@ -159,7 +158,22 @@ export class SignalRService {
       }
     });
   }
+  
+  //delete friend
+  DelteFriend(): Observable<number> {
+    return new Observable<number>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('DeleteFriend', (userId: number) => {
+          console.log('Delete Friend Successfull:', userId); 
+          this.ngZone.run(() => {
+            observer.next(userId);
+          });
+        });
+      }
+    });
+  }
 
+  //update private chatlist
   updatePrivateChatlist(): Observable<ChatListVM> {
     return new Observable<ChatListVM>(observer => {
       if (this.hubConnection) {
@@ -173,13 +187,14 @@ export class SignalRService {
     });
   }
 
-  DelteFriend(): Observable<number> {
-    return new Observable<number>(observer => {
+  // chatlist
+  retrieveChatlistListener(): Observable<ChatListVM[]> {
+    return new Observable<ChatListVM[]>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('DeleteFriend', (userId: number) => {
-          console.log('Delete Friend Successfull:', userId); 
+        this.hubConnection.on('Chatlist', (newResults: ChatListVM[]) => {
+          console.log('Received chatlist', newResults); 
           this.ngZone.run(() => {
-            observer.next(userId);
+            observer.next(newResults);
           });
         });
       }
