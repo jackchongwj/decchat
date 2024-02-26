@@ -29,12 +29,6 @@ import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room
 import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzMessageModule } from 'ng-zorro-antd/message';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 registerLocaleData(ms);
 
@@ -66,17 +60,10 @@ registerLocaleData(ms);
     AppRoutingModule,
     IconsProviderModule,
     FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
     ImportNgZorroAntdModule,
-    NzAvatarModule,
-    NzModalModule,
-    NzMessageModule,
-    NzButtonModule,
-    NzIconModule,
-    NzBadgeModule,
     ReactiveFormsModule
   ],
   

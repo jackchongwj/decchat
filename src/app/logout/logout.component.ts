@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AuthService } from '../Services/Auth/auth.service';
-import { Router } from '@angular/router';
-import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
-import { SignalRService } from '../Services/SignalRService/signal-r.service';
 
 @Component({
   selector: 'app-logout',
@@ -12,19 +10,12 @@ import { SignalRService } from '../Services/SignalRService/signal-r.service';
 })
 export class LogoutComponent {
 
-  constructor(
-    private localStorageService: LocalstorageService,
-    private authService: AuthService,
-    private message: NzMessageService,
-    private router: Router,
-    private signalRService:SignalRService) {}
+  constructor(private authService: AuthService, private message: NzMessageService, private router: Router) {}
 
-  logout(): void {
+  submit(): void {
 
     this.authService.logout().subscribe({
       next: (res) => {
-        this.localStorageService.clear();
-        this.signalRService.stopConnection();
         console.log('Logout successful!', res)
         this.message.success(res.Message || 'Logout successful');
         this.router.navigate(['/login']);

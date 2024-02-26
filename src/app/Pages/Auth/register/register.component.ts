@@ -170,7 +170,7 @@ export class RegisterComponent {
       return this.userService.doesUsernameExist(control.value)
         .pipe(
           map(isExist => {
-            return isExist ? { 'duplicate': true } : null;
+            return isExist ? { duplicate: true } : null;
           })
         );
     };
@@ -258,7 +258,7 @@ export class RegisterComponent {
   
     if (control && control.touched && !this.isLoading) {
       if (controlName === 'username') {
-        if (control.hasError('required') || control.hasError('invalid') || control.hasError('maxLength')) {
+        if (control.hasError('required') || control.hasError('invalid') || control.hasError('maxLength') || control.hasError('duplicate')) {
           return 'error';
         } else {
           return 'success';
