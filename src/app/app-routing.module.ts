@@ -7,10 +7,11 @@ import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component'
 import { ChangePasswordComponent } from './ChangePassword/change-password.component'
 
 const routes: Routes = [
-  { path: '', canActivate: [AuthGuard] ,component : HomepageComponent },
-  { path: 'login', component : LoginComponent },
-  { path: 'register', component : RegisterComponent},
-  { path: 'change-password', component: ChangePasswordComponent }
+  { path: '', component : LoginComponent, canActivate : [ AuthGuard ] },
+  { path: 'login', component : LoginComponent, canActivate : [ AuthGuard ] },
+  { path: 'dashboard', component: HomepageComponent, canActivate : [ AuthGuard ]},
+  { path: 'change-password', component: ChangePasswordComponent, canActivate : [ AuthGuard ] },
+  { path: 'register', component : RegisterComponent }
 ];
 
 @NgModule({

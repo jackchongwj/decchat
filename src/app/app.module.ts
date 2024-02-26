@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
@@ -29,9 +29,6 @@ import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room
 import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzMessageModule } from 'ng-zorro-antd/message';
 
 registerLocaleData(ms);
 
@@ -51,9 +48,6 @@ registerLocaleData(ms);
     CreategroupComponent,
     UserLoginPageComponent,
     ChatHeaderComponent,
-    ChatRoomMessageComponent,
-    UserLoginPageComponent,
-    ChatHeaderComponent,
     UserProfileComponent,
     ChangePasswordComponent,
     ChatRoomMessageComponent
@@ -63,14 +57,10 @@ registerLocaleData(ms);
     AppRoutingModule,
     IconsProviderModule,
     FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
     ImportNgZorroAntdModule,
-    NzAvatarModule,
-    NzModalModule,
-    NzMessageModule,
     ReactiveFormsModule
   ],
   
@@ -79,6 +69,7 @@ registerLocaleData(ms);
     provideClientHydration(),
     { provide: NZ_I18N, useValue: ms_MY },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
   ],
   bootstrap: [AppComponent]
 })
