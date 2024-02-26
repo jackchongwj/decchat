@@ -4,6 +4,9 @@ import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
+import { Group } from '../Models/DTO/Group/group';
+import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate/user-profile-update';
+import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate/group-profile-update';
 
 
 @Component({
@@ -41,13 +44,14 @@ export class ChatlistComponent implements OnInit {
       this.updateGroupChatList();
       this.UpdateDeletePrivateChatlist();
       this.updateQuitGroup();
+      this.ProfileDetailChanges();
+      this.GroupDetailChanges();
     }
   }
 
   getSelectedChatRoom(ChatRoom: ChatListVM) {
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
   }  
-  
 
   private UpdatePrivateChatList(): void {
     this.signalRService.updatePrivateChatlist()
@@ -68,7 +72,7 @@ export class ChatlistComponent implements OnInit {
         console.log('Received updated private ChatList:', this.privateChat);
       });
   }
-
+  
   private RetrieveChatlist() : void
   {
     this.signalRService.retrieveChatlistListener()
@@ -107,6 +111,56 @@ export class ChatlistComponent implements OnInit {
       // Add the new room to the groupChat array
       this.groupChat.push(chatListVM);
 
+    });
+  }
+  private ProfileDetailChanges(): void {
+    this.signalRService.profileUpdateListener().subscribe({
+      next: (updateInfo: UserProfileUpdate) => {
+        console.log('Updating private chatlist')
+        this.privateChat.forEach((chat) => {
+          console.log(updateInfo.ProfileName)
+          if(chat.UserId === updateInfo.UserId) {
+            if(updateInfo.ProfileName) {
+              console.log('update userId '+ chat.UserId)
+              chat.ChatRoomName = updateInfo.ProfileName;
+              
+            }
+            if(updateInfo.ProfilePicture) {
+              chat.ProfilePicture = updateInfo.ProfilePicture;
+            }
+          }
+        });
+      },
+      error: (error) => console.error('Error listening for profile updates:', error),
+    });
+  }
+
+  private GroupDetailChanges(): void {
+    this.signalRService.groupUpdateListener().subscribe({
+      next: (updateInfo: GroupProfileUpdate) => {
+        console.log('Updating group chatlist', this.groupChat)
+        var result = this.groupChat.findIndex(chatlist => chatlist.ChatRoomId == updateInfo.ChatRoomId)
+
+        if (updateInfo.GroupName !== undefined) {
+          this.groupChat[result].ChatRoomName = updateInfo.GroupName;
+        }
+        if (updateInfo.GroupPicture !== undefined) {
+          this.groupChat[result].ProfilePicture = updateInfo.GroupPicture;
+        }
+        // this.groupChat.forEach((chat) => {
+        //   if(chat.ChatRoomId === updateInfo.ChatRoomId) {
+        //     if(updateInfo.GroupName) {
+        //       console.log('update userId '+ chat.UserId)
+        //       chat.ChatRoomName = updateInfo.GroupName;
+              
+        //     }
+        //     if(updateInfo.GroupPicture) {
+        //       chat.ProfilePicture = updateInfo.GroupPicture;
+        //     }
+        //   }
+        // });
+      },
+      error: (error) => console.error('Error listening for profile updates:', error),
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { User } from '../../Models/User/user';
@@ -27,6 +27,7 @@ export class AddfriendComponent implements OnInit {
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   request: FriendRequest = { ReceiverId: 0, SenderId: 0, Status: 0 };
   chatlist = {} as ChatListVM
+  @Input() isCollapsed: boolean = false;
 
   ngOnInit(): void {
     this.usersService.getFriendRequest(this.userId)

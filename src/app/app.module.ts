@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
-import { ChatlistComponent } from './Chatlist/chatlist.component';
+import { ChatlistComponent } from './chatlist/chatlist.component';
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -32,6 +32,9 @@ import { ChangePasswordComponent } from './ChangePassword/change-password.compon
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 registerLocaleData(ms);
 
@@ -71,6 +74,9 @@ registerLocaleData(ms);
     NzAvatarModule,
     NzModalModule,
     NzMessageModule,
+    NzButtonModule,
+    NzIconModule,
+    NzBadgeModule,
     ReactiveFormsModule
   ],
   

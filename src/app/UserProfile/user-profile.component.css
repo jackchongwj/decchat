@@ -7,6 +7,7 @@
 
 .user-profile-image {
   margin-right: 10px;
+  cursor:pointer;
 }
 
 .user-profile-image nz-avatar {
@@ -19,13 +20,12 @@
 
 .user-profile-name h1 {
   margin: 0;
-  font-size: 16px; 
-  color: #FFFFFF; 
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-  font-weight: 500; 
-  white-space: nowrap;
-  overflow: hidden; 
-  text-overflow: ellipsis; 
+  font-size: 16px; /* Adjust the font size as needed */
+  color: rgb(242, 247, 243); /* Dark text color for readability */
+  font-weight: 500; /* Medium font weight */
+  white-space: nowrap; /* Prevents the name from wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for long names */
 }
 
 /* Modal content */
@@ -120,3 +120,4 @@ nz-button {
   flex-direction: column;
   align-items: center; 
 }
+
