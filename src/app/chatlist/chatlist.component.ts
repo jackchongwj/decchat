@@ -5,8 +5,8 @@ import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { Group } from '../Models/DTO/Group/group';
-import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate';
-import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate';
+import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate/user-profile-update';
+import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate/group-profile-update';
 
 
 @Component({

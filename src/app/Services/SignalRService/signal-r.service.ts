@@ -8,8 +8,8 @@ import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
 
-import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate';
-import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate';
+import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
+import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
 
 @Injectable({
   providedIn: 'root'
