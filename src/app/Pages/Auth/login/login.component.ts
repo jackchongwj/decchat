@@ -25,7 +25,6 @@ export class LoginComponent{
   constructor(
     private fb: NonNullableFormBuilder,
     private router: Router,
-    private tokenService: TokenService,
     private authService: AuthService,
     private message: NzMessageService,
     private shareDataService: DataShareService

@@ -1,14 +1,18 @@
 
-<!-- Create group button at sidebar -->
-<button class="custom-button" (click)="showModal()">
-  <i class="custom-icon" nz-icon nzType="user-add">
-    <span>{{ getFriendRequest.length }}</span>
-  </i>
-</button>
-    
+<div class="friend-request">
+  <button nz-button nzType="link" class="custom-button" (click)="showModal()">
+    <nz-badge [nzSize]="'small'" [nzCount]="getFriendRequest.length">
+      <i nz-icon nzType="user-add" nzTheme="outline" class="custom-icon"></i>
+    </nz-badge>
+    <span class="friend-request-text" *ngIf="!isCollapsed"> Friend Request</span>
+  </button>
+</div>
+  
 <!-- Modal -->
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Friend Request Lists"
-          (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'">
+<nz-modal 
+  [(nzVisible)]="isVisible" nzTitle="Friend Request Lists" (nzOnCancel)="handleCancel()"
+  [nzFooter]="footerTemplate">
+  
   <ng-container *nzModalContent>
 
     <div class="friend-list-container">
@@ -18,30 +22,27 @@
           <div class="user-info">
             <span class="profile-name">{{ request.ProfileName }}</span>
             <div class="action-buttons">
-              <button mat-icon-button class="accept-button" color="primary" (click)="request.UserId !== null ? acceptFriendRequest(request.UserId) : null">
+              <button mat-icon-button class="accept-button" color="primary"
+                (click)="request.UserId !== null ? acceptFriendRequest(request.UserId) : null">
                 <i class="custom-icon" nz-icon nzType="check"></i> Accept
               </button>
-              <button mat-icon-button class="reject-button" color="warn" (click)="request.UserId !== null ? rejectFriendRequest(request.UserId) : null">
+              <button mat-icon-button class="reject-button" color="warn"
+                (click)="request.UserId !== null ? rejectFriendRequest(request.UserId) : null">
                 <i class="custom-icon" nz-icon nzType="close"></i> Reject
               </button>
             </div>
           </div>
         </div>
       </div>
-    
+
       <div *ngIf="getFriendRequest.length === 0" class="no-result-message">
         No Friend Requests!
       </div>
     </div>
   </ng-container>
 
-  <div nz-row nzGutter="16">
-    <div nz-col nzSpan="12">
-      <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-    </div>
-  </div>
+  <ng-template #footerTemplate>
+      <button nz-button nzType="default" (click)="handleCancel()" class="cancel-button">Cancel</button>
+  </ng-template>
+
 </nz-modal>
-
-
- 
-

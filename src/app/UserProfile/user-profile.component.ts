@@ -5,7 +5,10 @@ import { UserService } from '../Services/UserService/user.service';
 import { User } from '../Models/User/user';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
-
+import { DataShareService } from '../Services/ShareDate/data-share.service';
+import { AuthService } from '../Services/Auth/auth.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { SignalRService } from '../Services/SignalRService/signal-r.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -18,7 +21,7 @@ export class UserProfileComponent implements OnInit {
   editMode: boolean = false;
   showEditIcon: boolean = false;
   showModal: boolean = false;
-  
+  @Input() isCollapsed: boolean = false;
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   
@@ -27,9 +30,13 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService, 
     private router: Router,
-    private lsService:LocalstorageService
-  ) 
-  {}
+    private lsService:LocalstorageService,
+    private dsService:DataShareService,
+    private authService: AuthService,
+    private message: NzMessageService,
+    private signalRService: SignalRService
+  ) {
+  }
 
   ngOnInit() {
     this.userId = parseInt(this.lsService.getItem('userId') || '0', 10);
@@ -55,28 +62,25 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  saveProfileName(): void { 
+  saveProfileName(): void {
     this.userService.updateProfileName(this.userId, this.User.ProfileName).subscribe({
       next: () => {
-        console.log('Profile name updated successfully');
-        this.fetchUserData(); // Refresh user data
         this.editMode = false; // Exit edit mode
-        console.log("name edit",this.editMode);
       },
       error: (error) => {
         console.error('Error updating profile name:', error);
       }
     });
   }
-  
-  saveProfilePicture() {
+
+  saveProfilePicture(): void {
     if (this.selectedFile && this.userId) {
       this.userService.updateProfilePicture(this.userId, this.selectedFile).subscribe({
-        next: (event) => {
-          this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png'; // Update the main profile picture URL
-          this.previewImageUrl = null; // Clear the preview
-          this.showEditIcon = false; // Hide the edit icon
-          this.editMode = false; // Exit edit mode, ensuring a smooth user experience
+        next: () => {
+          this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png';
+          this.previewImageUrl = null;
+          this.showEditIcon = false;
+          this.editMode = false;
         },
         error: (error) => {
           console.error('Error uploading file:', error);
@@ -88,15 +92,14 @@ export class UserProfileComponent implements OnInit {
   fetchUserData(): void 
   {
     if (!this.userId) {
-      console.log('User ID not set');
       return;
     }
 
     this.userService.getUserById(this.userId).subscribe({
       next: (data) => {
-        console.log('Fetched user data:', data);
         this.User = data;
-        console.log('USER',this.User);
+        console.log("Current user data: ", data);
+        this.dsService.updateLoginUserPN(data.ProfileName);
       },
       error: (error) => {
         console.error('Error fetching user data:', error);
@@ -109,7 +112,9 @@ export class UserProfileComponent implements OnInit {
     this.userService.deleteUser(this.userId).subscribe({
       next: () => {
         this.showDeleteConfirm = false; // Close the modal on success
-        this.router.navigate(['/login']); // Redirect or handle as needed
+        this.authService.logout();
+        this.signalRService.stopConnection();
+        this.message.success('Account Deleted');
       },
       error: error => {
         this.showDeleteConfirm = false; // Close the modal on error

@@ -1,11 +1,12 @@
 <!-- Create group button at sidebar -->
 <button class="custom-button" (click)="showModal()">
-  <i class="custom-icon" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+  <i class="custom-icon" nz-icon nzType="usergroup-add" nzTheme="outline"></i>
+  <span class="create-group-chat-text" *ngIf="!isCollapsed">Create Group Chat</span>
 </button>
-    
+  
 <!-- Modal -->
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Create Group"
-          (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Create'">
+          (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'" (nzOnOk)="handleOk()" [nzOkText]="'Create'">
   <ng-container *nzModalContent>
 
     <div>
@@ -14,7 +15,7 @@
     </div>
     
     <div style="margin-top: 16px;">
-      <label for="privateChatUsers">Select Private Chat Users:</label>
+      <label for="privateChatUsers">Select Users:</label>
       <nz-select id="privateChatUsers" style="width: 100%;" nzMode="multiple" [(ngModel)]="selectedUsers">
         <nz-option *ngFor="let user of privateChat" [nzLabel]="user.ChatRoomName" [nzValue]="user.UserId"></nz-option>  
       </nz-select>

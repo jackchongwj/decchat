@@ -6,7 +6,7 @@
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     border-bottom: 2px solid #ececec; /* A subtle border to separate the header */
-    position: sticky;
+    position: relative;
     top: 0; 
     z-index: 100;
   }
@@ -68,3 +68,192 @@
     }
   }
   
+
+
+  
+/* DeleteFriendButton */
+.custom-button {
+  position: absolute; /* Take the button out of the document flow and position it absolutely */
+  right: 20px; /* Position the button 10px from the right edge of its containing block */
+  top: 50%; /* Center it vertically */
+  transform: translateY(-50%); /* Offset by half its height to truly center it */
+  z-index: 100; /* Make sure it's above other elements */
+  background: transparent;
+  border:none;
+}
+
+/* user-delete icon */
+.custom-icon {
+  font-size: 25px;
+  color: red;
+  position: relative;
+}
+
+  nz-button-group {
+    margin: 0 8px 8px 0;} 
+
+  /* imge */
+  .circular-image {
+    border-radius: 50%;
+    width: 30px;  
+    height: 30px; 
+    object-fit: cover;
+    margin-right: 8px;  
+  }
+  
+/* modal */
+/* imge */
+.circular-image {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
+.group-member-container {
+  text-align: center;
+  margin: 10px;
+}
+
+.group-member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Add this line */
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-weight: bold;
+}
+
+.action-buttons {
+  margin-top: 10px;
+}
+
+.delete-icon {
+  cursor: pointer;
+  color: #ff4d4f; /* Customize the color if needed */
+}
+
+  .dropdown-button {
+    position: absolute; /* Take the button out of the document flow and position it absolutely */
+    right: 20px; /* Position the button 10px from the right edge of its containing block */
+    top: 50%; /* Center it vertically */
+    transform: translateY(-50%); /* Offset by half its height to truly center it */
+    z-index: 100; /* Make sure it's above other elements */
+  }
+  
+  .right-content {
+    /* Align the dropdown button to the right */
+    margin-left: auto;
+  }
+
+  .profile-picture-overlay {
+    height: 160px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .modal-avatar {
+    width: 160px; 
+    height: 160px;
+    border-radius: 50%; 
+    display: block; 
+    margin: 0 auto; 
+    align-self: center;
+  }
+  
+  .edit-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #007bff;
+    cursor: pointer;
+    font-size: 45px;
+    display: none;
+    pointer-events: none;
+  }
+  
+  .profile-picture-overlay:hover .edit-icon {
+    display: block;
+  }
+  
+  /* Image options buttons */
+  .image-options {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  /* User details styling */
+  .group-details {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .user-details p {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  /* Profile name edit mode */
+  .group-name-edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .profile-name-edit p {
+    margin: 0;
+  }
+  
+  .nz-input-group {
+    margin-left: 8px;
+  }
+  
+  /* Buttons */
+  nz-button {
+    margin-right: 5px;
+  }
+  
+  /* Modal footer custom content */
+  .modalFooter {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  /* Ensure buttons in modal footer have some spacing */
+  .modalFooter nz-button:not(:last-child) {
+    margin-right: 10px;
+  }
+  
+  .user-details, .profile-name-edit, .user-details p {
+    text-align: center;
+    width: 100%; 
+  }
+  
+  .ng-container {
+    display: flex;
+    justify-content: center; 
+    flex-direction: column;
+    align-items: center; 
+  }

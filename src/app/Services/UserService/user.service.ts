@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 
 const UserUrl: string = environment.apiBaseUrl + 'Users/'
@@ -46,14 +46,11 @@ export class UserService {
     formData.append('file', file, file.name);
     formData.append('id', userId.toString());
     const params = { formData };
-    console.log(userId,formData);
     return this.http.post<any>(`${UserUrl}UpdateProfilePicture`, formData);
   }
   
   deleteUser(id: number): Observable<any> {
-    console.log("userid",id);
     const params = new HttpParams().set('id', id);
-    console.log("param",params);
     return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} );
   }
 

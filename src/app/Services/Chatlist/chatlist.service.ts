@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development'; 
+import { environment } from '../../../environments/environment'; 
 import { CreategroupComponent } from '../../CreateGroup/creategroup.component';
 import { Group } from '../../Models/DTO/Group/group';
+import { GroupMemberList } from '../../Models/DTO/GroupMember/group-member-list';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class ChatlistService {
       SelectedUsers: group.SelectedUsers,
       InitiatedBy: group.InitiatedBy
     };
-    return this.http.post(`${this.chatRoomUrl}createNewGroup`, data);
+    return this.http.post(`${this.chatRoomUrl}createNewGroup`, data); 
   }
 
   RetrieveChatListByUser(userID: number): Observable<any> {
