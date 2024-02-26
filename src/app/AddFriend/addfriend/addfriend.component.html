@@ -9,6 +9,7 @@
 <nz-modal 
   [(nzVisible)]="isVisible" 
   zTitle="Friend Request Lists"
+  (nzOnCancel)="handleCancel()"
   [nzFooter]="footerTemplate">
   
   <ng-container *nzModalContent>

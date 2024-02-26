@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
-import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
+import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
@@ -50,6 +50,8 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     });
 
     this.updateMessageListenerListener();
+    this.deleteMessageListener();
+    this.editMessageListener();
   }
 
   
@@ -139,13 +141,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     document.body.removeChild(a);
   }
 
-  transformDate(date:string) {
-    const datePipe = new DatePipe('ms-MY');
-    return datePipe.transform(date, 'yyyy-MM-dd HH:mm');
-  }
-
   private updateMessageListenerListener(): void {
-    console.log("------------")
     this._signalRService.updateMessageListener()
       .subscribe((newResults: ChatRoomMessages) => {
 
@@ -155,6 +151,27 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
           this.scrollLast();
         }
 
+      });
+  }
+
+  private deleteMessageListener():void{
+    this._signalRService.deleteMessageListener()
+      .subscribe((deletedMessage: number) => {
+
+       this.messageList = this.messageList.filter(message => message.MessageId != deletedMessage);
+
+      });
+  }
+
+  private editMessageListener():void{
+    this._signalRService.editMessageListener()
+      .subscribe((edittedMessage: ChatRoomMessages) => {
+        this.messageList = this.messageList.map(message => {
+          if(message.MessageId == edittedMessage.MessageId){
+            return edittedMessage;
+          }
+          return message;
+        })
       });
   }
 

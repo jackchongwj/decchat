@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
+import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';

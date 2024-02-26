@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
-import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
+import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
 
@@ -180,7 +180,7 @@ export class SignalRService {
     return new Observable<ChatListVM[]>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('Chatlist', (newResults: ChatListVM[]) => {
-          console.log('Received chatlist', newResults); 
+          
           this.ngZone.run(() => {
             observer.next(newResults);
           });
@@ -222,4 +222,31 @@ export class SignalRService {
       });
     });
   }
+
+  deleteMessageListener():Observable<number>{
+    return new Observable<number >( observer => {
+      this.hubConnection.on("DeleteMessage", (MessageId:number) => {
+
+        console.log("Deleted this msg: ", MessageId);
+        this.ngZone.run(() => {
+          observer.next(MessageId);
+        });
+
+      })
+    })
+  }
+
+  editMessageListener():Observable<ChatRoomMessages>{
+    return new Observable<ChatRoomMessages >( observer => {
+      this.hubConnection.on("EditMessage", (EdittedMessage:ChatRoomMessages) => {
+
+        console.log("Editted this msg: ", EdittedMessage);
+        this.ngZone.run(() => {
+          observer.next(EdittedMessage);
+        });
+
+      })
+    })
+  }
+
 }

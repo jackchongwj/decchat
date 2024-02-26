@@ -32,6 +32,7 @@ import { ChangePasswordComponent } from './ChangePassword/change-password.compon
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
 
 registerLocaleData(ms);
 
@@ -56,7 +57,8 @@ registerLocaleData(ms);
     ChatHeaderComponent,
     UserProfileComponent,
     ChangePasswordComponent,
-    ChatRoomMessageComponent
+    ChatRoomMessageComponent,
+    MessageExtraFuncComponent
   ],
     imports: [
     BrowserModule,

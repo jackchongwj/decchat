@@ -155,7 +155,7 @@ img {
 app-user-login-page{
   background-image: url('/assets/loginpage.jpg');
   
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.5);
 
   /* Use background-blend-mode to define the blending effect */
   background-blend-mode: multiply; 
