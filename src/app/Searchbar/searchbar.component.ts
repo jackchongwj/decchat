@@ -27,12 +27,11 @@ export class SearchbarComponent implements OnInit {
   //search
   public searchValue: string = '';
   public searchResult: UserSearchDetails[] = []; 
-  private isVisible = false;
   private searchSubject: Subject<string> = new Subject<string>()
   @Input() iSCollapsed: boolean = false;
   // get username form local storage
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
-  showSearchModal = false;
+  isVisible = false;
 
   ngOnInit(): void {
     this.searchSubject.pipe(
@@ -119,7 +118,16 @@ export class SearchbarComponent implements OnInit {
   }
 
   //Model
-  showModal(): void {
+  ShowSearchModal(): void
+  {
     this.isVisible = true;
   }
+
+  CloseModel(): void
+  {
+    this.searchValue = "";
+    this.isVisible = false;
+  }
+
+
 }

@@ -12,13 +12,13 @@
 </div> -->
 
 <div class="search-button-container" [ngClass]="{'search-button-collapsed': isCollapsed}">
-  <button nz-button nzType="default" class="search-button" (click)="showSearchModal = true">
+  <button nz-button nzType="default" class="search-button" (click)="ShowSearchModal()">
     <i nz-icon  nzType="search" class="search-icon"  ></i>
     <span class="search-button-text" *ngIf="!iSCollapsed">Search to Add Friend</span>
   </button>
 </div>
 
-<nz-modal [(nzVisible)]="showSearchModal" nzTitle="Search" (nzOnCancel)="showSearchModal=false" [nzCancelText]="'Cancel'" (nzOnOk)="showSearchModal = false">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Search" (nzOnCancel)="CloseModel()" [nzCancelText]="'Cancel'" (nzOnOk)="CloseModel()">
   <div *nzModalContent>
     <!-- Place the search bar code here, as you initially defined -->
     <nz-input-group class="search-bar" nzTheme="dark">
