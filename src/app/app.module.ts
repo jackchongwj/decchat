@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
-import { ChatlistComponent } from './Chatlist/chatlist.component';
+import { ChatlistComponent } from './chatlist/chatlist.component';
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
