@@ -86,6 +86,7 @@ export class ChatlistComponent implements OnInit {
         console.log("removeuser", chatRoomId, userId, this.userId, this.isSelectedData)
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
+          this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
         }
       });
   }
