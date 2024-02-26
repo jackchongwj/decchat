@@ -57,6 +57,8 @@ export class CreategroupComponent implements OnInit{
       // Handle the response from the backend if needed
       console.log('Backend response:', response);
       this.message.success('Group created successfully');
+      this.roomName='';
+      this.selectedUsers=[];
     },
     error: (error) => {
       console.log('Error from the backend:', error);

@@ -138,7 +138,7 @@ export class ChatHeaderComponent implements OnInit {
         // Handle the response from the backend if needed
         console.log('Backend response:', response);
         this.message.success('User removed successfully');
-
+        this.isVisibleRemoveUserModal=false;
       },
       error: (error) => {
         console.log('Error from the backend:', error);

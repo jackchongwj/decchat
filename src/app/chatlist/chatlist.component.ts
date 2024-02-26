@@ -42,6 +42,7 @@ export class ChatlistComponent implements OnInit {
       this.updateGroupChatList();
       this.UpdateDeletePrivateChatlist();
       this.updateQuitGroup();
+      this.addNewGroupListener();
     }
   }
 
@@ -83,11 +84,10 @@ export class ChatlistComponent implements OnInit {
   private updateGroupChatList(): void {
     this.signalRService.removeUserListener()
       .subscribe(({ chatRoomId, userId }) => {
-        console.log("removeuser", chatRoomId, userId)
+        console.log("removeuser", chatRoomId, userId, this.userId, this.isSelectedData)
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
         }
-        this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
       });
   }
 
