@@ -8,6 +8,9 @@ import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
 
+import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
+import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,8 +63,7 @@ export class SignalRService {
     .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
-  public UserTypingStatus():Observable<TypingStatus>
-  {
+  public UserTypingStatus(): Observable<TypingStatus> {
     return new Observable<TypingStatus>(observer => {
       if(this.hubConnection)
       {
@@ -222,4 +224,39 @@ export class SignalRService {
       });
     });
   }
+  
+  // public invokeHubMethod(methodName: string, updateInfo: any): void {
+  //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+  //     this.hubConnection.invoke(methodName, updateInfo)
+  //       .catch(error => console.error('Error invoking method on hub:', methodName, error));
+  //   }
+  // }
+  
+  public profileUpdateListener(): Observable<UserProfileUpdate> {
+    return new Observable<UserProfileUpdate>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('ReceiveUserProfileUpdate', (updateInfo: UserProfileUpdate) => {
+          this.ngZone.run(() => {
+            observer.next(updateInfo);
+          });
+        });
+      }
+    });
+  }
+
+  public groupUpdateListener(): Observable<GroupProfileUpdate> {
+    return new Observable<GroupProfileUpdate>(observer => {
+
+      if (this.hubConnection) {
+        
+        this.hubConnection.on('ReceiveGroupProfileUpdate', (updateInfo: GroupProfileUpdate) => {
+          this.ngZone.run(() => {
+            observer.next(updateInfo);
+          });
+        });
+      }
+    });
+  }
+
+
 }

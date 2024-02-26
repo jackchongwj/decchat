@@ -1,4 +1,4 @@
- import { Component, OnInit } from '@angular/core';
+ import { Component, OnInit, Input } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -26,6 +26,7 @@ export class CreategroupComponent implements OnInit{
   InitiatedBy=Number(this.localStorage.getItem("userId"));
   // userId: number = 7; // Assuming userId is a number property
   groupChats: any[] = [];
+  @Input() isCollapsed: boolean = false;
 
   constructor(
     private chatlistService: ChatlistService, //privatelist

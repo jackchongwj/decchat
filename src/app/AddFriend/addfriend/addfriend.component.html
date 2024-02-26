@@ -1,14 +1,16 @@
-<!-- Create group button at sidebar -->
-<button class="custom-button" (click)="showModal()">
-  <i class="custom-icon" nz-icon nzType="user-add">
-    <span>{{ getFriendRequest.length }}</span>
-  </i>
-</button>
 
+<div class="friend-request">
+  <button nz-button nzType="link" class="custom-button" (click)="showModal()">
+    <nz-badge [nzSize]="'small'" [nzCount]="getFriendRequest.length">
+      <i nz-icon nzType="user-add" nzTheme="outline" class="custom-icon"></i>
+    </nz-badge>
+    <span class="friend-request-text" *ngIf="!isCollapsed"> Friend Request</span>
+  </button>
+</div>
+  
 <!-- Modal -->
 <nz-modal 
-  [(nzVisible)]="isVisible" 
-  zTitle="Friend Request Lists"
+  [(nzVisible)]="isVisible" nzTitle="Friend Request Lists" (nzOnCancel)="handleCancel()"
   [nzFooter]="footerTemplate">
   
   <ng-container *nzModalContent>

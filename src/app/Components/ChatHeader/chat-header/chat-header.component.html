@@ -7,9 +7,26 @@
     </span>
   </h1>
 
+   <!-- NZ-ZORRO Kebab menu -->
+
+   <!-- <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
+    <i nz-icon nzType="more" nzTheme="outline"></i>
+  </button>
+  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
+      <li nz-menu-item>Delete Group</li>
+      <li nz-menu-item>Add/Kick Member</li>
+    </ul>
+  </nz-dropdown-menu> -->
+  <button class="custom-button" (click)="showModalHeader()" *ngIf="!currentChatRoom.RoomType">
+    <i class="custom-icon" nz-icon nzType="user-delete">
+    </i>
+  </button>
+
   <!-- Modal 1: Delete Friend Modal -->
   <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()" (nzOnOk)="handleOkDeleteFriend()"
-      [nzOkText]="'Create'">
+      [nzOkText]="'Confirm'">
 
       <ng-container *nzModalContent>
 
@@ -29,9 +46,6 @@
     </nz-modal>
 
   <!-- Modal 2: Group Members Modal -->
-  <!-- <button nz-button [nzType]="'primary'" (click)="ExitGroup()"><span>Exit Group</span></button>
-  <button (click)="showModalRemoveUser()"
-    *ngIf="currentChatRoom.InitiatedBy == userId"><span>RemoveUser</span></button> -->
   <nz-modal [(nzVisible)]="isVisibleRemoveUserModal" nzTitle="Group Members" (nzOnCancel)="handleCancelRemoveUser()"
     (nzOnOk)="handleOkRemoveUser()">
     <ng-container *nzModalContent>
@@ -67,6 +81,7 @@
     </button>
 
   <!-- Dropdown -->
+  <div *ngIf="currentChatRoom.RoomType">
   <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy == userId">
     <i nz-icon nzType="more" nzTheme="outline"></i>
   </button>
@@ -87,11 +102,7 @@
       <li nz-menu-item (click)="ExitGroup()">Quit</li>
     </ul>
   </nz-dropdown-menu>
-
-
-  <!-- Modal 3: Remove User Confirmation Modal -->
-
-    
+  </div>    
 </div>
 
 <span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
@@ -101,3 +112,38 @@
 <span *ngIf="InComingUsers.length > 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
   {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
 </span>
+
+  <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
+    <ng-container *nzModalContent>
+    <!-- Group Picture with Edit Icon -->
+    <div class="profile-picture-overlay" >
+      <nz-avatar class="modal-avatar" [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
+      <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
+      <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+    </div>
+    <div *ngIf="previewImageUrl" class="image-options">
+      <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
+      <button nz-button nzType="default" (click)="cancelPreview()">✕</button>
+    </div>  
+  
+    <!-- Group Details Display -->
+    <div *ngIf="currentChatRoom" class="group-details">
+      <div class="group-name-edit">
+        <p *ngIf="!editMode">Group Name: <span>{{ currentChatRoom.ChatRoomName }}</span>
+          <button nz-button nzType="link" (click)="toggleEditMode()">
+            <i nz-icon nzType="edit"></i>
+          </button>
+        </p>
+        <ng-container *ngIf="editMode">
+          <nz-input-group nzCompact>
+            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName"/>
+          </nz-input-group>
+          <button nz-button nzType="primary" (click)="saveGroupName()">Save</button>
+          <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
+        </ng-container>
+      </div>
+      <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
+    </div>  
+    
+    </ng-container>
+  </nz-modal>
