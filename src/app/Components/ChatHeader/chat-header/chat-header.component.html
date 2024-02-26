@@ -7,6 +7,9 @@
     </span>
   </h1>
 
+  <span *ngIf="isCurrentUserOnline">Online</span>
+  <span *ngIf="!isCurrentUserOnline">Offline</span>
+
    <!-- NZ-ZORRO Kebab menu -->
 
    <!-- <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">

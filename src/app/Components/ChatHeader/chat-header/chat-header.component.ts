@@ -47,11 +47,13 @@ export class ChatHeaderComponent implements OnInit {
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   InComingUsers: string[] =[];
+  public isCurrentUserOnline: boolean = false;
 
   ngOnInit(): void {
     this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
       this.currentChatRoom = chatroom;
       this.IsCurrentChatUser = false;
+      this.subscribeToOnlineStatusUpdates();
     });
 
     console.log("chatroom details", this.currentChatRoom);
@@ -234,5 +236,15 @@ export class ChatHeaderComponent implements OnInit {
   handleCancelRemoveUser(): void {
     console.log('Button cancel clicked!');
     this.isVisibleRemoveUserModal = false;
+  }
+
+  private subscribeToOnlineStatusUpdates(): void {
+    this._signalRService.onlineStatusListener().subscribe((onlineUsers: string[]) => {
+      if(this.currentChatRoom && onlineUsers.includes(this.currentChatRoom.UserId.toString())) {
+        this.isCurrentUserOnline = true;
+      } else {
+        this.isCurrentUserOnline = false;
+      }
+    });
   }
 }
