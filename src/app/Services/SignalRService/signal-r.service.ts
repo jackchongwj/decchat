@@ -28,6 +28,7 @@ export class SignalRService {
 
   private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
+                          .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https+"?userId="+Id)
                           .build();
   }
