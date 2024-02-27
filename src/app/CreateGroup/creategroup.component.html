@@ -1,11 +1,12 @@
 <!-- Create group button at sidebar -->
 <button class="custom-button" (click)="showModal()">
-  <i class="custom-icon" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+  <i class="custom-icon" nz-icon nzType="usergroup-add" nzTheme="outline"></i>
+  <span class="create-group-chat-text" *ngIf="!isCollapsed">Create Group Chat</span>
 </button>
-    
+  
 <!-- Modal -->
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Create Group"
-          (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzOkText]="'Create'">
+          (nzOnCancel)="handleCancel()" [nzCancelText]="'Cancel'" (nzOnOk)="handleOk()" [nzOkText]="'Create'">
   <ng-container *nzModalContent>
 
     <div>
@@ -26,7 +27,7 @@
       <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
     </div>
     <div nz-col nzSpan="12">
-      <button nz-button nzType="primary" (click)="handleOk()">Create Group</button>
+      <button nz-button nzType="primary" (click)="handleOk()">Create</button>
     </div>
   </div>
 </nz-modal>

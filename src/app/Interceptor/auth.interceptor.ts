@@ -1,65 +1,73 @@
-import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import { environment } from '../../environments/environment.development';
+import { Injectable, Injector } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../Services/Auth/auth.service';
 import { TokenService } from '../Services/Token/token.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private tokenService: TokenService) {}
+  private authService!: AuthService;
+  private tokenService!: TokenService;
+
+  private isRefreshing = new BehaviorSubject<boolean>(false);
+
+  constructor(private injector: Injector) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Directly bypass auth routes without attaching a token
+    if (!this.authService) {
+      this.authService = this.injector.get(AuthService);
+    }
+    if (!this.tokenService) {
+      this.tokenService = this.injector.get(TokenService);
+    }
+
     if (this.shouldBypass(request.url)) {
       return next.handle(request);
     }
 
-    // Attach token for non-bypassed routes
     const accessToken = this.tokenService.getToken();
     if (accessToken) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      request = this.addAuthorizationHeader(request, accessToken);
     }
 
     return next.handle(request).pipe(
-      catchError((error) => {
-        // Handle 401 Unauthorized error by attempting token refresh
-        if (error.status === 401) {
+      catchError(error => {
+        if (error instanceof HttpErrorResponse && error.status === 401 && !this.isRefreshing.value) {
           return this.handle401Error(request, next);
         }
-        // Propagate other errors
-        return throwError(() => error);
+        return throwError(error);
       })
     );
   }
 
+  private addAuthorizationHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
+    return request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+  }
+
   private shouldBypass(url: string): boolean {
-    // Define URLs for the auth and token refresh endpoints
     const bypassRoutes = ['/api/Auth/login', '/api/Auth/register'];
     return bypassRoutes.some(route => url.endsWith(route));
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.isRefreshing.next(true);
     return this.tokenService.renewToken().pipe(
-      switchMap((token: any) => {
-        // Save the new token and retry the original request with the new token
-        this.tokenService.setToken(token.accessToken);
-        return next.handle(request.clone({
-          setHeaders: {
-            Authorization: `Bearer ${token.accessToken}`,
-          },
-        }));
-      }),
-      catchError((refreshError) => {
-        // Handle token refresh error, e.g., by logging out the user
+      switchMap(token => {
+        this.isRefreshing.next(false);
+        if (token) {
+          return next.handle(this.addAuthorizationHeader(request, token));
+        }
         this.authService.logout();
-        return throwError(() => refreshError);
-      })
+        return throwError(new Error('Failed to renew token'));
+      }),
+      catchError((error) => {
+        this.isRefreshing.next(false);
+        this.authService.logout();
+        return throwError(error);
+      }),
+      filter(() => this.isRefreshing.value === false),
+      take(1)
     );
   }
 }

@@ -9,7 +9,8 @@ export class ChatListVM {
         public UserChatRoomId: number = 0,
         public UserId:number = 0, 
         public InitiatedBy:number = 0
-        
+        ,
+        public InitiatorProfileName: string = ''
     ){}
 }
 

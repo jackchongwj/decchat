@@ -25,9 +25,9 @@ export class LoginComponent{
   constructor(
     private fb: NonNullableFormBuilder,
     private router: Router,
-    private tokenService: TokenService,
     private authService: AuthService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private shareDataService: DataShareService
     ) {}
 
   submitForm(): void {
@@ -36,12 +36,11 @@ export class LoginComponent{
 
       this.authService.login(loginData).subscribe({
         next: (res) => {
-          this.tokenService.setToken(res.AccessToken);
-          this.authService.setUserId(res.UserId);
+          this.shareDataService.updateLoginUserPN("pending BE");
 
           console.log('Login successful!', res);
           this.message.success(res.Message || 'Login successful!');
-          this.router.navigate(['/']);
+          this.router.navigate(['/dashboard']);
         },
         error: (e) => {
           console.error('Login failed:', e);

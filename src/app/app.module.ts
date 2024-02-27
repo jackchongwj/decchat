@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
-import { ChatlistComponent } from './Chatlist/chatlist.component';
+import { ChatlistComponent } from './chatlist/chatlist.component';
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -15,7 +15,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from './Sidebar/sidebar.component';
 import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdisplay/chatroomdisplay.component';
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
 import { LoginComponent } from './Pages/Auth/Login/login.component';
@@ -29,9 +28,6 @@ import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room
 import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzMessageModule } from 'ng-zorro-antd/message';
 import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
 
 registerLocaleData(ms);
@@ -65,14 +61,9 @@ registerLocaleData(ms);
     AppRoutingModule,
     IconsProviderModule,
     FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatDialogModule,
     ImportNgZorroAntdModule,
-    NzAvatarModule,
-    NzModalModule,
-    NzMessageModule,
     ReactiveFormsModule
   ],
   

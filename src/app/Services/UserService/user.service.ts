@@ -27,7 +27,7 @@ export class UserService {
   doesUsernameExist(username: string): Observable<boolean> {
     return this.http.get<any>(`${UserUrl}DoesUsernameExist?username=${encodeURIComponent(username)}`)
         .pipe(
-            map(response => response.isUnique === false)
+            map(response => response.isExist === false)
         );
   }
 
@@ -46,14 +46,11 @@ export class UserService {
     formData.append('file', file, file.name);
     formData.append('id', userId.toString());
     const params = { formData };
-    console.log(userId,formData);
     return this.http.post<any>(`${UserUrl}UpdateProfilePicture`, formData);
   }
   
   deleteUser(id: number): Observable<any> {
-    console.log("userid",id);
     const params = new HttpParams().set('id', id);
-    console.log("param",params);
     return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} );
   }
 

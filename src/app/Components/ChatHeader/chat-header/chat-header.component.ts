@@ -10,7 +10,8 @@ import { Group } from '../../../Models/DTO/Group/group';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { GroupMemberList } from '../../../Models/DTO/GroupMember/group-member-list';
 import { GroupMemberServiceService } from '../../../Services/GroupMember/group-member-service.service';
-
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { ChatroomService } from '../../../Services/ChatroomService/chatroom.service';
 
 @Component({
   selector: 'app-chat-header',
@@ -30,14 +31,23 @@ export class ChatHeaderComponent implements OnInit {
     private friendService: FriendsService,
     private _signalRService: SignalRService,
     private modalService: NzModalService,
+    
+    private _chatRoomService:ChatroomService,
     private localStorage: LocalstorageService,
-    private groupMemberServiceService: GroupMemberServiceService
+    private groupMemberServiceService: GroupMemberServiceService, 
+    private message: NzMessageService // Inject NzMessageService
   ) { }
 
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   currentChatRoom = {} as ChatListVM;
   IsCurrentChatUser: boolean = false;
+  showDropdown: boolean = false;
+  editMode: boolean = false;
+  showEditIcon: boolean = false;
+  showModal: boolean = false;
+  selectedFile: File | null = null;
+  previewImageUrl: string | null = null;
   InComingUsers: string[] =[];
 
   ngOnInit(): void {
@@ -46,6 +56,7 @@ export class ChatHeaderComponent implements OnInit {
       this.IsCurrentChatUser = false;
     });
 
+    console.log("chatroom details", this.currentChatRoom);
     this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
       //Check If Current Chat Room
       if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) 
@@ -73,10 +84,76 @@ export class ChatHeaderComponent implements OnInit {
       else{
         this.IsCurrentChatUser = false;
       }
+      
     });
 
   }
 
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown; // Toggle the visibility of the dropdown
+  }
+
+  saveGroupName(): void {
+    this._chatRoomService.updateGroupName(this.currentChatRoom.ChatRoomId, this.currentChatRoom.ChatRoomName).subscribe({
+      next: () => {
+        this.editMode = false; // Exit edit mode
+      },
+      error: (error) => {
+        console.error('Error updating profile name:', error);
+      }
+    });
+  }
+
+  saveProfilePicture(): void {
+    if (this.selectedFile && this.currentChatRoom.ChatRoomId) {
+      this._chatRoomService.updateGroupPicture(this.currentChatRoom.ChatRoomId, this.selectedFile).subscribe({
+        next: () => {
+          this.currentChatRoom.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png';
+          this.previewImageUrl = null;
+          this.showEditIcon = false;
+          this.editMode = false;
+        },
+        error: (error) => {
+          console.error('Error uploading file:', error);
+        }
+      });
+    }
+  }
+
+  cancelPreview() {
+    this.previewImageUrl = null;
+    
+    this.selectedFile = null;
+  }
+
+  cancelEdit(): void {
+    this.editMode = false;
+  }  
+
+  toggleModal(): void {
+    this.showModal = !this.showModal;
+  }
+
+  toggleEditMode() {
+    this.editMode = !this.editMode;
+  }
+
+  onFileSelected(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList && fileList.length > 0) {
+      this.selectedFile = fileList[0];
+  
+      // Use FileReader to read the file for preview
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.previewImageUrl = e.target?.result as string; 
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  
   DeleteFriend(): void {
     this.request = {
       ChatRoomId: this.currentChatRoom.ChatRoomId,
@@ -90,7 +167,7 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   // Show or hide Delete Friend modal
-  showModalDeleteFriend(): void {
+  showModalDeleteFriendFn(): void {
     this.isVisibleDeleteFriendModal = true;
   }
 
@@ -107,11 +184,8 @@ export class ChatHeaderComponent implements OnInit {
 
   //showModalHeader
   showModalHeader(): void {
-    this.isVisible = true;
-  }
-
-  toggleModal(): void {
-    this.isVisible = !this.isVisible;
+    console.log("show");
+    this.isVisibleDeleteFriendModal = true;
   }
 
   showModalRemoveUser(): void {
@@ -135,6 +209,8 @@ export class ChatHeaderComponent implements OnInit {
       next: (response) => {
         // Handle the response from the backend if needed
         console.log('Backend response:', response);
+        this.message.success('User removed successfully');
+        this.isVisibleRemoveUserModal=false;
       },
       error: (error) => {
         console.log('Error from the backend:', error);
@@ -147,6 +223,8 @@ export class ChatHeaderComponent implements OnInit {
       next: (response) => {
         // Handle the response from the backend if needed
         console.log('Backend response:', response);
+        this.message.success('Group quit successfully');
+
       },
       error: (error) => {
         console.log('Error from the backend:', error);
