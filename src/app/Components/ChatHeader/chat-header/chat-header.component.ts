@@ -11,6 +11,9 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { GroupMemberList } from '../../../Models/DTO/GroupMember/group-member-list';
 import { GroupMemberServiceService } from '../../../Services/GroupMember/group-member-service.service';
 import { ChatroomService } from '../../../Services/ChatroomService/chatroom.service';
+import { Subject, of } from 'rxjs';
+import { debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-chat-header',
@@ -30,15 +33,17 @@ export class ChatHeaderComponent implements OnInit {
     private friendService: FriendsService,
     private _signalRService: SignalRService,
     private modalService: NzModalService,
-    
-    private _chatRoomService:ChatroomService,
+
+    private _chatRoomService: ChatroomService,
     private localStorage: LocalstorageService,
     private groupMemberServiceService: GroupMemberServiceService
   ) { }
 
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
+  private searchSubject: Subject<string> = new Subject<string>()
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   currentChatRoom = {} as ChatListVM;
+  previousChatRoom = {} as ChatListVM;
   IsCurrentChatUser: boolean = false;
   showDropdown: boolean = false;
   editMode: boolean = false;
@@ -46,45 +51,80 @@ export class ChatHeaderComponent implements OnInit {
   showModal: boolean = false;
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
-  InComingUsers: string[] =[];
+  InComingUsers: string[] = [];
+  showSearchBar = false;
+  checkChatRoomId: number = 0;
+  searchValue: string = '';
+  currenResult: number = 0;
+  totalResult: number = 0;
 
   ngOnInit(): void {
     this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
       this.currentChatRoom = chatroom;
       this.IsCurrentChatUser = false;
+
+      if (this.previousChatRoom.ChatRoomId != this.currentChatRoom.ChatRoomId) {
+        this.showSearchBar = false;
+        this.currenResult = 0;
+        this.totalResult = 0;
+        this.searchValue = '';
+        this._dataShareService.updateSearchValue(this.searchValue);
+        this.previousChatRoom = this.currentChatRoom;
+      }
+
     });
 
-    console.log("chatroom details", this.currentChatRoom);
-    this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
+    this.previousChatRoom = this.currentChatRoom;
+
+    this._signalRService.UserTypingStatus().subscribe((status: TypingStatus) => {
       //Check If Current Chat Room
-      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) 
-      {
+      if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) {
         // For Group Chat
-        if(this.currentChatRoom.RoomType)
-        {
+        if (this.currentChatRoom.RoomType) {
           this.IsCurrentChatUser = true;
           if (status.isTyping) {
             // Add the user if they are typing and not already present in the list
             if (!this.InComingUsers.includes(status.currentUserProfileName)) {
               this.InComingUsers.push(status.currentUserProfileName);
             }
-          } 
-          else{
+          }
+          else {
             this.InComingUsers = this.InComingUsers.filter(name => name !== status.currentUserProfileName);
           }
         }
         // For One-On-One Chat
-        else{
+        else {
           this.IsCurrentChatUser = status.isTyping;
         }
       }
       // Different Chat Room
-      else{
+      else {
         this.IsCurrentChatUser = false;
       }
-      
+
     });
 
+    this.searchSubject.pipe(
+      debounceTime(300),
+      switchMap((value: string) => {
+        this._dataShareService.updateSearchValue(value);
+        this.searchValue = value;
+        return of(value);
+      })
+    ).subscribe(response => {
+      console.log('Backend Search Result:', this.searchValue);
+    });
+
+    this._dataShareService.totalSearchMessageResult.subscribe(value => {
+      this.totalResult = value;
+      if (this.totalResult > 0) {
+        this.currenResult = 1;
+        this._dataShareService.updateCurrentMessageResult(this.currenResult);
+      } else {
+        this.currenResult = 0;
+      }
+      console.log("total", this.totalResult)
+    });
   }
 
   toggleDropdown(): void {
@@ -120,13 +160,13 @@ export class ChatHeaderComponent implements OnInit {
 
   cancelPreview() {
     this.previewImageUrl = null;
-    
+
     this.selectedFile = null;
   }
 
   cancelEdit(): void {
     this.editMode = false;
-  }  
+  }
 
   toggleModal(): void {
     this.showModal = !this.showModal;
@@ -141,24 +181,24 @@ export class ChatHeaderComponent implements OnInit {
     let fileList: FileList | null = element.files;
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
-  
+
       // Use FileReader to read the file for preview
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.previewImageUrl = e.target?.result as string; 
+        this.previewImageUrl = e.target?.result as string;
       };
       reader.readAsDataURL(this.selectedFile);
     }
   }
 
-  
+
   DeleteFriend(): void {
     this.request = {
       ChatRoomId: this.currentChatRoom.ChatRoomId,
       UserId1: this.userId1,
       UserId2: this.currentChatRoom.UserId
     };
-    
+
     this.friendService.DeleteFriend(this.request).subscribe(response => {
       console.log('Friend Deleted successful: ', response);
     });
@@ -235,4 +275,41 @@ export class ChatHeaderComponent implements OnInit {
     console.log('Button cancel clicked!');
     this.isVisibleRemoveUserModal = false;
   }
+
+
+  //search
+  Search(chatRoomid: number) {
+    console.log(chatRoomid);
+    this.checkChatRoomId = chatRoomid;
+    this.showSearchBar = true;
+  }
+
+  closeSearch() {
+    this.showSearchBar = false;
+    this.currenResult = 0;
+    this.totalResult = 0;
+    this.searchValue = '';
+    this._dataShareService.updateSearchValue(this.searchValue);
+    this._dataShareService.updateCurrentMessageResult(this.currenResult);
+  }
+
+  searchMessage(): void {
+    this.searchSubject.next(this.searchValue);
+  }
+
+  showPreviousSearchResult(): void {
+    if (this.currenResult < this.totalResult) {
+      this.currenResult++;
+      this._dataShareService.updateCurrentMessageResult(this.currenResult);
+    }
+  }
+
+
+  showNextSearchResult(): void {
+    if (this.currenResult > 1) {
+      this.currenResult--;
+      this._dataShareService.updateCurrentMessageResult(this.currenResult);
+    }
+  }
+
 }

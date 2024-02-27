@@ -21,6 +21,9 @@ export class DataShareService {
   private CurrentLoginUserProfileName = new BehaviorSubject<string>('');
   private userId = new BehaviorSubject<number>(Number(this.lsService.getItem("userId")));
   private IsSelected =  new BehaviorSubject<boolean>(false);
+  private CurrentSearchValue =  new BehaviorSubject<string>('');
+  private totalResult =  new BehaviorSubject<number>(0);
+  private currentResult = new BehaviorSubject<number>(1);
 
   // Observable for widely use
   public chatListData = this.ChatlistSubject.asObservable();
@@ -28,12 +31,16 @@ export class DataShareService {
   public LoginUserProfileName = this.CurrentLoginUserProfileName.asObservable();
   public checkLogin = this.userId.asObservable();
   public IsSelectedData = this.IsSelected.asObservable();
+  public SearchMessageValue = this.CurrentSearchValue.asObservable();
+  public totalSearchMessageResult = this.totalResult.asObservable();
+  public currentSearchMessageResult = this.currentResult.asObservable();
 
   updateChatListData(data: ChatListVM[]){
     this.ChatlistSubject.next(data);
   }
 
   updateSelectedChatRoom(data: ChatListVM){
+    console.log("shareC",data);
     this.SelectedChatRoom.next(data);
   }
 
@@ -44,5 +51,22 @@ export class DataShareService {
   clearSelectedChatRoom(data: boolean)
   {
     this.IsSelected.next(data);
+  }
+
+  updateSearchValue(data:string){
+    console.log("share",data);
+    this.CurrentSearchValue.next(data);
+  }
+
+  updateTotalSearchMessageResult(data: number)
+  {
+    this.totalResult.next(data);
+    console.log("T",data);
+  }
+
+  updateCurrentMessageResult(data: number)
+  {
+    this.currentResult.next(data);
+    console.log("C",data);
   }
 }

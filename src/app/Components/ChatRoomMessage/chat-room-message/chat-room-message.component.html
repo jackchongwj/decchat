@@ -68,11 +68,9 @@
     <!-- Display Message Only -->
     <div class="message-content" *ngIf="message.Content">
       <div class="user-name">{{ message.ProfileName }}</div>
-      <div class="message-text">{{ message.Content }}</div>
+      <div class="message-text" [innerHTML]="highlightSearchText(message.Content, message)"></div>
       <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
     </div>
-    <!-- Display Message Only --> 
-    
   </div>
 </div>
 
