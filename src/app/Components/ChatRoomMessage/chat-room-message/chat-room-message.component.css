@@ -169,4 +169,8 @@ app-message-extra-func{
 .icon-download:hover {
   transform: scale(1.03); 
 }
+/* ------------------------------------------------ Search Message ------------------------------------------------ */
+.highlight {
+  background-color: black;  
+}
 /* ------------------------------------------------ Document Message Section CSS End ------------------------------------------------ */
