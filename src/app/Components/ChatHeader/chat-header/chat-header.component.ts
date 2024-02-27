@@ -10,6 +10,7 @@ import { Group } from '../../../Models/DTO/Group/group';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { GroupMemberList } from '../../../Models/DTO/GroupMember/group-member-list';
 import { GroupMemberServiceService } from '../../../Services/GroupMember/group-member-service.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { ChatroomService } from '../../../Services/ChatroomService/chatroom.service';
 
 @Component({
@@ -33,7 +34,8 @@ export class ChatHeaderComponent implements OnInit {
     
     private _chatRoomService:ChatroomService,
     private localStorage: LocalstorageService,
-    private groupMemberServiceService: GroupMemberServiceService
+    private groupMemberServiceService: GroupMemberServiceService, 
+    private message: NzMessageService // Inject NzMessageService
   ) { }
 
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
@@ -207,6 +209,8 @@ export class ChatHeaderComponent implements OnInit {
       next: (response) => {
         // Handle the response from the backend if needed
         console.log('Backend response:', response);
+        this.message.success('User removed successfully');
+        this.isVisibleRemoveUserModal=false;
       },
       error: (error) => {
         console.log('Error from the backend:', error);
@@ -219,6 +223,8 @@ export class ChatHeaderComponent implements OnInit {
       next: (response) => {
         // Handle the response from the backend if needed
         console.log('Backend response:', response);
+        this.message.success('Group quit successfully');
+
       },
       error: (error) => {
         console.log('Error from the backend:', error);

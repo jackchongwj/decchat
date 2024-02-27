@@ -46,9 +46,6 @@
     </nz-modal>
 
   <!-- Modal 2: Group Members Modal -->
-  <!-- <button nz-button [nzType]="'primary'" (click)="ExitGroup()"><span>Exit Group</span></button>
-  <button (click)="showModalRemoveUser()"
-    *ngIf="currentChatRoom.InitiatedBy == userId"><span>RemoveUser</span></button> -->
   <nz-modal [(nzVisible)]="isVisibleRemoveUserModal" nzTitle="Group Members" (nzOnCancel)="handleCancelRemoveUser()"
     (nzOnOk)="handleOkRemoveUser()">
     <ng-container *nzModalContent>
@@ -77,6 +74,12 @@
   </nz-modal>
 
 
+
+    <button class="custom-button" (click)="showModalHeader()" *ngIf="currentChatRoom.RoomType == false">
+      <i class="custom-icon" nz-icon nzType="delete">
+      </i>
+    </button>
+
   <!-- Dropdown -->
   <div *ngIf="currentChatRoom.RoomType">
   <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy == userId">
@@ -99,11 +102,7 @@
       <li nz-menu-item (click)="ExitGroup()">Quit</li>
     </ul>
   </nz-dropdown-menu>
-  </div>
-
-  <!-- Modal 3: Remove User Confirmation Modal -->
-
-    
+  </div>    
 </div>
 
 <span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">

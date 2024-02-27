@@ -46,6 +46,7 @@ export class ChatlistComponent implements OnInit {
       this.updateQuitGroup();
       this.ProfileDetailChanges();
       this.GroupDetailChanges();
+      this.addNewGroupListener();
     }
   }
 
@@ -89,8 +90,8 @@ export class ChatlistComponent implements OnInit {
         console.log("removeuser", chatRoomId, userId)
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
+          this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
         }
-        this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
       });
   }
 

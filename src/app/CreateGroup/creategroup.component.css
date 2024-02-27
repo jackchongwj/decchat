@@ -27,7 +27,9 @@ margin: 0 8px 8px 0;
   margin-left: 13px; /* Distance between the icon and text */
   color: #666;
 }
-
+[nz-button] {
+  margin-right: 8px;
+}
 .custom-button:hover .custom-icon {
   color: rgb(16, 241, 53); /* Color of the icon on hover */
   background-color: #00050a;
