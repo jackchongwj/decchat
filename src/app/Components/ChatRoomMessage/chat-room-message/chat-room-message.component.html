@@ -3,6 +3,8 @@
   <div *ngFor="let message of messageList"
         [ngClass]="{'message-sent': isUserSend(message), 'message-received': !isUserSend(message)}"
         class="message">
+
+    <app-message-extra-func [messageData]="message"></app-message-extra-func>
     <img nz-image
       [nzSrc]="message.ProfilePicture"
       alt="" class="profile-picture"
@@ -15,7 +17,7 @@
         <source [src]="message.ResourceUrl" type="audio/mpeg">
         Your browser does not support the audio element.
       </audio>
-      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm a' }}</div>
     </div>
     <!-- Display Audio Message -->
     
@@ -28,7 +30,7 @@
         [nzSrc]="message.ResourceUrl"
         alt="" class="image-message"
         >
-      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm a' }}</div>
     </div>
     <!-- Display Image Only -->
 
@@ -41,7 +43,7 @@
         <div class="filename">{{ getFileNameFromUrl(message.ResourceUrl) }}</div>
       </div>
       
-      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm a' }}</div>
     </div>
     <!-- Display Video Only -->
 
@@ -61,15 +63,15 @@
         <span nz-icon nzType="vertical-align-bottom" nzTheme="outline" class="icon-download" (click)="downloadDocument(message)"></span>
       </div>
       
-      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm a' }}</div>
     </div>
     <!-- Display Document Only -->
 
     <!-- Display Message Only -->
     <div class="message-content" *ngIf="message.Content">
       <div class="user-name">{{ message.ProfileName }}</div>
-      <div class="message-text" [innerHTML]="highlightSearchText(message.Content, message)"></div>
-      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm' }}</div>
+      <div class="message-text">{{ message.Content }}</div>
+      <div class="timestamp">{{ message.TimeStamp | date: 'yyyy-MM-dd HH:mm a' }}</div>
     </div>
   </div>
 </div>

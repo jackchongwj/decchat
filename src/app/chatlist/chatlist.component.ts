@@ -5,8 +5,8 @@ import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { Group } from '../Models/DTO/Group/group';
-import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate';
-import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate';
+import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate/user-profile-update';
+import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate/group-profile-update';
 
 
 @Component({
@@ -46,6 +46,7 @@ export class ChatlistComponent implements OnInit {
       this.updateQuitGroup();
       this.ProfileDetailChanges();
       this.GroupDetailChanges();
+      this.addNewGroupListener();
     }
   }
 
@@ -65,11 +66,8 @@ export class ChatlistComponent implements OnInit {
   private UpdateDeletePrivateChatlist(): void {
     this.signalRService.DelteFriend()
       .subscribe((userId: number) => {
-        console.log("p", this.privateChat);
-        console.log("Delete {userId}", userId);
         this.privateChat = this.privateChat.filter(chat => chat.UserId != userId);
         this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
-        console.log('Received updated private ChatList:', this.privateChat);
       });
   }
   
@@ -77,7 +75,6 @@ export class ChatlistComponent implements OnInit {
   {
     this.signalRService.retrieveChatlistListener()
     .subscribe((chats: ChatListVM[]) => {
-      console.log("Reach component retrieve chat list");
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.groupChat = chats.filter(chat => chat.RoomType === true); 
     });
@@ -86,18 +83,16 @@ export class ChatlistComponent implements OnInit {
   private updateGroupChatList(): void {
     this.signalRService.removeUserListener()
       .subscribe(({ chatRoomId, userId }) => {
-        console.log("removeuser", chatRoomId, userId)
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
+          this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
         }
-        this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
       });
   }
 
   private updateQuitGroup(): void {
     this.signalRService.quitGroupListener()
       .subscribe(({ chatRoomId, userId }) => {
-        console.log("quited", chatRoomId, userId)
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
         }
@@ -107,7 +102,7 @@ export class ChatlistComponent implements OnInit {
 
   private addNewGroupListener(): void {
     this.signalRService.addNewGroupListener().subscribe(chatListVM => {
-      console.log('Received new group :', chatListVM);
+      console.log("Received signalR, adding into a new group");
       // Add the new room to the groupChat array
       this.groupChat.push(chatListVM);
 
@@ -116,12 +111,9 @@ export class ChatlistComponent implements OnInit {
   private ProfileDetailChanges(): void {
     this.signalRService.profileUpdateListener().subscribe({
       next: (updateInfo: UserProfileUpdate) => {
-        console.log('Updating private chatlist')
         this.privateChat.forEach((chat) => {
-          console.log(updateInfo.ProfileName)
           if(chat.UserId === updateInfo.UserId) {
             if(updateInfo.ProfileName) {
-              console.log('update userId '+ chat.UserId)
               chat.ChatRoomName = updateInfo.ProfileName;
               
             }
@@ -138,7 +130,6 @@ export class ChatlistComponent implements OnInit {
   private GroupDetailChanges(): void {
     this.signalRService.groupUpdateListener().subscribe({
       next: (updateInfo: GroupProfileUpdate) => {
-        console.log('Updating group chatlist', this.groupChat)
         var result = this.groupChat.findIndex(chatlist => chatlist.ChatRoomId == updateInfo.ChatRoomId)
 
         if (updateInfo.GroupName !== undefined) {
@@ -147,18 +138,6 @@ export class ChatlistComponent implements OnInit {
         if (updateInfo.GroupPicture !== undefined) {
           this.groupChat[result].ProfilePicture = updateInfo.GroupPicture;
         }
-        // this.groupChat.forEach((chat) => {
-        //   if(chat.ChatRoomId === updateInfo.ChatRoomId) {
-        //     if(updateInfo.GroupName) {
-        //       console.log('update userId '+ chat.UserId)
-        //       chat.ChatRoomName = updateInfo.GroupName;
-              
-        //     }
-        //     if(updateInfo.GroupPicture) {
-        //       chat.ProfilePicture = updateInfo.GroupPicture;
-        //     }
-        //   }
-        // });
       },
       error: (error) => console.error('Error listening for profile updates:', error),
     });

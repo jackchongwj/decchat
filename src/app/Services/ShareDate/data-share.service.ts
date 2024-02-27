@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Chatroom } from '../../Models/ChatRoom/chatroom';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
-import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
+import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { User } from '../../Models/User/user';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
 
@@ -46,6 +46,10 @@ export class DataShareService {
 
   updateLoginUserPN(data:string){
     this.CurrentLoginUserProfileName.next(data);
+  }
+
+  updateUserId(data:number){
+    this.userId.next(data);
   }
 
   clearSelectedChatRoom(data: boolean)
