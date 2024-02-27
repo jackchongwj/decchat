@@ -28,19 +28,6 @@
   <span *ngIf="isCurrentUserOnline">Online</span>
   <span *ngIf="!isCurrentUserOnline">Offline</span>
 
-   <!-- NZ-ZORRO Kebab menu -->
-
-  <!-- <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
-    <i nz-icon nzType="more" nzTheme="outline"></i>
-  </button>
-  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
-    <ul nz-menu>
-      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
-      <li nz-menu-item>Delete Group</li>
-      <li nz-menu-item>Add/Kick Member</li>
-    </ul>
-  </nz-dropdown-menu> -->
-
   <!-- Modal 1: Delete Friend Modal -->
   <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()"
     (nzOnOk)="handleOkDeleteFriend()" [nzOkText]="'Confirm'">
