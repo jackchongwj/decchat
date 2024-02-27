@@ -101,39 +101,6 @@
     margin-right: 8px;  
   }
   
-/* modal */
-/* imge */
-.circular-image {
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  margin-right: 8px;
-}
-
-.group-member-container {
-  text-align: center;
-  margin: 10px;
-}
-
-.group-member-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Add this line */
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-.profile-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 15px;
-}
-
 .user-info {
   flex: 1;
 }
@@ -257,3 +224,59 @@
     flex-direction: column;
     align-items: center; 
   }
+
+
+
+  /* group member list under group profile */
+  .group-member-item-small {
+    display: inline-block;
+    margin-right: 10px;
+    text-align: center;
+  }
+  
+  .profile-image-small {
+    width: 50px; /* Adjust as needed */
+    height: 50px; /* Adjust as needed */
+    border-radius: 50%; /* Ensures the image is circular */
+    margin-bottom: 5px;
+  }
+  
+  .profile-name {
+    font-size: 12px; /* Adjust as needed */
+    display: block;
+    width: 60px; /* Adjust as needed */
+    white-space: nowrap; /* Prevents the name from wrapping */
+    overflow: hidden; /* Ensures the name is truncated if too long */
+    text-overflow: ellipsis; /* Shows ellipsis for truncated text */
+  }
+  
+  /* remove user delete text */
+  .remove-user-text {
+    color: rgb(240, 99, 99);
+    cursor: pointer; /* Makes the text look clickable */
+  }
+  
+
+
+.group-member-container {
+  text-align: right;
+  /* margin: 10px; */
+}
+
+.group-member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Add this line */
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
