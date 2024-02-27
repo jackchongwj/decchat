@@ -41,6 +41,10 @@ export class DataShareService {
     this.CurrentLoginUserProfileName.next(data);
   }
 
+  updateUserId(data:number){
+    this.userId.next(data);
+  }
+
   clearSelectedChatRoom(data: boolean)
   {
     this.IsSelected.next(data);

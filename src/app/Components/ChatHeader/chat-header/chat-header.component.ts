@@ -6,8 +6,7 @@ import { FriendsService } from '../../../Services/FriendService/friends.service'
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
-import { Group } from '../../../Models/DTO/Group/group';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { GroupMemberList } from '../../../Models/DTO/GroupMember/group-member-list';
 import { GroupMemberServiceService } from '../../../Services/GroupMember/group-member-service.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -30,8 +29,6 @@ export class ChatHeaderComponent implements OnInit {
     private _dataShareService: DataShareService,
     private friendService: FriendsService,
     private _signalRService: SignalRService,
-    private modalService: NzModalService,
-    
     private _chatRoomService:ChatroomService,
     private localStorage: LocalstorageService,
     private groupMemberServiceService: GroupMemberServiceService, 
@@ -56,7 +53,6 @@ export class ChatHeaderComponent implements OnInit {
       this.IsCurrentChatUser = false;
     });
 
-    console.log("chatroom details", this.currentChatRoom);
     this._signalRService.UserTypingStatus().subscribe((status:TypingStatus) => {
       //Check If Current Chat Room
       if (status.ChatRoomId === this.currentChatRoom.ChatRoomId) 
@@ -96,7 +92,7 @@ export class ChatHeaderComponent implements OnInit {
   saveGroupName(): void {
     this._chatRoomService.updateGroupName(this.currentChatRoom.ChatRoomId, this.currentChatRoom.ChatRoomName).subscribe({
       next: () => {
-        this.editMode = false; // Exit edit mode
+        this.editMode = false;
       },
       error: (error) => {
         console.error('Error updating profile name:', error);
@@ -122,7 +118,6 @@ export class ChatHeaderComponent implements OnInit {
 
   cancelPreview() {
     this.previewImageUrl = null;
-    
     this.selectedFile = null;
   }
 
@@ -162,7 +157,6 @@ export class ChatHeaderComponent implements OnInit {
     };
     
     this.friendService.DeleteFriend(this.request).subscribe(response => {
-      console.log('Friend Deleted successful: ', response);
     });
   }
 
@@ -173,26 +167,20 @@ export class ChatHeaderComponent implements OnInit {
 
   handleOkDeleteFriend(): void {
     this.DeleteFriend();
-    console.log('Button ok clicked!');
     this.isVisibleDeleteFriendModal = false;
   }
 
   handleCancelDeleteFriend(): void {
-    console.log('Button cancel clicked!');
     this.isVisibleDeleteFriendModal = false;
   }
 
   //showModalHeader
   showModalHeader(): void {
-    console.log("show");
     this.isVisibleDeleteFriendModal = true;
   }
 
   showModalRemoveUser(): void {
     this.isVisibleRemoveUserModal = true;
-
-    console.log("clicked");
-    // this.getGroupMembers();
 
     this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
     ).subscribe(groupMembers => {

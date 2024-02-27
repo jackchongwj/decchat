@@ -27,11 +27,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   currentChatRoom = {} as ChatListVM;
   currentUser = Number(this.lsService.getItem("userId"));
   messageList : ChatRoomMessages[] = [];
-
-  imageUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
-  videoUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Videos/testvideo.mp4";
-  docsUrl:string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Documents/testrun1233333333333333333333333333333333333333333333333333333333333333333333333333.docx";
-
+  
   ngOnInit(){
 
     // Get Chosen Chat Room
@@ -41,7 +37,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       // HTTP Get Message Service
       this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
         this.messageList = response;
-        console.log(response);
         this.scrollLast();
       }, error => {
         console.error('Error fetching messages:', error);

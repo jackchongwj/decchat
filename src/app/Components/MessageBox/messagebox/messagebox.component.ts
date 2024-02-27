@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable, Subject } from 'rxjs';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
@@ -23,7 +24,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     private _mService:MessageService,
     private _sService:SignalRService,
     private _lsService:LocalstorageService,
-    private _dataShareService:DataShareService){}
+    private _dataShareService:DataShareService,
+    private _msgBox: NzMessageService){}
 
   // Current User
   userId:number = Number(this._lsService.getItem("userId"));
@@ -117,48 +119,56 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       event.preventDefault();
     }
 
-    //share Data
-    this._dataShareService.selectedChatRoomData.subscribe
-    (
-      data =>{
-        this.currentUserChatRoomId = data.UserChatRoomId;
-      }
-    )
-    
-    this.message.Content = this.messageText;
-    this.message.UserChatRoomId = this.currentUserChatRoomId;
-    this.message.ResourceUrl = '';
-    this.message.MessageType = 1;
-    this.message.IsDeleted = false;
-    this.message.ChatRoomId = this.currentChatRoom;
-    this.message.UserId = this.userId;
-    this.message.ProfileName = this.currentUserPN;
+    if(!this.uploadedFiles && this.messageText.trim().length == 0)
+    {
+      this._msgBox.error("Please enter a message");
+      this.resetInputField();
+    }
+    else
+    {
+      //share Data
+      this._dataShareService.selectedChatRoomData.subscribe
+      (
+        data =>{
+          this.currentUserChatRoomId = data.UserChatRoomId;
+        }
+      )
+      
+      this.message.Content = this.messageText;
+      this.message.UserChatRoomId = this.currentUserChatRoomId;
+      this.message.ResourceUrl = '';
+      this.message.MessageType = 1;
+      this.message.IsDeleted = false;
+      this.message.ChatRoomId = this.currentChatRoom;
+      this.message.UserId = this.userId;
+      this.message.ProfileName = this.currentUserPN;
 
-    // Create FormData and append message and file (if exists)
-    const formData = new FormData();
-    formData.append('message', JSON.stringify(this.message));
-    
-    if (this.uploadedFiles) {
-      console.log(this.uploadedFiles);
+      // Create FormData and append message and file (if exists)
+      const formData = new FormData();
+
+      if (this.uploadedFiles) {
+        console.log(this.uploadedFiles);
         formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
+      }
+      
+      formData.append('message', JSON.stringify(this.message));
+
+      this._mService.sendMessage(formData).subscribe({
+        next: (res:ChatRoomMessages) => {
+          console.log("Message sent");
+          // Limit message send rate
+          this.sendCooldownOn = true; // Activate cooldown
+          setTimeout(() => this.sendCooldownOn = false, 1000); 
+          console.log("Backed response for msg: ", res);
+          // Reset field
+          this.resetInputField();
+        },
+        error: (e) => {
+          console.error(e);
+        }
+      });
     }
 
-    this._mService.sendMessage(formData).subscribe({
-      next: (res:ChatRoomMessages) => {
-        //this._sService.notifyMessage(res);
-        // Limit message send rate
-        this.sendCooldownOn = true; // Activate cooldown
-        setTimeout(() => this.sendCooldownOn = false, 1000); 
-
-        // Reset field
-        this.resetInputField();
-      },
-      error: (e) => {
-        console.error(e);
-      }
-    }); 
-
-    // this._sService.notifyMessage(this.message);
   }
 
   private resizeAndPreviewImage(file: File): void 
