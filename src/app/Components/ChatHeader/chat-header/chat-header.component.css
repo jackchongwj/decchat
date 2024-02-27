@@ -259,8 +259,8 @@
 
 
 .group-member-container {
-  text-align: right;
-  /* margin: 10px; */
+  text-align: center;
+  margin: 10px;
 }
 
 .group-member-item {
