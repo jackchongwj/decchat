@@ -10,6 +10,7 @@ import { User } from '../../Models/User/user';
 
 import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
+import { DataShareService } from '../ShareDate/data-share.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,13 @@ import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-pr
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  isSignalRConnected: boolean = false
   https: string = environment.hubBaseUrl;
 
   constructor(
     private ngZone: NgZone,
-    private localStorage: LocalstorageService) 
+    private localStorage: LocalstorageService,
+    private _dataShareService: DataShareService) 
     {
       //this.buildConnection();
     }
@@ -32,6 +35,11 @@ export class SignalRService {
                           .withUrl(this.https+"?userId="+Id)
                           .withAutomaticReconnect()
                           .build();
+
+                          this.hubConnection.onclose((error) => {
+                            this.isSignalRConnected = false;
+                            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+                          });
   }
 
   public startConnection(Id:number): Promise<void>
@@ -42,6 +50,8 @@ export class SignalRService {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
         return this.hubConnection.start()
         .then(() => {
+          this.isSignalRConnected = true;
+          this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
           console.log('Connection started');
         })
         .catch(err => console.log('Error while starting connection: ' + err));
@@ -54,7 +64,11 @@ export class SignalRService {
 
   public stopConnection(): Promise<void> {
     return this.hubConnection.stop()
-    .then(() => console.log('SignalR connection closed'))
+    .then(() => {
+        this.isSignalRConnected = false;
+        this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+      console.log('SignalR connection closed')
+    })
     .catch(err => console.error('Error while closing connection'));
   }
 

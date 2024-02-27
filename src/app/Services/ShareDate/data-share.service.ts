@@ -24,6 +24,7 @@ export class DataShareService {
   private CurrentSearchValue =  new BehaviorSubject<string>('');
   private totalResult =  new BehaviorSubject<number>(0);
   private currentResult = new BehaviorSubject<number>(1);
+  private checkSignalRConnection = new BehaviorSubject<boolean>(false);
 
   // Observable for widely use
   public chatListData = this.ChatlistSubject.asObservable();
@@ -34,6 +35,7 @@ export class DataShareService {
   public SearchMessageValue = this.CurrentSearchValue.asObservable();
   public totalSearchMessageResult = this.totalResult.asObservable();
   public currentSearchMessageResult = this.currentResult.asObservable();
+  public IsSignalRConnection = this.checkSignalRConnection.asObservable();
 
   updateChatListData(data: ChatListVM[]){
     this.ChatlistSubject.next(data);
@@ -65,12 +67,15 @@ export class DataShareService {
   updateTotalSearchMessageResult(data: number)
   {
     this.totalResult.next(data);
-    console.log("T",data);
   }
 
   updateCurrentMessageResult(data: number)
   {
     this.currentResult.next(data);
-    console.log("C",data);
+  }
+
+  updateSignalRConnectionStatus(data: boolean)
+  {
+    this.checkSignalRConnection.next(data);
   }
 }
