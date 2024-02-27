@@ -258,5 +258,15 @@ export class SignalRService {
     });
   }
 
+  public onlineStatusListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.hubConnection.on('UpdateOnlineUsers', (onlineUsers: any) => {
+        this.ngZone.run(() => {
+          observer.next(onlineUsers);
+        });
+      });
+    });
+  }
+
 
 }

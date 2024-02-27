@@ -23,7 +23,10 @@
     </div>
   </h1>
 
-  <!-- NZ-ZORRO Kebab menu -->
+  <span *ngIf="isCurrentUserOnline">Online</span>
+  <span *ngIf="!isCurrentUserOnline">Offline</span>
+
+   <!-- NZ-ZORRO Kebab menu -->
 
   <!-- <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
     <i nz-icon nzType="more" nzTheme="outline"></i>
