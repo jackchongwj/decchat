@@ -1,24 +1,15 @@
 <div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
+  <!-- Profile Picture -->
   <img nz-image width="200px" height="200px" [nzSrc]="currentChatRoom.ProfilePicture" alt="" class="chatprofile">
+  <!-- Name -->
   <h1>
     {{ currentChatRoom.ChatRoomName }}
     <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
       is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
     </span>
   </h1>
-
-  <!-- NZ-ZORRO Kebab menu -->
-
-  <!-- <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
-    <i nz-icon nzType="more" nzTheme="outline"></i>
-  </button>
-  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
-    <ul nz-menu>
-      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
-      <li nz-menu-item>Delete Group</li>
-      <li nz-menu-item>Add/Kick Member</li>
-    </ul>
-  </nz-dropdown-menu> -->
+  
+  <!-- Private Chat Button - Delete Friend -->
   <button class="custom-button" (click)="showModalHeader()" *ngIf="!currentChatRoom.RoomType">
     <i class="custom-icon" nz-icon nzType="user-delete">
     </i>
@@ -28,21 +19,21 @@
   <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()"
     (nzOnOk)="handleOkDeleteFriend()" [nzOkText]="'Confirm'">
 
-    <ng-container *nzModalContent>
+      <ng-container *nzModalContent>
+        <div class="friend-list-container">
+          DO YOU WANT TO DELETE THIS FRIEND
+        </div>
+      </ng-container>
 
-      <div class="friend-list-container">
-        DO YOU WANT TO DELETE THIS FRIEND
+      <div nz-row nzGutter="16">
+        <div nz-col nzSpan="12">
+          <button nz-button nzType="default" (click)="handleCancelDeleteFriend()">Cancel</button>
+        </div>
+        <div nz-col nzSpan="12">
+          <button nz-button nzType="primary" (click)="handleOkDeleteFriend()">Delete Friend</button>
+        </div>
       </div>
 
-    </ng-container>
-    <div nz-row nzGutter="16">
-      <div nz-col nzSpan="12">
-        <button nz-button nzType="default" (click)="handleCancelDeleteFriend()">Cancel</button>
-      </div>
-      <div nz-col nzSpan="12">
-        <button nz-button nzType="primary" (click)="handleOkDeleteFriend()">Delete Friend</button>
-      </div>
-    </div>
   </nz-modal>
 
   <!-- Modal 2: Remove user Modal -->
@@ -69,7 +60,7 @@
     </ng-container>
   </nz-modal>
 
-  <!-- Dropdown -->
+  <!-- Dropdown Menu For INITIATED BY USER -->
   <div *ngIf="currentChatRoom.RoomType">
     <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button"
       *ngIf="currentChatRoom.InitiatedBy == userId">
@@ -83,19 +74,20 @@
       </ul>
     </nz-dropdown-menu>
 
-    <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button"
-      *ngIf="currentChatRoom.InitiatedBy != userId">
-      <i nz-icon nzType="more" nzTheme="outline"></i>
-    </button>
-    <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
-        <li nz-menu-item (click)="ExitGroup()">Quit</li>
-      </ul>
-    </nz-dropdown-menu>
-  </div>
+  <!-- Dropdown Menu For NORMAL GROUP MEMBER -->
+  <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy != userId">
+    <i nz-icon nzType="more" nzTheme="outline"></i>
+  </button>
+  <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
+      <li nz-menu-item (click)="ExitGroup()">Quit</li>
+    </ul>
+  </nz-dropdown-menu>
+  </div>    
 </div>
 
+<!-- Group Chat Typing Status -->
 <span *ngIf="InComingUsers.length === 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
   {{ InComingUsers[0] }} is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
 </span>
@@ -105,55 +97,54 @@
     class="dot">.</span>
 </span>
 
-<!-- Modal 3: Group Profilel -->
+<!-- Group Profile Modal -->
 <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
   <ng-container *nzModalContent>
-    <!-- Group Picture with Edit Icon -->
-    <div class="profile-picture-overlay">
-      <nz-avatar class="modal-avatar"
-        [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large"
-        (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
-      <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
-      <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
-    </div>
-    <div *ngIf="previewImageUrl" class="image-options">
-      <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
-      <button nz-button nzType="default" (click)="cancelPreview()">✕</button>
-    </div>
 
-    <!-- Group Details Display -->
-    <div *ngIf="currentChatRoom" class="group-details">
-      <div class="group-name-edit">
-        <p *ngIf="!editMode">Group Name: <span>{{ currentChatRoom.ChatRoomName }}</span>
-          <button nz-button nzType="link" (click)="toggleEditMode()">
-            <i nz-icon nzType="edit"></i>
-          </button>
-        </p>
-        <ng-container *ngIf="editMode">
-          <nz-input-group nzCompact>
-            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName" />
-          </nz-input-group>
-          <button nz-button nzType="primary" (click)="saveGroupName()">Save</button>
-          <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
-        </ng-container>
-      </div>
-      <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
-    </div>
+  <!-- Group Picture with Edit Icon -->
+  <div class="profile-picture-overlay" >
+    <nz-avatar class="modal-avatar" [nzSrc]="currentChatRoom.ProfilePicture" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
+    <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
+    <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+  </div>
+  <div *ngIf="previewImageUrl" class="image-options">
+    <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
+    <button nz-button nzType="default" (click)="cancelPreview()">✕</button>
+  </div>  
 
-    <!-- Display Group Members-->
-    <div class="group-member-container">
-      <p>Group Members:</p>
-      <div *ngIf="groupMembers.length > 0" class="no-result-message">
-        <div *ngFor="let user of groupMembers" class="group-member-item-small">
-          <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image-small">
-          <span class="profile-name">{{ user.ProfileName }}</span>
-        </div>
-      </div>
-      <div *ngIf="groupMembers.length === 0" class="no-result-message">
-        No users selected.
+  <!-- Group Profile Display With Group Name Editable -->
+  <div *ngIf="currentChatRoom" class="group-details">
+    <div class="group-name-edit">
+      <p *ngIf="!editMode">Group Name: <span>{{ currentChatRoom.ChatRoomName }}</span>
+        <button nz-button nzType="link" (click)="toggleEditMode()">
+          <i nz-icon nzType="edit"></i>
+        </button>
+      </p>
+      <ng-container *ngIf="editMode">
+        <nz-input-group nzCompact>
+          <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName"/>
+        </nz-input-group>
+        <button nz-button nzType="primary" (click)="saveGroupName()">Save</button>
+        <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
+      </ng-container>
+    </div>
+    
+    <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
+  </div>  
+  
+  <!-- Display Group Members-->
+  <div class="group-member-container">
+    <p>Group Members:</p>
+    <div *ngIf="groupMembers.length > 0" class="no-result-message">
+      <div *ngFor="let user of groupMembers" class="group-member-item-small">
+        <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image-small">
+        <span class="profile-name">{{ user.ProfileName }}</span>
       </div>
     </div>
-
+    <div *ngIf="groupMembers.length === 0" class="no-result-message">
+      No users selected.
+    </div>
+  </div>
 
   </ng-container>
 </nz-modal>

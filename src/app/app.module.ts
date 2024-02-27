@@ -15,7 +15,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from './Sidebar/sidebar.component';
 import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdisplay/chatroomdisplay.component';
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
 import { LoginComponent } from './Pages/Auth/Login/login.component';
@@ -29,6 +28,7 @@ import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room
 import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
+import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
 
 registerLocaleData(ms);
 
@@ -53,7 +53,8 @@ registerLocaleData(ms);
     ChatHeaderComponent,
     UserProfileComponent,
     ChangePasswordComponent,
-    ChatRoomMessageComponent
+    ChatRoomMessageComponent,
+    MessageExtraFuncComponent
   ],
     imports: [
     BrowserModule,
@@ -62,7 +63,6 @@ registerLocaleData(ms);
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatDialogModule,
     ImportNgZorroAntdModule,
     ReactiveFormsModule
   ],
