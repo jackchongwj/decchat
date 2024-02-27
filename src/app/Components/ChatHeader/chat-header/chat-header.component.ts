@@ -31,6 +31,7 @@ export class ChatHeaderComponent implements OnInit {
     private friendService: FriendsService,
     private _signalRService: SignalRService,
     private modalService: NzModalService,
+
     
     private _chatRoomService:ChatroomService,
     private localStorage: LocalstorageService,
@@ -132,6 +133,13 @@ export class ChatHeaderComponent implements OnInit {
 
   toggleModal(): void {
     this.showModal = !this.showModal;
+
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+      ).subscribe(groupMembers => {
+        console.log(groupMembers);
+        this.groupMembers = groupMembers;
+        console.log(this.groupMembers);
+      });
   }
 
   toggleEditMode() {
@@ -241,4 +249,5 @@ export class ChatHeaderComponent implements OnInit {
     console.log('Button cancel clicked!');
     this.isVisibleRemoveUserModal = false;
   }
-}
+
+} 
