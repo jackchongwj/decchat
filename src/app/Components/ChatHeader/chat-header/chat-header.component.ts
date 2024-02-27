@@ -29,6 +29,9 @@ export class ChatHeaderComponent implements OnInit {
     private _dataShareService: DataShareService,
     private friendService: FriendsService,
     private _signalRService: SignalRService,
+    private modalService: NzModalService,
+
+    
     private _chatRoomService:ChatroomService,
     private localStorage: LocalstorageService,
     private groupMemberServiceService: GroupMemberServiceService, 
@@ -127,6 +130,11 @@ export class ChatHeaderComponent implements OnInit {
 
   toggleModal(): void {
     this.showModal = !this.showModal;
+
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+      ).subscribe(groupMembers => {
+        this.groupMembers = groupMembers;
+      });
   }
 
   toggleEditMode() {
@@ -196,7 +204,6 @@ export class ChatHeaderComponent implements OnInit {
     this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.userId).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
-        console.log('Backend response:', response);
         this.message.success('User removed successfully');
         this.isVisibleRemoveUserModal=false;
       },
@@ -210,7 +217,6 @@ export class ChatHeaderComponent implements OnInit {
     this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
-        console.log('Backend response:', response);
         this.message.success('Group quit successfully');
 
       },
@@ -221,12 +227,11 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   handleOkRemoveUser(): void {
-    console.log('Button ok clicked!');
     this.isVisibleRemoveUserModal = false;
   }
 
   handleCancelRemoveUser(): void {
-    console.log('Button cancel clicked!');
     this.isVisibleRemoveUserModal = false;
   }
-}
+
+} 

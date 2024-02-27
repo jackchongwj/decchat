@@ -16,8 +16,8 @@
   </button>
 
   <!-- Modal 1: Delete Friend Modal -->
-  <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()" (nzOnOk)="handleOkDeleteFriend()"
-      [nzOkText]="'Confirm'">
+  <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()"
+    (nzOnOk)="handleOkDeleteFriend()" [nzOkText]="'Confirm'">
 
       <ng-container *nzModalContent>
         <div class="friend-list-container">
@@ -36,7 +36,7 @@
 
   </nz-modal>
 
-  <!-- Modal 2: Group Members Modal -->
+  <!-- Modal 2: Remove user Modal -->
   <nz-modal [(nzVisible)]="isVisibleRemoveUserModal" nzTitle="Group Members" (nzOnCancel)="handleCancelRemoveUser()"
     (nzOnOk)="handleOkRemoveUser()">
     <ng-container *nzModalContent>
@@ -48,11 +48,7 @@
 
             <div class="user-info">
               <span class="profile-name">{{ user.ProfileName }}</span>
-
-              <div class="action-buttons">
-                <span nz-icon nzType="delete" nzTheme="outline" class="delete-icon"
-                  (click)="Delete(user.UserId)"></span>
-              </div>
+              <span class="remove-user-text" (click)="Delete(user.UserId)">Remove User</span>
             </div>
           </div>
         </div>
@@ -66,16 +62,17 @@
 
   <!-- Dropdown Menu For INITIATED BY USER -->
   <div *ngIf="currentChatRoom.RoomType">
-  <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy == userId">
-    <i nz-icon nzType="more" nzTheme="outline"></i>
-  </button>
-  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
-    <ul nz-menu>
-      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
-      <li nz-menu-item (click)="showModalRemoveUser()">Remove User</li>
-      <li nz-menu-item (click)="ExitGroup()">Quit</li>
-    </ul>
-  </nz-dropdown-menu>
+    <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button"
+      *ngIf="currentChatRoom.InitiatedBy == userId">
+      <i nz-icon nzType="more" nzTheme="outline"></i>
+    </button>
+    <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
+        <li nz-menu-item (click)="showModalRemoveUser()">Remove User</li>
+        <li nz-menu-item (click)="ExitGroup()">Quit</li>
+      </ul>
+    </nz-dropdown-menu>
 
   <!-- Dropdown Menu For NORMAL GROUP MEMBER -->
   <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button" *ngIf="currentChatRoom.InitiatedBy != userId">
@@ -96,7 +93,8 @@
 </span>
 
 <span *ngIf="InComingUsers.length > 1 && currentChatRoom.RoomType && IsCurrentChatUser" class="typing-indicator">
-  {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+  {{ InComingUsers.length }} people are typing<span class="dot">.</span><span class="dot">.</span><span
+    class="dot">.</span>
 </span>
 
 <!-- Group Profile Modal -->
@@ -134,5 +132,19 @@
     <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
   </div>  
   
+  <!-- Display Group Members-->
+  <div class="group-member-container">
+    <p>Group Members:</p>
+    <div *ngIf="groupMembers.length > 0" class="no-result-message">
+      <div *ngFor="let user of groupMembers" class="group-member-item-small">
+        <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image-small">
+        <span class="profile-name">{{ user.ProfileName }}</span>
+      </div>
+    </div>
+    <div *ngIf="groupMembers.length === 0" class="no-result-message">
+      No users selected.
+    </div>
+  </div>
+
   </ng-container>
 </nz-modal>
