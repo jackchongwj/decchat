@@ -27,7 +27,7 @@ export class UserService {
   doesUsernameExist(username: string): Observable<boolean> {
     return this.http.get<any>(`${UserUrl}DoesUsernameExist?username=${encodeURIComponent(username)}`)
         .pipe(
-            map(response => response.isUnique === false)
+            map(response => response.isExist === false)
         );
   }
 
