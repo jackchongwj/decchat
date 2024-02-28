@@ -132,7 +132,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
           this.currentUserChatRoomId = data.UserChatRoomId;
         }
       )
-      
+      console.log("Finish ddata share");
+
       this.message.Content = this.messageText;
       this.message.UserChatRoomId = this.currentUserChatRoomId;
       this.message.ResourceUrl = '';
@@ -140,6 +141,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       this.message.ChatRoomId = this.currentChatRoom;
       this.message.UserId = this.userId;
       this.message.ProfileName = this.currentUserPN;
+
+      console.log("Create message object");
 
       // Create FormData and append message and file (if exists)
       const formData = new FormData();
@@ -150,6 +153,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       
       formData.append('message', JSON.stringify(this.message));
       
+      console.log("Create form data");
+
       this._mService.sendMessage(formData).subscribe({
         next: (res:ChatRoomMessages) => {
           console.log("Messagen sent");
