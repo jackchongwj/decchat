@@ -25,11 +25,8 @@ export class SignalRService {
 
   constructor(
     private ngZone: NgZone,
-    // private localStorage: LocalstorageService,
     private _dataShareService: DataShareService) 
-    {
-      //this.buildConnection();
-    }
+    {}
 
   private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -44,32 +41,11 @@ export class SignalRService {
                           });
   }
 
-  // public startConnection(Id:number): Promise<void>
-  // {
-  //   if(!isNaN(Id) && Id != 0)
-  //   {
-  //     this.buildConnection(Id);
-
-  //     if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-  //       return this.hubConnection.start()
-  //       .then(() => {
-  //         this.isSignalRConnected = true;
-  //         this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-  //         console.log('Connection started');
-  //       })
-  //       .catch(err => console.log('Error while starting connection: ' + err));
-  //     }
-  //     return Promise.resolve();
-  //   }
-  //   return Promise.reject("Invalid ID");
-  // }
-  
   public startConnection(Id: number): Promise<void> {
     if (!isNaN(Id) && Id != 0) {
       this.buildConnection(Id);
 
       const checkAndReconnect = async (): Promise<void> => {
-        console.log(this.manualDisconnect);
         //avoid the disconnet reconnect again
         if (this.manualDisconnect) {
           return;
@@ -116,17 +92,6 @@ export class SignalRService {
         this.manualDisconnect = false;
       });
   }
-
-    
-  // public stopConnection(): Promise<void> {
-  //   return this.hubConnection.stop()
-  //   .then(() => {
-  //       this.isSignalRConnected = false;
-  //       this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-  //     console.log('SignalR connection closed')
-  //   })
-  //   .catch(err => console.error('Error while closing connection'));
-  // }
 
   public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
   {

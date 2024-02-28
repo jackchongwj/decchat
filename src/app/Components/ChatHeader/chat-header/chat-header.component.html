@@ -4,10 +4,11 @@
 
   <div class="user-info">
     <!-- Name -->
-    <h1>{{ truncateGroupChatRoomName(currentChatRoom) }}</h1>
-    <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
-      is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-    </span>
+    <h1>{{ truncateGroupChatRoomName(currentChatRoom) }}
+      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
+        is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
+    </h1>
     <span *ngIf="isCurrentUserOnline" class="online-status">Online</span>
     <span *ngIf="!isCurrentUserOnline" class="online-status">Offline</span>
   </div>

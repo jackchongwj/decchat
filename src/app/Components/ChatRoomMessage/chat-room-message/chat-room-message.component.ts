@@ -166,7 +166,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   private updateMessageListenerListener(): void {
     this._signalRService.updateMessageListener()
       .subscribe((newResults: ChatRoomMessages) => {
-
         if (newResults.ChatRoomId == this.currentChatRoom.ChatRoomId) {
           this.messageList.push(newResults);
           this.scrollLast();
