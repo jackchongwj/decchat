@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Friend } from '../../Models/Friend/friend';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { DeleteFriendRequest } from '../../Models/DTO/DeleteFriend/delete-friend-request';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,12 @@ export class FriendsService {
   addFriends(friends: Friend): Observable<any>
   {
     return this.http.post<Friend>(`${this.url}AddFriend`, friends)
+    // .pipe(
+    //   catchError((error) => {
+    //     console.error('Error adding friend:', error);
+    //     throw error; // 继续向上抛出错误，以便其他订阅者也能捕获到
+    //   })
+    // );
   }
 
   UpdateFriendRequest(friendRequest: FriendRequest, userId: number): Observable<any> {
