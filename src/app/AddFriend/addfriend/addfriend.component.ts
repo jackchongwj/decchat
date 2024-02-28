@@ -63,7 +63,6 @@ export class AddfriendComponent implements OnInit {
   private UpdateFriendRequest(FRequest: FriendRequest): void {
     this.friendService.UpdateFriendRequest(FRequest, this.userId)
       .subscribe(response => {
-        console.log("Update Friend Request: ", response);
         this.getFriendRequest = this.getFriendRequest.filter(User => User.UserId != FRequest.SenderId)
       });
   }
@@ -72,9 +71,7 @@ export class AddfriendComponent implements OnInit {
   private updateFriendRequestListener(): void {
     this.signalRService.updateFriendRequestListener()
       .subscribe((newResults: User[]) => {
-        console.log("new result", newResults);
         this.getFriendRequest = newResults;
-        console.log('Received updated friend request results:', this.getFriendRequest);
       });
   }
 
@@ -84,7 +81,6 @@ export class AddfriendComponent implements OnInit {
   }
 
   handleCancel(): void {
-    console.log('Button cancel clicked!');
     this.isVisible = false;
   }
 }

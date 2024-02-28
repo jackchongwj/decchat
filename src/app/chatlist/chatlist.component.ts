@@ -57,9 +57,7 @@ export class ChatlistComponent implements OnInit {
   private UpdatePrivateChatList(): void {
     this.signalRService.updatePrivateChatlist()
       .subscribe((chatlist: ChatListVM) => {
-        console.log("Plist",chatlist)
         this.privateChat.push(chatlist);
-        console.log('Received updated private ChatList:', this.privateChat);
       });
   }
 
@@ -102,7 +100,6 @@ export class ChatlistComponent implements OnInit {
 
   private addNewGroupListener(): void {
     this.signalRService.addNewGroupListener().subscribe(chatListVM => {
-      console.log("Received signalR, adding into a new group");
       // Add the new room to the groupChat array
       this.groupChat.push(chatListVM);
 
