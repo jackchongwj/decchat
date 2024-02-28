@@ -3,7 +3,7 @@
   <img nz-image width="200px" height="200px" [nzSrc]="currentChatRoom.ProfilePicture" alt="" class="chatprofile">
   <!-- Name -->
   <h1>
-    {{ currentChatRoom.ChatRoomName }}
+    {{ truncateGroupChatRoomName(currentChatRoom) }}
     <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
       is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
     </span>
@@ -175,7 +175,7 @@
         </p>
         <ng-container *ngIf="editMode">
           <nz-input-group nzCompact>
-            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName" />
+            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName" [maxlength]="50"/>
           </nz-input-group>
           <button nz-button nzType="primary" (click)="saveGroupName()">Save</button>
           <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
