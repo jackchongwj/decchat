@@ -1,15 +1,14 @@
 .show-chat-room {
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Center items vertically */
-    padding: 10px; /* Add some padding */
-    background-color: beige;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    border-bottom: 2px solid #ececec; /* A subtle border to separate the header */
-    position: relative;
-    top: 0; 
-    z-index: 100;
-  }
+  position: relative; /* Ensure the container is positioned relative */
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: beige;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom: 2px solid #ececec;
+  z-index: 100;
+}
   
   .show-chat-room img.chatprofile {
     border-radius: 50%; /* Make the image round */
@@ -256,8 +255,6 @@
     color: rgb(240, 99, 99);
     cursor: pointer; /* Makes the text look clickable */
   }
-  
-
 
 .group-member-container {
   text-align: right;
@@ -280,4 +277,70 @@
   height: 50px;
   border-radius: 50%;
   margin-right: 15px;
+}
+
+/* Adjusted styles for online/offline status */
+.show-chat-room .online-status {
+  font-size: 12px; /* Smaller font size */
+  color: rgba(0, 0, 0, 0.5); /* Faded color */
+}
+
+/* Adjusted styles for user-info */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+/* Search bar container */
+.search-bar {
+  position: absolute;
+  right: 60px; /* Adjust the distance from the right side */
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  
+}
+
+/* Search input */
+.search-bar input[type="text"] {
+  width: 150px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  padding: 5px; /* Adjust padding as needed */
+  border: 1px solid #ccc; /* Border style */
+  border-radius: 5px; /* Border radius */
+  margin-right: 10px; /* Add some space between input and buttons */
+}
+
+/* Search result text */
+.search-result-text {
+  font-size: 12px; /* Adjust font size as needed */
+  margin-right: 10px; /* Add some space between text and buttons */
+}
+
+/* Search buttons */
+.search-bar button {
+  background-color: transparent; /* Button background color */
+  color: rgb(8, 8, 8); /* Button text color */
+  padding: 3px 8px; /* Adjust padding as needed to make the button smaller */
+  border: white; /* Remove border */
+  border-radius: 5px; /* Border radius */
+  cursor: pointer; /* Cursor style */
+}
+
+.search-bar.cancel-button {
+  background-color: transparent; /* Transparent background */
+  color: #ccc; /* Text color matches search bar input text */
+  border: 1px solid #ccc; /* Border color matches input border */
+  border-radius: 3px;
+  padding: 5px 8px; /* Adjust padding as needed */
+  font-size: 12px; /* Adjust font size */
+  cursor: pointer;
+}
+
+.updown-icon {
+  font-size: 15px;
+  color: rgb(150, 142, 142);
+  position: relative;
 }
