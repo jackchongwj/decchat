@@ -98,7 +98,6 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUserById(this.userId).subscribe({
       next: (data) => {
         this.User = data;
-        console.log("Current user data: ", data);
         this.dsService.updateLoginUserPN(data.ProfileName);
       },
       error: (error) => {

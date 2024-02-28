@@ -1,0 +1,44 @@
+
+<nz-button-group>
+    <button nz-button nz-dropdown [nzDropdownMenu]="menu1" nzPlacement="bottomRight" class="message-edit">
+      <span nz-icon nzType="ellipsis"></span>
+    </button>
+</nz-button-group>
+
+<nz-dropdown-menu #menu1="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item (click)="OpenEditMessage()" *ngIf="messageData.Content != ''">Edit message</li>
+      <li nz-menu-item (click)="OpenDeleteMessage()">Delete message</li>
+    </ul>
+</nz-dropdown-menu>
+
+<!-- Edit Message Modal -->
+<nz-modal
+    [(nzVisible)]="editIsVisible"
+    nzTitle="Edit Message"
+    (nzOnCancel)="handleEditModalCancel()"
+    (nzOnOk)="handleEditModalOk()"
+    nzOkText="Edit">
+    <ng-container *nzModalContent>
+        <div>Edit the message below:</div>
+        <p>Current Message Text: {{ messageData.Content }}</p>
+        <hr>
+        <p>New Message Text:</p>
+        <input nz-input type="text" class="message-input" [(ngModel)]="newMessageContent"
+        placeholder="Type a new message..." nzSize="default" value="newMessageContent" [maxlength]="200"/>
+    </ng-container>
+</nz-modal>
+
+<!-- Delete Message Modal -->
+<nz-modal 
+    [(nzVisible)]="deleteIsVisible"
+    nzTitle="Delete Message"
+    (nzOnCancel)="handleDeleteModalCancel()"
+    (nzOnOk)="handleDeleteModalOk()"
+    nzOkText="Confirm"
+    nzCancelText="Go Back">
+    
+    <ng-container *nzModalContent>
+        <div>Are you sure you want to delete this message?</div>
+    </ng-container>
+</nz-modal>

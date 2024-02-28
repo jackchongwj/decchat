@@ -26,7 +26,6 @@ export class FriendsService {
 
   DeleteFriend(deleteFriendRequest: DeleteFriendRequest): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });      
-    console.log("sf p", deleteFriendRequest);
     return this.http.post<number>(`${this.url}DeleteFriend`, deleteFriendRequest);
   }
 }

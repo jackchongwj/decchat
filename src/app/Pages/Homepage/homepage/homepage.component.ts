@@ -16,16 +16,20 @@ export class HomepageComponent implements OnDestroy,OnInit{
     private dataShareService: DataShareService)
   {}
 
+  isSignalRConnection : boolean = false
+
   ngOnInit(): void{
     this.dataShareService.checkLogin.subscribe(data => {
       if (!isNaN(data) && data != 0){
         this.signalRService.startConnection(data);
-        // console.log("Now proceed to start signalr connection after finish login");
       }
+    })
+
+    this.dataShareService.IsSignalRConnection.subscribe(data => {
+      this.isSignalRConnection = data
     })
   }
 
   ngOnDestroy(): void {
-    //this.signalRService.stopConnection()
   }
 }

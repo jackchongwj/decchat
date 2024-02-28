@@ -4,12 +4,13 @@ import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
-import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
+import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
 
 import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
+import { DataShareService } from '../ShareDate/data-share.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,13 @@ import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-pr
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  isSignalRConnected: boolean = false
   https: string = environment.hubBaseUrl;
 
   constructor(
     private ngZone: NgZone,
-    private localStorage: LocalstorageService) 
+    private localStorage: LocalstorageService,
+    private _dataShareService: DataShareService) 
     {
       //this.buildConnection();
     }
@@ -30,7 +33,13 @@ export class SignalRService {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https+"?userId="+Id)
+                          .withAutomaticReconnect()
                           .build();
+
+                          this.hubConnection.onclose((error) => {
+                            this.isSignalRConnected = false;
+                            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+                          });
   }
 
   public startConnection(Id:number): Promise<void>
@@ -41,19 +50,24 @@ export class SignalRService {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
         return this.hubConnection.start()
         .then(() => {
+          this.isSignalRConnected = true;
+          this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
           console.log('Connection started');
         })
         .catch(err => console.log('Error while starting connection: ' + err));
       }
       return Promise.resolve();
     }
-    console.error("Invalid ID for signalR connection:", Id);
     return Promise.reject("Invalid ID");
   }
 
   public stopConnection(): Promise<void> {
     return this.hubConnection.stop()
-    .then(() => console.log('SignalR connection closed'))
+    .then(() => {
+        this.isSignalRConnected = false;
+        this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+      console.log('SignalR connection closed')
+    })
     .catch(err => console.error('Error while closing connection'));
   }
 
@@ -86,7 +100,6 @@ export class SignalRService {
     return new Observable<ChatRoomMessages>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateMessage', (newMessage: ChatRoomMessages) => {
-          console.log('Received new message:', newMessage); 
           this.ngZone.run(() => {
             observer.next(newMessage);
           });
@@ -100,7 +113,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateSearchResults', (userId: number) => {
-          console.log('Received new search results:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -114,7 +126,6 @@ export class SignalRService {
     return new Observable<User[]>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateFriendRequest', (newResults: User[]) => {
-          console.log('Received new Friend Request results:', newResults); 
           this.ngZone.run(() => {
             observer.next(newResults);
           });
@@ -127,7 +138,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateSearchResultsAfterAccept', (userId: number) => {
-          console.log('Received new search results After Accept:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -140,7 +150,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateSearchResultsAfterReject', (userId: number) => {
-          console.log('Received new search results After Reject:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -154,7 +163,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('DeleteFriend', (userId: number) => {
-          console.log('Delete Friend Successfull:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -168,7 +176,6 @@ export class SignalRService {
     return new Observable<ChatListVM>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdatePrivateChatlist', (chatlist: ChatListVM) => {
-          console.log('Received new private chatlist:', chatlist); 
           this.ngZone.run(() => {
             observer.next(chatlist);
           });
@@ -182,7 +189,7 @@ export class SignalRService {
     return new Observable<ChatListVM[]>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('Chatlist', (newResults: ChatListVM[]) => {
-          console.log('Received chatlist', newResults); 
+          
           this.ngZone.run(() => {
             observer.next(newResults);
           });
@@ -206,7 +213,6 @@ export class SignalRService {
    removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('UserRemoved', (chatRoomId: number, userId: number) => {
-        console.log("RSR", { chatRoomId, userId })
         this.ngZone.run(() => {
           observer.next({ chatRoomId, userId });
         });
@@ -217,20 +223,12 @@ export class SignalRService {
   quitGroupListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('QuitGroup', (chatRoomId: number, userId: number) => {
-        console.log("QSR", { chatRoomId, userId })
         this.ngZone.run(() => {
           observer.next({ chatRoomId, userId });
         });
       });
     });
   }
-  
-  // public invokeHubMethod(methodName: string, updateInfo: any): void {
-  //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-  //     this.hubConnection.invoke(methodName, updateInfo)
-  //       .catch(error => console.error('Error invoking method on hub:', methodName, error));
-  //   }
-  // }
   
   public profileUpdateListener(): Observable<UserProfileUpdate> {
     return new Observable<UserProfileUpdate>(observer => {
@@ -258,5 +256,29 @@ export class SignalRService {
     });
   }
 
+
+
+  deleteMessageListener():Observable<number>{
+    return new Observable<number >( observer => {
+      this.hubConnection.on("DeleteMessage", (MessageId:number) => {
+        this.ngZone.run(() => {
+          observer.next(MessageId);
+        });
+
+      })
+    })
+  }
+
+  editMessageListener():Observable<ChatRoomMessages>{
+    return new Observable<ChatRoomMessages >( observer => {
+      this.hubConnection.on("EditMessage", (EdittedMessage:ChatRoomMessages) => {
+
+        this.ngZone.run(() => {
+          observer.next(EdittedMessage);
+        });
+
+      })
+    })
+  }
 
 }
