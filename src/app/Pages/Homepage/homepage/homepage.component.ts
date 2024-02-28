@@ -22,7 +22,6 @@ export class HomepageComponent implements OnDestroy,OnInit{
     this.dataShareService.checkLogin.subscribe(data => {
       if (!isNaN(data) && data != 0){
         this.signalRService.startConnection(data);
-        // console.log("Now proceed to start signalr connection after finish login");
       }
     })
 
@@ -32,6 +31,6 @@ export class HomepageComponent implements OnDestroy,OnInit{
   }
 
   ngOnDestroy(): void {
-    //this.signalRService.stopConnection()
+    this.signalRService.stopConnection();
   }
 }
