@@ -52,14 +52,26 @@ export class UserProfileComponent implements OnInit {
     let fileList: FileList | null = element.files;
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
-  
-      // Use FileReader to read the file for preview
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.previewImageUrl = e.target?.result as string; 
-      };
-      reader.readAsDataURL(this.selectedFile);
+
+      if(this.isImage(this.selectedFile.name))
+      {
+        // Use FileReader to read the file for preview
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          this.previewImageUrl = e.target?.result as string; 
+        };
+        reader.readAsDataURL(this.selectedFile);
+      }
+      else
+      {
+        this.message.error("Invalid File Format Uploaded");
+      }
+   
     }
+  }
+
+  isImage(fileName: string): boolean {
+    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
 
   saveProfileName(): void {
