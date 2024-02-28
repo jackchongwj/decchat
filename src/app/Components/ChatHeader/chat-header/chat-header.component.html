@@ -154,7 +154,7 @@
     <!-- Group Picture with Edit Icon -->
     <div class="profile-picture-overlay">
       <nz-avatar class="modal-avatar"
-        [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large"
+        [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture" nzSize="large"
         (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
       <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
       <input type="file" #fileInput (change)="onFileSelected($event)"

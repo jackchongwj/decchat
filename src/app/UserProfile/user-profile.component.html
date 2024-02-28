@@ -13,7 +13,7 @@
   <ng-container *nzModalContent>
   <!-- Profile Picture with Edit Icon -->
   <div class="profile-picture-overlay" >
-    <nz-avatar class="modal-avatar" [nzSrc]="User.ProfilePicture" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
+    <nz-avatar class="modal-avatar" [nzSrc]="previewImageUrl || User.ProfilePicture" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
     <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
     <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png, image/webp">
   </div>
