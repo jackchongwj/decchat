@@ -25,7 +25,6 @@ export class MessageService {
   }
 
   editMessage(EdittedMessage:ChatRoomMessages): Observable<any>{
-    console.log("Editting this message: ", EdittedMessage);
     return this.http.post<ChatRoomMessages>(`${MessageUrl}EditMessage`, EdittedMessage);
   }
 

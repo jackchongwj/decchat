@@ -100,7 +100,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
         const reader = new FileReader();
 
         reader.onload = (e) => {
-          //console.log(reader.result);
           this.previewFile = reader.result as string;
         };
 
@@ -137,7 +136,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       this.message.Content = this.messageText;
       this.message.UserChatRoomId = this.currentUserChatRoomId;
       this.message.ResourceUrl = '';
-      this.message.MessageType = 1;
       this.message.IsDeleted = false;
       this.message.ChatRoomId = this.currentChatRoom;
       this.message.UserId = this.userId;
@@ -147,19 +145,18 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       const formData = new FormData();
 
       if (this.uploadedFiles) {
-        console.log(this.uploadedFiles);
         formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
       }
       
       formData.append('message', JSON.stringify(this.message));
-
+      
       this._mService.sendMessage(formData).subscribe({
         next: (res:ChatRoomMessages) => {
-          console.log("Message sent");
+          
           // Limit message send rate
           this.sendCooldownOn = true; // Activate cooldown
           setTimeout(() => this.sendCooldownOn = false, 1000); 
-          console.log("Backed response for msg: ", res);
+
           // Reset field
           this.resetInputField();
         },
