@@ -60,10 +60,6 @@ export class CreategroupComponent implements OnInit {
       return; // Exit the method
     }
 
-    console.log('Group Name:', this.roomName);
-    console.log('Selected Users:', this.selectedUsers);
-    console.log('InitiatedBy:', this.InitiatedBy);
-
     // Create a Group instance with the data
     const newGroup = new Group(this.roomName.trim(), this.selectedUsers, this.InitiatedBy, 0); // Assuming UserId is not relevant here
 
@@ -71,7 +67,6 @@ export class CreategroupComponent implements OnInit {
     this.chatlistService.createNewGroup(newGroup).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
-        console.log('Backend response:', response);
         this.message.success('Group created successfully');
         this.roomName = '';
         this.selectedUsers = [];
@@ -81,21 +76,18 @@ export class CreategroupComponent implements OnInit {
       }
     });
 
-    // console.log('Button ok clicked!');
     this.isVisible = false;
   }
 
 
   handleCancel(): void {
-    console.log('Button cancel clicked!');
     this.isVisible = false;
   }
 
   getFriendList() {
     this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-      tap(chats => console.log(chats)),
+      tap(),
     ).subscribe((chats: ChatListVM[]) => {
-      console.log("Friends Subscribed: " + chats);
       this.privateChat = chats.filter(chat => chat.RoomType === false);
     });
 

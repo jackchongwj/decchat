@@ -40,7 +40,6 @@ export class MessageExtraFuncComponent implements OnInit{
 
       this._mService.editMessage(this.messageData).subscribe({
         next: (res:ChatRoomMessages) => {
-          console.log("Success edit msg: ", res);
         },
         error: (e) => {
           console.error(e);
@@ -62,7 +61,6 @@ export class MessageExtraFuncComponent implements OnInit{
 
     this._mService.deleteMessage(this.messageData.MessageId!, this.messageData.ChatRoomId).subscribe({
       next: (res:number) => {
-        console.log(res);
       },
       error: (e) => {
         console.error(e);
