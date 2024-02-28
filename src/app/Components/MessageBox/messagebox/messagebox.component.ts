@@ -107,8 +107,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
       else
       {
-        console.log("Invalid File Size, file too big");
-        
+        this._msgBox.error("File upload failed: The selected file exceeds the maximum allowed size of 8MB. Please choose a smaller file.");
+        this.removeFile();
       }
     }
   }
@@ -230,7 +230,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   isImage(fileName: string): boolean {
     return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
-  
+ 
   isVideo(fileName: string): boolean {
     return /\.(mp4)$/i.test(fileName);
   }
