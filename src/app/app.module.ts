@@ -17,9 +17,9 @@ import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdispl
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
-import { LoginComponent } from './Pages/Auth/Login/login.component';
-import { RegisterComponent } from './Pages/Auth/Register/register.component';
-import { LogoutComponent } from './Logout/logout.component';
+import { LoginComponent } from './Pages/Auth/login/login.component';
+import { RegisterComponent } from './Pages/Auth/register/register.component';
+import { LogoutComponent } from './logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';
 import { UserLoginPageComponent } from './Layout/UserLoginPage/user-login-page/user-login-page.component';
@@ -29,6 +29,7 @@ import { MessageboxComponent } from './Components/MessageBox/messagebox/messageb
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
 import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
+import { SpinComponent } from './Loading/spin/spin.component';
 
 registerLocaleData(ms);
 
@@ -54,7 +55,8 @@ registerLocaleData(ms);
     UserProfileComponent,
     ChangePasswordComponent,
     ChatRoomMessageComponent,
-    MessageExtraFuncComponent
+    MessageExtraFuncComponent,
+    SpinComponent
   ],
     imports: [
     BrowserModule,
