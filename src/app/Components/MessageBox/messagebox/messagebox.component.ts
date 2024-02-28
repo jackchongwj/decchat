@@ -149,10 +149,10 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
       
       formData.append('message', JSON.stringify(this.message));
-
+      
       this._mService.sendMessage(formData).subscribe({
         next: (res:ChatRoomMessages) => {
-
+          
           // Limit message send rate
           this.sendCooldownOn = true; // Activate cooldown
           setTimeout(() => this.sendCooldownOn = false, 1000); 

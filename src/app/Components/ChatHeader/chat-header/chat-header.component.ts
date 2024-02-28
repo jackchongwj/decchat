@@ -53,7 +53,7 @@ export class ChatHeaderComponent implements OnInit {
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   InComingUsers: string[] = [];
-  public isCurrentUserOnline: boolean = false;
+  isCurrentUserOnline: boolean = false;
   showSearchBar = false;
   checkChatRoomId: number = 0;
   searchValue: string = '';
@@ -187,6 +187,7 @@ export class ChatHeaderComponent implements OnInit {
     let fileList: FileList | null = element.files;
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
+
       if(this.isImage(this.selectedFile.name))
       {
         // Use FileReader to read the file for preview
@@ -324,6 +325,17 @@ export class ChatHeaderComponent implements OnInit {
     if (this.currenResult > 1) {
       this.currenResult--;
       this._dataShareService.updateCurrentMessageResult(this.currenResult);
+    }
+  }
+
+  truncateGroupChatRoomName(ChatRoom:ChatListVM):string{
+    if(!ChatRoom.RoomType)
+    {
+      return ChatRoom.ChatRoomName
+    }
+    else
+    {
+      return ChatRoom.ChatRoomName.substring(0,15)+ '...';
     }
   }
 
