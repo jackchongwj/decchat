@@ -1,9 +1,9 @@
 <div class="show-chat-room" *ngIf="currentChatRoom && currentChatRoom.ChatRoomName">
   <!-- Profile Picture -->
   <img nz-image width="200px" height="200px" [nzSrc]="currentChatRoom.ProfilePicture" alt="" class="chatprofile">
-
+   
+  <!-- Name -->
   <div class="user-info">
-    <!-- Name -->
     <h1>{{ currentChatRoom.ChatRoomName }}</h1>
     <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
       is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
@@ -33,21 +33,9 @@
         <button nz-button class="cancel-button" nzType="default" (click)="closeSearch()">Cancel</button>
       </div>
     </div>
-  </div>
 
-
-  <!-- NZ-ZORRO Kebab menu -->
-
-  <!-- <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button" *ngIf="currentChatRoom.RoomType">
-    <i nz-icon nzType="more" nzTheme="outline"></i>
-  </button>
-  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
-    <ul nz-menu>
-      <li nz-menu-item (click)="toggleModal()">Group Profile</li>
-      <li nz-menu-item>Delete Group</li>
-      <li nz-menu-item>Add/Kick Member</li>
-    </ul>
-  </nz-dropdown-menu> -->
+  <span *ngIf="isCurrentUserOnline">Online</span>
+  <span *ngIf="!isCurrentUserOnline">Offline</span>
 
   <!-- Modal 1: Delete Friend Modal -->
   <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()"
@@ -133,27 +121,18 @@
       </ul>
     </nz-dropdown-menu>
   </div>
-  <!-- Modal 3: Remove User Confirmation Modal -->
-
 </div>
-
-<!--Private User-->
-<!-- <button class="custom-button" (click)="showModalHeader()" *ngIf="!currentChatRoom.RoomType">
-  <i class="custom-icon" nz-icon nzType="user-delete">
-  </i>
-</button> -->
 
 <!-- Modal 1: Delete Friend Modal -->
 <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()"
   (nzOnOk)="handleOkDeleteFriend()" [nzOkText]="'Confirm'">
 
   <ng-container *nzModalContent>
-
     <div class="friend-list-container">
       DO YOU WANT TO DELETE THIS FRIEND
     </div>
-
   </ng-container>
+
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="12">
       <button nz-button nzType="default" (click)="handleCancelDeleteFriend()">Cancel</button>

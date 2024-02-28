@@ -1,6 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
-import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { UserService } from '../Services/UserService/user.service';
 import { UserProfileComponent } from '../UserProfile/user-profile.component';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';

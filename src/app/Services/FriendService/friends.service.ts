@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Friend } from '../../Models/Friend/friend';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { DeleteFriendRequest } from '../../Models/DTO/DeleteFriend/delete-friend-request';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

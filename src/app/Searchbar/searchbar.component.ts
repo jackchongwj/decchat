@@ -6,6 +6,7 @@ import { UserService } from '../Services/UserService/user.service';
 import { UserSearchDetails } from '../Models/DTO/User/user-search-details';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-searchbar',
@@ -19,7 +20,8 @@ export class SearchbarComponent implements OnInit {
     private search: UserService, 
     private ngZone: NgZone, 
     private localStorage: LocalstorageService,
-    private signalR: SignalRService) { }
+    private signalR: SignalRService,
+    private message: NzMessageService) { }
 
   //variable declare
   isCollapsed = false;
@@ -39,7 +41,6 @@ export class SearchbarComponent implements OnInit {
       switchMap(searchValue => searchValue !== '' ? this.search.getSearch(searchValue, this.userId) : of([]))
     ).subscribe(response => {
       this.searchResult = response;
-      console.log('Backend Search Result:', response);
     });
 
     this.UpdateSearchToPending();
@@ -60,7 +61,10 @@ export class SearchbarComponent implements OnInit {
   OnSendFriendRequest(receiverId: number): void {
     this.friendService.addFriends({ RequestId: null, SenderId: this.userId, ReceiverId: receiverId, Status: 0 })
       .subscribe(response => {
-        console.log('Friend Created successful: ', response);
+        this.message.success('Friend Request send successfully');
+      },
+      (error) => {
+        this.message.error('Friend Has Added Before!!!');
       });
   }
 
@@ -68,13 +72,10 @@ export class SearchbarComponent implements OnInit {
   private UpdateSearchToPending(): void {
     this.signalR.updateSearchResultsListener()
       .subscribe((UserId: number) => {
-        console.log("pending", this.userId);
         const newresult = this.searchResult.find(user => user.UserId == UserId)
         if (newresult) {
           newresult.Status = 1;
-          console.log("new", this.searchResult);
         }
-        console.log('Received updated search results to pending:', this.searchResult);
       });
   }
 
@@ -85,9 +86,7 @@ export class SearchbarComponent implements OnInit {
         const newresult = this.searchResult.find(user => user.UserId == UserId)
         if (newresult) {
           newresult.Status = 3;
-          console.log("new", this.searchResult);
         }
-        console.log('Received updated search results to friend:', this.searchResult);
       });
   }
 
@@ -99,7 +98,6 @@ export class SearchbarComponent implements OnInit {
         if (newresult) {
           newresult.Status = 2;
         }
-        console.log('Received updated search results to friend:', this.searchResult);
       });
   }
 
@@ -107,13 +105,10 @@ export class SearchbarComponent implements OnInit {
   private UpdateDeletePrivateChatlist(): void {
     this.signalR.DelteFriend()
       .subscribe((UserId: number) => {
-        console.log("Delete {UserId}",UserId)
         const newresult = this.searchResult.find(user => user.UserId == UserId)
         if (newresult) {
           newresult.Status = 3;
-          console.log("new", this.searchResult);
         }
-        console.log('Received updated private ChatList:', this.searchResult);
       });
   }
 

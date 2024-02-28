@@ -29,6 +29,7 @@ import { MessageboxComponent } from './Components/MessageBox/messagebox/messageb
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
 import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
+import { SpinComponent } from './Loading/spin/spin.component';
 
 registerLocaleData(ms);
 
@@ -54,7 +55,8 @@ registerLocaleData(ms);
     UserProfileComponent,
     ChangePasswordComponent,
     ChatRoomMessageComponent,
-    MessageExtraFuncComponent
+    MessageExtraFuncComponent,
+    SpinComponent
   ],
     imports: [
     BrowserModule,

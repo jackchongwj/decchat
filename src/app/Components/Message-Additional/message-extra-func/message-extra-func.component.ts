@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { MessageService } from '../../../Services/MessageService/message.service';
-import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 
 @Component({
   selector: 'app-message-extra-func',

@@ -7,6 +7,7 @@ import { LocalstorageService } from '../../Services/LocalStorage/local-storage.s
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { UserService } from '../../Services/UserService/user.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 
 @Component({
@@ -20,7 +21,8 @@ export class AddfriendComponent implements OnInit {
     private friendService: FriendsService,
     private signalRService: SignalRService,
     private dataShareService: DataShareService,
-    private localStorage: LocalstorageService) { }
+    private localStorage: LocalstorageService,
+    private message: NzMessageService) { }
 
   getFriendRequest: User[] = [];
   isVisible = false;
@@ -63,7 +65,6 @@ export class AddfriendComponent implements OnInit {
   private UpdateFriendRequest(FRequest: FriendRequest): void {
     this.friendService.UpdateFriendRequest(FRequest, this.userId)
       .subscribe(response => {
-        console.log("Update Friend Request: ", response);
         this.getFriendRequest = this.getFriendRequest.filter(User => User.UserId != FRequest.SenderId)
       });
   }
@@ -72,9 +73,7 @@ export class AddfriendComponent implements OnInit {
   private updateFriendRequestListener(): void {
     this.signalRService.updateFriendRequestListener()
       .subscribe((newResults: User[]) => {
-        console.log("new result", newResults);
         this.getFriendRequest = newResults;
-        console.log('Received updated friend request results:', this.getFriendRequest);
       });
   }
 
@@ -84,7 +83,6 @@ export class AddfriendComponent implements OnInit {
   }
 
   handleCancel(): void {
-    console.log('Button cancel clicked!');
     this.isVisible = false;
   }
 }
