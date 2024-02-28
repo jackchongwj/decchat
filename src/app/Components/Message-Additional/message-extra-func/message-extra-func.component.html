@@ -25,7 +25,7 @@
         <hr>
         <p>New Message Text:</p>
         <input nz-input type="text" class="message-input" [(ngModel)]="newMessageContent"
-        placeholder="Type a new message..." nzSize="default" value="newMessageContent"/>
+        placeholder="Type a new message..." nzSize="default" value="newMessageContent" [maxlength]="200"/>
     </ng-container>
 </nz-modal>
 

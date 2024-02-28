@@ -18,19 +18,29 @@ export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   https: string = environment.hubBaseUrl;
+  private readonly maxRetries = 5;
+  private retryCount = 0;
 
   constructor(
     private ngZone: NgZone,
     private localStorage: LocalstorageService) 
-    {
-      //this.buildConnection();
-    }
+    {}
 
   private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https+"?userId="+Id)
+                          .withAutomaticReconnect()
                           .build();
+    
+    this.hubConnection.onreconnecting((error) => {
+      console.error(`Connection lost due to error "${error}". Reconnecting.`);
+    });
+
+    this.hubConnection.onreconnected((connectionId) => {
+      console.log(`Connection reestablished. Connected with connectionId "${connectionId}".`);
+      this.retryCount = 0; 
+    });
   }
 
   public startConnection(Id:number): Promise<void>
@@ -47,7 +57,6 @@ export class SignalRService {
       }
       return Promise.resolve();
     }
-    console.error("Invalid ID for signalR connection:", Id);
     return Promise.reject("Invalid ID");
   }
 
@@ -55,6 +64,21 @@ export class SignalRService {
     return this.hubConnection.stop()
     .then(() => console.log('SignalR connection closed'))
     .catch(err => console.error('Error while closing connection'));
+  }
+
+  private reconnect = (): void => {
+    setTimeout(() => {
+      this.retryCount++;
+      console.log(`Attempt ${this.retryCount} to reconnect.`);
+      this.startConnection(this.userId).catch(() => {
+        if (this.retryCount < this.maxRetries) {
+          this.reconnect();
+        } 
+        else {
+          console.error('Max reconnect attempts reached.');
+        }
+      });
+    }, 5000); // Wait 5 seconds before trying to reconnect.
   }
 
   public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
