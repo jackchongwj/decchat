@@ -16,11 +16,6 @@ export class ChatroomService {
 
   constructor(private http: HttpClient) { }
 
-  // getGroupById(chatroomId: number): Observable<any> {
-  //   const params = new HttpParams().set('id',chatroomId.toString());
-  //   return this.http.get(`${GroupUrl}GroupDetails`, {params});
-  // }
-
   updateGroupName(chatroomId: number, newGroupName: string): Observable<any> {
    
     const params = { chatroomId, newGroupName }; 

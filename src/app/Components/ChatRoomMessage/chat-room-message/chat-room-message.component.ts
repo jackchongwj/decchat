@@ -44,10 +44,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   currentPossition: number = 0;
   searchPositions: { message: ChatRoomMessages, position: number }[] = [];
 
-  imageUrl: string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Images/2024-01-30T16:41:22-beagle.webp";
-  videoUrl: string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Videos/testvideo.mp4";
-  docsUrl: string = "https://decchatroomb.blob.core.windows.net/chatroom/Messages/Documents/testrun1233333333333333333333333333333333333333333333333333333333333333333333333333.docx";
-
   ngOnInit() {
 
     // Get Chosen Chat Room
@@ -65,17 +61,13 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     });
 
     this._dataShareService.SearchMessageValue.subscribe(value => {
-      console.log("test1")
       this.searchValue = value;
-      console.log(value)
-      console.log("SV", this.searchValue);
 
       if (this.searchValue != "") {
         this.searchMessage();
       } else {
         this.totalSearch = 0;
         this._dataShareService.updateTotalSearchMessageResult(this.totalSearch);
-        console.log("result", this.totalSearch)
       }
     });
 
@@ -113,7 +105,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   }
 
   hasMessage(message: ChatRoomMessages): boolean {
-    console.log("Message Context: ", message.Content);
     return message.Content != '' || message.Content != null ? true : false;
   }
 
@@ -166,7 +157,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     a.href = message.ResourceUrl;
     const filename = this.getFileNameFromUrl(message.ResourceUrl);
     a.download = filename;
-    console.log("Docs File Name: ", a.download);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -216,9 +206,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     if (this.totalSearch > 0) {
       this._dataShareService.updateTotalSearchMessageResult(this.totalSearch);
     }
-
-    console.log("totalSearch", this.totalSearch);
-    console.log("foundMessage", this.searchMessageList);
   }
 
   highlightSearchText(messageContent: string, message: ChatRoomMessages): SafeHtml {
