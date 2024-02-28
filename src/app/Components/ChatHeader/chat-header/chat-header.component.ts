@@ -64,7 +64,7 @@ export class ChatHeaderComponent implements OnInit {
     this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
       this.currentChatRoom = chatroom;
       this.IsCurrentChatUser = false;
-      this.subscribeToOnlineStatusUpdates();
+      //this.subscribeToOnlineStatusUpdates();
 
       if (this.previousChatRoom.ChatRoomId != this.currentChatRoom.ChatRoomId) {
         this.showSearchBar = false;
@@ -115,7 +115,6 @@ export class ChatHeaderComponent implements OnInit {
         return of(value);
       })
     ).subscribe(response => {
-      console.log('Backend Search Result:', this.searchValue);
     });
 
     this._dataShareService.totalSearchMessageResult.subscribe(value => {
@@ -126,7 +125,6 @@ export class ChatHeaderComponent implements OnInit {
       } else {
         this.currenResult = 0;
       }
-      console.log("total", this.totalResult)
     });
   }
 
@@ -235,14 +233,11 @@ export class ChatHeaderComponent implements OnInit {
 
     this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
     ).subscribe(groupMembers => {
-      console.log(groupMembers);
       this.groupMembers = groupMembers;
-      console.log(this.groupMembers);
     });
   }
 
   Delete(userId: number): void {
-    console.log(userId);
 
     this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.userId).subscribe({
       next: (response) => {
@@ -277,20 +272,19 @@ export class ChatHeaderComponent implements OnInit {
     this.isVisibleRemoveUserModal = false;
   }
 
-  private subscribeToOnlineStatusUpdates(): void {
-    this._signalRService.onlineStatusListener().subscribe((onlineUsers: string[]) => {
-      if(this.currentChatRoom && onlineUsers.includes(this.currentChatRoom.UserId.toString())) {
-        this.isCurrentUserOnline = true;
-      } else {
-        this.isCurrentUserOnline = false;
-      }
-    });
-  }
+  // private subscribeToOnlineStatusUpdates(): void {
+  //   this._signalRService.onlineStatusListener().subscribe((onlineUsers: string[]) => {
+  //     if(this.currentChatRoom && onlineUsers.includes(this.currentChatRoom.UserId.toString())) {
+  //       this.isCurrentUserOnline = true;
+  //     } else {
+  //       this.isCurrentUserOnline = false;
+  //     }
+  //   });
+  // }
 
 
   //search
   Search(chatRoomid: number) {
-    console.log(chatRoomid);
     this.checkChatRoomId = chatRoomid;
     this.showSearchBar = true;
   }
