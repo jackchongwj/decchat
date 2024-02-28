@@ -49,6 +49,7 @@ export class AddfriendComponent implements OnInit {
     };
 
     this.UpdateFriendRequest(this.request);
+    this.message.success('Accepted');
   }
 
   rejectFriendRequest(senderId: number): void {
@@ -59,6 +60,7 @@ export class AddfriendComponent implements OnInit {
     };
 
     this.UpdateFriendRequest(this.request);
+    this.message.success('Rejected');
   }
 
   //service

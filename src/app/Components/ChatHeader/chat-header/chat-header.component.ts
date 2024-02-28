@@ -206,6 +206,7 @@ export class ChatHeaderComponent implements OnInit {
     };
 
     this.friendService.DeleteFriend(this.request).subscribe(response => {
+      this.message.success('Delete Friend successfully');
     });
   }
 
