@@ -6,6 +6,7 @@ import { UserService } from '../Services/UserService/user.service';
 import { UserSearchDetails } from '../Models/DTO/User/user-search-details';
 import { LocalstorageService } from '../Services/LocalStorage/local-storage.service';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-searchbar',
@@ -19,7 +20,8 @@ export class SearchbarComponent implements OnInit {
     private search: UserService, 
     private ngZone: NgZone, 
     private localStorage: LocalstorageService,
-    private signalR: SignalRService) { }
+    private signalR: SignalRService,
+    private message: NzMessageService) { }
 
   //variable declare
   isCollapsed = false;
@@ -59,6 +61,10 @@ export class SearchbarComponent implements OnInit {
   OnSendFriendRequest(receiverId: number): void {
     this.friendService.addFriends({ RequestId: null, SenderId: this.userId, ReceiverId: receiverId, Status: 0 })
       .subscribe(response => {
+        this.message.success('Friend Request send successfully');
+      },
+      (error) => {
+        this.message.error('Friend Has Added Before!!!');
       });
   }
 
