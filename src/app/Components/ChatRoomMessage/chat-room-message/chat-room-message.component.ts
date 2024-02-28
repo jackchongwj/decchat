@@ -52,6 +52,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
 
       // HTTP Get Message Service
       this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
+        console.log("Receiving message: ", response);
         this.messageList = response;
         this.scrollLast();
       }, error => {
@@ -118,13 +119,13 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
 
   getFileNameFromUrl(url: string) {
     // Decode URI to handle encoded characters (%20 = space, etc)
-    const decodedUrl = decodeURIComponent(url);
+    //const decodedUrl = decodeURIComponent(url);
 
     // Create a URL object (assuming url is absolute)
-    const parsedUrl = new URL(decodedUrl);
+    //const parsedUrl = new URL(decodedUrl);
 
     // Get the pathname by split '/'
-    const segments = parsedUrl.pathname.split('/');
+    const segments = url.split('/');
 
     // Take last segment (Date-filename)
     const lastSegment = segments.pop() || '';
@@ -165,7 +166,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   private updateMessageListenerListener(): void {
     this._signalRService.updateMessageListener()
       .subscribe((newResults: ChatRoomMessages) => {
-
         if (newResults.ChatRoomId == this.currentChatRoom.ChatRoomId) {
           this.messageList.push(newResults);
           this.scrollLast();

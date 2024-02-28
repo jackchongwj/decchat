@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, Inject} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -17,58 +17,80 @@ import { DataShareService } from '../ShareDate/data-share.service';
 })
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   isSignalRConnected: boolean = false
+  private manualDisconnect: boolean = false;
+  private reconnectInterval: any;
   https: string = environment.hubBaseUrl;
+  
 
   constructor(
     private ngZone: NgZone,
-    private localStorage: LocalstorageService,
     private _dataShareService: DataShareService) 
-    {
-      //this.buildConnection();
-    }
+    {}
 
   private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https+"?userId="+Id)
-                          .withAutomaticReconnect()
                           .build();
 
                           this.hubConnection.onclose((error) => {
+                            console.log("Connection closed. Reconnecting...");
                             this.isSignalRConnected = false;
                             this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
                           });
   }
 
-  public startConnection(Id:number): Promise<void>
-  {
-    if(!isNaN(Id) && Id != 0)
-    {
+  public startConnection(Id: number): Promise<void> {
+    if (!isNaN(Id) && Id != 0) {
       this.buildConnection(Id);
-      if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-        return this.hubConnection.start()
-        .then(() => {
-          this.isSignalRConnected = true;
-          this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-          console.log('Connection started');
-        })
-        .catch(err => console.log('Error while starting connection: ' + err));
-      }
+
+      const checkAndReconnect = async (): Promise<void> => {
+        //avoid the disconnet reconnect again
+        if (this.manualDisconnect) {
+          return;
+        }
+
+        if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+          try {
+            await this.hubConnection.start();
+            this.isSignalRConnected = true;
+            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+            console.log('Connection started');
+          } catch (err) {
+            console.log('Error while starting connection: ' + err);
+            this.isSignalRConnected = false;
+            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+          }
+        }
+      };
+
+      checkAndReconnect();
+
+      this.reconnectInterval = setInterval(() => {
+        checkAndReconnect();
+      }, 3000);
+
       return Promise.resolve();
+    } else {
+      return Promise.reject("Invalid ID");
     }
-    return Promise.reject("Invalid ID");
   }
 
   public stopConnection(): Promise<void> {
+    clearInterval(this.reconnectInterval);
+    this.manualDisconnect = true;
+
     return this.hubConnection.stop()
-    .then(() => {
+      .then(() => {
         this.isSignalRConnected = false;
         this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-      console.log('SignalR connection closed')
-    })
-    .catch(err => console.error('Error while closing connection'));
+        console.log('SignalR connection closed');
+      })
+      .catch(err => console.error('Error while closing connection'))
+      .finally(() => {
+        this.manualDisconnect = false;
+      });
   }
 
   public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
@@ -255,7 +277,6 @@ export class SignalRService {
       }
     });
   }
-
 
 
   deleteMessageListener():Observable<number>{

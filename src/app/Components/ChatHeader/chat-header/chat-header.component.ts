@@ -53,7 +53,7 @@ export class ChatHeaderComponent implements OnInit {
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
   InComingUsers: string[] = [];
-  public isCurrentUserOnline: boolean = false;
+  isCurrentUserOnline: boolean = false;
   showSearchBar = false;
   checkChatRoomId: number = 0;
   searchValue: string = '';
@@ -188,15 +188,26 @@ export class ChatHeaderComponent implements OnInit {
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
 
-      // Use FileReader to read the file for preview
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.previewImageUrl = e.target?.result as string;
-      };
-      reader.readAsDataURL(this.selectedFile);
+      if(this.isImage(this.selectedFile.name))
+      {
+        // Use FileReader to read the file for preview
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          this.previewImageUrl = e.target?.result as string; 
+        };
+        reader.readAsDataURL(this.selectedFile);
+      }
+      else
+      {
+        this.message.error("Invalid File Format Uploaded");
+      }
+   
     }
   }
 
+  isImage(fileName: string): boolean {
+    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
+  }
 
   DeleteFriend(): void {
     this.request = {
@@ -206,6 +217,7 @@ export class ChatHeaderComponent implements OnInit {
     };
 
     this.friendService.DeleteFriend(this.request).subscribe(response => {
+      this.message.success('Delete Friend successfully');
     });
   }
 
@@ -314,6 +326,17 @@ export class ChatHeaderComponent implements OnInit {
     if (this.currenResult > 1) {
       this.currenResult--;
       this._dataShareService.updateCurrentMessageResult(this.currenResult);
+    }
+  }
+
+  truncateGroupChatRoomName(ChatRoom:ChatListVM):string{
+    if(!ChatRoom.RoomType)
+    {
+      return ChatRoom.ChatRoomName
+    }
+    else
+    {
+      return ChatRoom.ChatRoomName.substring(0,15)+ '...';
     }
   }
 

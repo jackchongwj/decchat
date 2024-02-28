@@ -4,10 +4,11 @@
 
   <div class="user-info">
     <!-- Name -->
-    <h1>{{ currentChatRoom.ChatRoomName }}</h1>
-    <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
-      is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-    </span>
+    <h1>{{ truncateGroupChatRoomName(currentChatRoom) }}
+      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
+        is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
+    </h1>
     <span *ngIf="isCurrentUserOnline" class="online-status">Online</span>
     <span *ngIf="!isCurrentUserOnline" class="online-status">Offline</span>
   </div>
@@ -124,12 +125,6 @@
 
 </div>
 
-<!--Private User-->
-<!-- <button class="custom-button" (click)="showModalHeader()" *ngIf="!currentChatRoom.RoomType">
-  <i class="custom-icon" nz-icon nzType="user-delete">
-  </i>
-</button> -->
-
 <!-- Modal 1: Delete Friend Modal -->
 <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()"
   (nzOnOk)="handleOkDeleteFriend()" [nzOkText]="'Confirm'">
@@ -161,15 +156,17 @@
     class="dot">.</span>
 </span>
 
+<!-- Group Profile Modal -->
 <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
   <ng-container *nzModalContent>
     <!-- Group Picture with Edit Icon -->
     <div class="profile-picture-overlay">
       <nz-avatar class="modal-avatar"
-        [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large"
+        [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture" nzSize="large"
         (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
       <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
-      <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+      <input type="file" #fileInput (change)="onFileSelected($event)"
+      hidden accept="image/jpeg, image/png, image/webp">
     </div>
     <div *ngIf="previewImageUrl" class="image-options">
       <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
@@ -186,7 +183,7 @@
         </p>
         <ng-container *ngIf="editMode">
           <nz-input-group nzCompact>
-            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName" />
+            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName" [maxlength]="50"/>
           </nz-input-group>
           <button nz-button nzType="primary" (click)="saveGroupName()">Save</button>
           <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>

@@ -107,8 +107,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
       else
       {
-        console.log("Invalid File Size, file too big");
-        
+        this._msgBox.error("File upload failed: The selected file exceeds the maximum allowed size of 8MB. Please choose a smaller file.");
+        this.removeFile();
       }
     }
   }
@@ -132,7 +132,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
           this.currentUserChatRoomId = data.UserChatRoomId;
         }
       )
-      
+      console.log("Finish ddata share");
+
       this.message.Content = this.messageText;
       this.message.UserChatRoomId = this.currentUserChatRoomId;
       this.message.ResourceUrl = '';
@@ -140,6 +141,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       this.message.ChatRoomId = this.currentChatRoom;
       this.message.UserId = this.userId;
       this.message.ProfileName = this.currentUserPN;
+
+      console.log("Create message object");
 
       // Create FormData and append message and file (if exists)
       const formData = new FormData();
@@ -149,10 +152,12 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
       
       formData.append('message', JSON.stringify(this.message));
+      
+      console.log("Create form data");
 
       this._mService.sendMessage(formData).subscribe({
         next: (res:ChatRoomMessages) => {
-
+          console.log("Messagen sent");
           // Limit message send rate
           this.sendCooldownOn = true; // Activate cooldown
           setTimeout(() => this.sendCooldownOn = false, 1000); 
@@ -230,7 +235,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   isImage(fileName: string): boolean {
     return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
-  
+ 
   isVideo(fileName: string): boolean {
     return /\.(mp4)$/i.test(fileName);
   }
