@@ -19,12 +19,6 @@ export class FriendsService {
   addFriends(friends: Friend): Observable<any>
   {
     return this.http.post<Friend>(`${this.url}AddFriend`, friends)
-    // .pipe(
-    //   catchError((error) => {
-    //     console.error('Error adding friend:', error);
-    //     throw error; // 继续向上抛出错误，以便其他订阅者也能捕获到
-    //   })
-    // );
   }
 
   UpdateFriendRequest(friendRequest: FriendRequest, userId: number): Observable<any> {
