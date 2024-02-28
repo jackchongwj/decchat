@@ -117,12 +117,6 @@
 
 </div>
 
-<!--Private User-->
-<!-- <button class="custom-button" (click)="showModalHeader()" *ngIf="!currentChatRoom.RoomType">
-  <i class="custom-icon" nz-icon nzType="user-delete">
-  </i>
-</button> -->
-
 <!-- Modal 1: Delete Friend Modal -->
 <nz-modal [(nzVisible)]="isVisibleDeleteFriendModal" nzTitle="Delete Friend" (nzOnCancel)="handleCancelDeleteFriend()"
   (nzOnOk)="handleOkDeleteFriend()" [nzOkText]="'Confirm'">
@@ -154,6 +148,7 @@
     class="dot">.</span>
 </span>
 
+<!-- Group Profile Modal -->
 <nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()">
   <ng-container *nzModalContent>
     <!-- Group Picture with Edit Icon -->
@@ -162,7 +157,8 @@
         [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture || 'default-profile-picture-url.png'" nzSize="large"
         (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
       <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
-      <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+      <input type="file" #fileInput (change)="onFileSelected($event)"
+      hidden accept="image/jpeg, image/png, image/webp">
     </div>
     <div *ngIf="previewImageUrl" class="image-options">
       <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
