@@ -5,7 +5,6 @@ export class Message {
         public UserChatRoomId:number,
         public TimeStamp:string | null,
         public ResourceUrl:string | null,
-        public MessageType:number,
         public IsDeleted:boolean
     )
     {}

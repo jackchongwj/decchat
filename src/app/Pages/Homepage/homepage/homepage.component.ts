@@ -31,6 +31,5 @@ export class HomepageComponent implements OnDestroy,OnInit{
   }
 
   ngOnDestroy(): void {
-    this.signalRService.stopConnection();
   }
 }

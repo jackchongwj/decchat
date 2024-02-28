@@ -16,7 +16,6 @@ export class LogoutComponent {
 
     this.authService.logout().subscribe({
       next: (res) => {
-        console.log('Logout successful!', res)
         this.message.success(res.Message || 'Logout successful');
         this.router.navigate(['/login']);
       },

@@ -5,7 +5,6 @@ export class ChatRoomMessages {
         public UserChatRoomId:number,
         public TimeStamp:string | null,
         public ResourceUrl:string = '',
-        public MessageType:number,
         public IsDeleted:boolean,
         public ChatRoomId:number,
         public UserId:number,

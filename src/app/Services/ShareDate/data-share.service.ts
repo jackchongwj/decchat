@@ -42,7 +42,6 @@ export class DataShareService {
   }
 
   updateSelectedChatRoom(data: ChatListVM){
-    console.log("shareC",data);
     this.SelectedChatRoom.next(data);
   }
 
@@ -60,7 +59,6 @@ export class DataShareService {
   }
 
   updateSearchValue(data:string){
-    console.log("share",data);
     this.CurrentSearchValue.next(data);
   }
 
