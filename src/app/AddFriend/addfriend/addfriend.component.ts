@@ -7,6 +7,7 @@ import { LocalstorageService } from '../../Services/LocalStorage/local-storage.s
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 import { UserService } from '../../Services/UserService/user.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 
 @Component({
@@ -20,7 +21,8 @@ export class AddfriendComponent implements OnInit {
     private friendService: FriendsService,
     private signalRService: SignalRService,
     private dataShareService: DataShareService,
-    private localStorage: LocalstorageService) { }
+    private localStorage: LocalstorageService,
+    private message: NzMessageService) { }
 
   getFriendRequest: User[] = [];
   isVisible = false;
