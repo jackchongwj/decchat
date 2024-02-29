@@ -73,6 +73,7 @@ app-message-extra-func{
 
 .message-sent .message-text{
   direction: ltr;
+  text-align: right;
 }
 
 .message-sent .timestamp{
