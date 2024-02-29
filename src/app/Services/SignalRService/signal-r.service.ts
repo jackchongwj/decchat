@@ -278,6 +278,15 @@ export class SignalRService {
     });
   }
 
+  userOnlineStatusListener(): Observable<{ userId: string, isOnline: boolean }> {
+    return new Observable<{ userId: string, isOnline: boolean }>(observer => {
+      this.hubConnection.on('UpdateUserOnlineStatus', (userId: string, isOnline: boolean) => {
+        this.ngZone.run(() => {
+          observer.next({ userId, isOnline });
+        });
+      });
+    });
+  }
 
   deleteMessageListener():Observable<number>{
     return new Observable<number >( observer => {

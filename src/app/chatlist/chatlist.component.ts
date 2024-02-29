@@ -47,6 +47,7 @@ export class ChatlistComponent implements OnInit {
       this.ProfileDetailChanges();
       this.GroupDetailChanges();
       this.addNewGroupListener();
+      this.UserOnlineChange();
     }
   }
 
@@ -140,4 +141,15 @@ export class ChatlistComponent implements OnInit {
       error: (error) => console.error('Error listening for profile updates:', error),
     });
   }
+
+  private UserOnlineChange(): void {
+    this.signalRService.userOnlineStatusListener().subscribe(({userId, isOnline}) =>{
+      this.privateChat.forEach((chat) => {
+        if(chat.UserId.toString() == userId) {
+          chat.IsOnline = isOnline;
+        }
+      });
+    })
+  }
+
 }
