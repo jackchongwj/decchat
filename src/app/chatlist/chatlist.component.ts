@@ -47,6 +47,7 @@ export class ChatlistComponent implements OnInit {
       this.ProfileDetailChanges();
       this.GroupDetailChanges();
       this.addNewGroupListener();
+      // this.updateGroupInitiatorListener();
     }
   }
 
@@ -100,11 +101,23 @@ export class ChatlistComponent implements OnInit {
 
   private addNewGroupListener(): void {
     this.signalRService.addNewGroupListener().subscribe((chatListVM: ChatListVM[]) => {
-      const myChats = chatListVM.filter(chat => chat.UserId === this.userId);
+      const myChats = chatListVM.filter(chat => chat.UserId == this.userId);
       // Add the new room to the groupChat array
       this.groupChat.push(...myChats);
     });
   }
+
+  // private updateGroupInitiatorListener(): void {
+  //   this.signalRService.updateGroupInitiatorListener()
+  //   .subscribe(({ chatRoomId, userId }) => {
+  //     const chatRoom = this.groupChat.find(chat => chat.ChatRoomId === chatRoomId);
+      
+  //     if (chatRoom) { // If the chat room is found
+  //       // Replace its InitiatedBy with the new userId
+  //       chatRoom.InitiatedBy = userId;
+  //     }
+  //   });
+  // }
 
   private ProfileDetailChanges(): void {
     this.signalRService.profileUpdateListener().subscribe({
@@ -112,8 +125,7 @@ export class ChatlistComponent implements OnInit {
         this.privateChat.forEach((chat) => {
           if(chat.UserId === updateInfo.UserId) {
             if(updateInfo.ProfileName) {
-              chat.ChatRoomName = updateInfo.ProfileName;
-              
+              chat.ChatRoomName = updateInfo.ProfileName;             
             }
             if(updateInfo.ProfilePicture) {
               chat.ProfilePicture = updateInfo.ProfilePicture;
