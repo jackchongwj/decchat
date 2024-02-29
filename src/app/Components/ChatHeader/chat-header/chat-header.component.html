@@ -9,8 +9,12 @@
         is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
       </span>
     </h1>
-    <span *ngIf="isCurrentUserOnline" class="online-status">Online</span>
-    <span *ngIf="!isCurrentUserOnline" class="online-status">Offline</span>
+    <span *ngIf="!currentChatRoom.RoomType">
+      <!-- Online Status Indicator -->
+      <nz-badge *ngIf="currentChatRoom.IsOnline" nzStatus="success" nzText="Online"></nz-badge>
+      <!-- Offline Status Indicator -->
+      <nz-badge *ngIf="!currentChatRoom.IsOnline" nzStatus="error" nzText="Offline"></nz-badge>
+    </span>
   </div>
 
   <!-- Searchbar -->

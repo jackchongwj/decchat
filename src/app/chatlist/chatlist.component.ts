@@ -47,7 +47,7 @@ export class ChatlistComponent implements OnInit {
       this.ProfileDetailChanges();
       this.GroupDetailChanges();
       this.addNewGroupListener();
-      // this.updateGroupInitiatorListener();
+      this.UserOnlineChange();
     }
   }
 
@@ -84,7 +84,6 @@ export class ChatlistComponent implements OnInit {
       .subscribe(({ chatRoomId, userId }) => {
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
-          // this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
         }
       });
   }
@@ -106,18 +105,6 @@ export class ChatlistComponent implements OnInit {
       this.groupChat.push(...myChats);
     });
   }
-
-  // private updateGroupInitiatorListener(): void {
-  //   this.signalRService.updateGroupInitiatorListener()
-  //   .subscribe(({ chatRoomId, userId }) => {
-  //     const chatRoom = this.groupChat.find(chat => chat.ChatRoomId === chatRoomId);
-      
-  //     if (chatRoom) { // If the chat room is found
-  //       // Replace its InitiatedBy with the new userId
-  //       chatRoom.InitiatedBy = userId;
-  //     }
-  //   });
-  // }
 
   private ProfileDetailChanges(): void {
     this.signalRService.profileUpdateListener().subscribe({
@@ -152,4 +139,15 @@ export class ChatlistComponent implements OnInit {
       error: (error) => console.error('Error listening for profile updates:', error),
     });
   }
+
+  private UserOnlineChange(): void {
+    this.signalRService.userOnlineStatusListener().subscribe(({userId, isOnline}) =>{
+      this.privateChat.forEach((chat) => {
+        if(chat.UserId.toString() == userId) {
+          chat.IsOnline = isOnline;
+        }
+      });
+    })
+  }
+
 }

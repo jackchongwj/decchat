@@ -245,7 +245,6 @@ export class SignalRService {
   quitGroupListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('QuitGroup', (chatRoomId: number, userId: number) => {
-        console.log("sohai5")
         this.ngZone.run(() => {
           observer.next({ chatRoomId, userId });
         });
@@ -257,7 +256,6 @@ export class SignalRService {
   updateGroupInitiatorListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('UpdateInitiatedBy', (chatRoomId: number, userId: number) => {
-        console.log("sohai4")
         this.ngZone.run(() => {
           observer.next({ chatRoomId, userId });
         });
@@ -288,6 +286,16 @@ export class SignalRService {
           });
         });
       }
+    });
+  }
+
+  userOnlineStatusListener(): Observable<{ userId: string, isOnline: boolean }> {
+    return new Observable<{ userId: string, isOnline: boolean }>(observer => {
+      this.hubConnection.on('UpdateUserOnlineStatus', (userId: string, isOnline: boolean) => {
+        this.ngZone.run(() => {
+          observer.next({ userId, isOnline });
+        });
+      });
     });
   }
 

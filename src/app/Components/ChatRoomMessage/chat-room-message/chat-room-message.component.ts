@@ -52,7 +52,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
 
       // HTTP Get Message Service
       this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
-        console.log("Receiving message: ", response);
         this.messageList = response;
         this.scrollLast();
       }, error => {
@@ -71,8 +70,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
         this._dataShareService.updateTotalSearchMessageResult(this.totalSearch);
       }
     });
-
-
 
     this.updateMessageListenerListener();
     this.deleteMessageListener();
@@ -118,11 +115,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   }
 
   getFileNameFromUrl(url: string) {
-    // Decode URI to handle encoded characters (%20 = space, etc)
-    //const decodedUrl = decodeURIComponent(url);
-
-    // Create a URL object (assuming url is absolute)
-    //const parsedUrl = new URL(decodedUrl);
 
     // Get the pathname by split '/'
     const segments = url.split('/');

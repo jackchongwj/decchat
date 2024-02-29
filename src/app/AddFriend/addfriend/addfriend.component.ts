@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { User } from '../../Models/User/user';
@@ -20,14 +20,18 @@ export class AddfriendComponent implements OnInit {
     private usersService: UserService,
     private friendService: FriendsService,
     private signalRService: SignalRService,
-    private dataShareService: DataShareService,
     private localStorage: LocalstorageService,
-    private message: NzMessageService) { }
+    private message: NzMessageService,
+    private zone:NgZone) 
+  { }
 
-  getFriendRequest: User[] = [];
   isVisible = false;
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+
+  requestStates = new Map<string, boolean>();
+  getFriendRequest: User[] = [];
   request: FriendRequest = { ReceiverId: 0, SenderId: 0, Status: 0 };
+
   chatlist = {} as ChatListVM
   @Input() isCollapsed: boolean = false;
 
@@ -42,17 +46,26 @@ export class AddfriendComponent implements OnInit {
   }
 
   acceptFriendRequest(senderId: number): void {
-    this.request = {
-      ReceiverId: this.userId,
-      SenderId: senderId,
-      Status: 2
-    };
 
-    this.UpdateFriendRequest(this.request);
-    this.message.success('Accepted');
+    if(!this.requestStates.get(senderId.toString()))
+    {
+      this.zone.run(() => {
+        this.requestStates.set(senderId.toString(), true);
+      });
+
+      this.request = {
+        ReceiverId: this.userId,
+        SenderId: senderId,
+        Status: 2
+      };
+
+      this.UpdateFriendRequest(this.request);
+      this.message.success('Accepted');
+    }
   }
 
   rejectFriendRequest(senderId: number): void {
+    
     this.request = {
       ReceiverId: this.userId,
       SenderId: senderId,
@@ -65,10 +78,12 @@ export class AddfriendComponent implements OnInit {
 
   //service
   private UpdateFriendRequest(FRequest: FriendRequest): void {
+
     this.friendService.UpdateFriendRequest(FRequest, this.userId)
       .subscribe(response => {
         this.getFriendRequest = this.getFriendRequest.filter(User => User.UserId != FRequest.SenderId)
       });
+
   }
 
   //signalR
