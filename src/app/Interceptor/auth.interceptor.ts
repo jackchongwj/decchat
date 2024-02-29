@@ -4,6 +4,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../Services/Auth/auth.service';
 import { TokenService } from '../Services/Token/token.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -12,7 +13,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private isRefreshing = new BehaviorSubject<boolean>(false);
 
-  constructor(private injector: Injector) {}
+  constructor(
+    private injector: Injector,
+    private _msgBox: NzMessageService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (!this.authService) {
@@ -35,8 +38,10 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401 && !this.isRefreshing.value) {
           return this.handle401Error(request, next);
+        } else if (error.status === 429){
+          this.handleReturnTooManyRequests();
         }
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -69,5 +74,10 @@ export class AuthInterceptor implements HttpInterceptor {
       filter(() => this.isRefreshing.value === false),
       take(1)
     );
+  }
+
+  private handleReturnTooManyRequests()
+  {
+    this._msgBox.error("You've made too many requests in a short period. Please wait a moment and try again later.");
   }
 }

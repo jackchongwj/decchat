@@ -81,6 +81,10 @@ app-message-extra-func{
   direction: ltr;
 }
 
+.message-sent .filename{
+  direction: ltr;
+}
+
 /* ------------------------------------------------- Receiver Alignment ------------------------------------------------- */
 
 .message-received{
@@ -174,3 +178,16 @@ app-message-extra-func{
   background-color: black;  
 }
 /* ------------------------------------------------ Document Message Section CSS End ------------------------------------------------ */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: rgba(243, 26, 26, 0.904);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+}
