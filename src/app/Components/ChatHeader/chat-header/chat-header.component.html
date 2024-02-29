@@ -192,5 +192,20 @@
       <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
     </div>
 
+    <!-- Display Group Members-->
+    <div class="group-member-container">
+      <p>Group Members:</p>
+      <div *ngIf="groupMembers.length > 0" class="no-result-message">
+        <div *ngFor="let user of groupMembers" class="group-member-item-small">
+          <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image-small">
+          <span class="profile-name">{{ user.ProfileName }}</span>
+        </div>
+      </div>
+      <div *ngIf="groupMembers.length === 0" class="no-result-message">
+        No users selected.
+      </div>
+    </div>
+
+
   </ng-container>
 </nz-modal>
