@@ -25,6 +25,10 @@
     font-weight: normal; /* Optional: normal font weight for a more modern look */
   }
 
+  h1{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+
   .typing-indicator {
     font-size: 16px; 
     color: #000; 
