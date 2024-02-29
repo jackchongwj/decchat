@@ -72,8 +72,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       }
     });
 
-
-
     this.updateMessageListenerListener();
     this.deleteMessageListener();
     this.editMessageListener();
@@ -118,11 +116,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   }
 
   getFileNameFromUrl(url: string) {
-    // Decode URI to handle encoded characters (%20 = space, etc)
-    //const decodedUrl = decodeURIComponent(url);
-
-    // Create a URL object (assuming url is absolute)
-    //const parsedUrl = new URL(decodedUrl);
 
     // Get the pathname by split '/'
     const segments = url.split('/');
