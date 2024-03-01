@@ -175,7 +175,6 @@ export class ChatHeaderComponent implements OnInit {
 
     this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
       ).subscribe(groupMembers => {
-        console.log(groupMembers);
         this.groupMembers = groupMembers;
       });
   }
@@ -325,7 +324,6 @@ export class ChatHeaderComponent implements OnInit {
       next: (response) => {
         // Handle the response from the backend if needed
         this.message.success('Group quit successfully');
-        console.log("noobshit")
       },
       error: (error) => {
         console.log('Error from the backend:', error);

@@ -25,9 +25,7 @@ export class CreategroupComponent implements OnInit {
   roomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
   InitiatedBy = Number(this.localStorage.getItem("userId"));
-  // userId: number = 7; // Assuming userId is a number property
   groupChats: any[] = [];
-  InitiatorProfileName: string = '';
   @Input() isCollapsed: boolean = false;
 
   constructor(
