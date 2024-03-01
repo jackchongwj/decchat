@@ -58,7 +58,7 @@ export class AuthGuard implements CanActivate {
 
   private handleValidToken(isLoginPage: boolean): Observable<boolean> {
     if (isLoginPage) {
-      // Redirect to dashboard if attempting to access login page
+      this.message.info('Authentication detected. Redirecting to dashboard.');
       return from(this.router.navigate(['/dashboard'])).pipe(map(() => false));
     } else {
       return of(true);
