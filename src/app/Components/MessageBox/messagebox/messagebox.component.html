@@ -35,7 +35,8 @@
     <div class="message-field-input">
       <!-- Message Input Field -->
       <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
-      (keydown.enter)="onSendMessage($event)" (focus)="OnInputFocus()" (blur)="OnInputBlur()" placeholder="Type a message..." nzSize="default"/>
+      (keydown.enter)="onSendMessage($event)" (focus)="OnInputFocus()" (blur)="OnInputBlur()"
+      placeholder="Type a message..." nzSize="default" [maxlength]="200"/>
 
       <!-- Voice Message Button -->
       <span nz-icon nzType="audio" class="icon-voice" 
@@ -46,11 +47,11 @@
     
     <!-- Send Message Button -->
     <button nz-button nzType="primary" #sendButton (click)="onSendMessage($event)"
-    [disabled]="!messageText.trim() && uploadedFiles === null || sendCooldownOn">
-      <span>Send</span>
-      <span nz-icon nzType="send" class="icon-send"></span>
+    [disabled]="!messageText.trim() && uploadedFiles === null || sendCooldownOn || isSending">
+      <span *ngIf="!isSending">Send</span>
+      <nz-spin *ngIf="isSending" nzSimple [nzSize]="'small'"></nz-spin>
+      <span nz-icon nzType="send" class="icon-send" *ngIf="!isSending"></span>
     </button>
-
-
+    
   </div>
 </div>

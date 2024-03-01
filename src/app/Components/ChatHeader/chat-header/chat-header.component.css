@@ -1,15 +1,14 @@
 .show-chat-room {
-    display: flex; /* Use flexbox layout */
-    align-items: center; /* Center items vertically */
-    padding: 10px; /* Add some padding */
-    background-color: beige;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    border-bottom: 2px solid #ececec; /* A subtle border to separate the header */
-    position: relative;
-    top: 0; 
-    z-index: 100;
-  }
+  position: relative; /* Ensure the container is positioned relative */
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: beige;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom: 2px solid #ececec;
+  z-index: 100;
+}
   
   .show-chat-room img.chatprofile {
     border-radius: 50%; /* Make the image round */
@@ -24,6 +23,10 @@
     margin: 0;
     color: #333; /* Darker text color for the title */
     font-weight: normal; /* Optional: normal font weight for a more modern look */
+  }
+
+  h1{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
   }
 
   .typing-indicator {
@@ -101,39 +104,6 @@
     margin-right: 8px;  
   }
   
-/* modal */
-/* imge */
-.circular-image {
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  margin-right: 8px;
-}
-
-.group-member-container {
-  text-align: center;
-  margin: 10px;
-}
-
-.group-member-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Add this line */
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-.profile-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 15px;
-}
-
 .user-info {
   flex: 1;
 }
@@ -157,6 +127,7 @@
     top: 50%; /* Center it vertically */
     transform: translateY(-50%); /* Offset by half its height to truly center it */
     z-index: 100; /* Make sure it's above other elements */
+    border: transparent;
   }
   
   .right-content {
@@ -257,3 +228,123 @@
     flex-direction: column;
     align-items: center; 
   }
+
+
+
+  /* group member list under group profile */
+  .group-member-item-small {
+    display: inline-block;
+    margin-right: 10px;
+    text-align: center;
+  }
+  
+  .profile-image-small {
+    width: 50px; /* Adjust as needed */
+    height: 50px; /* Adjust as needed */
+    border-radius: 50%; /* Ensures the image is circular */
+    margin-bottom: 5px;
+  }
+  
+  .profile-name {
+    font-size: 12px; /* Adjust as needed */
+    display: block;
+    width: 60px; /* Adjust as needed */
+    white-space: nowrap; /* Prevents the name from wrapping */
+    overflow: hidden; /* Ensures the name is truncated if too long */
+    text-overflow: ellipsis; /* Shows ellipsis for truncated text */
+  }
+  
+  /* remove user delete text */
+  .remove-user-text {
+    color: rgb(240, 99, 99);
+    cursor: pointer; /* Makes the text look clickable */
+  }
+
+.group-member-container {
+  text-align: center;
+  margin: 10px;
+}
+
+.group-member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Add this line */
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+/* Adjusted styles for online/offline status */
+.show-chat-room .online-status {
+  font-size: 12px; /* Smaller font size */
+  color: rgba(0, 0, 0, 0.5); /* Faded color */
+}
+
+/* Adjusted styles for user-info */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+/* Search bar container */
+.search-bar {
+  position: absolute;
+  right: 60px; /* Adjust the distance from the right side */
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  
+}
+
+/* Search input */
+.search-bar input[type="text"] {
+  width: 150px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  padding: 5px; /* Adjust padding as needed */
+  border: 1px solid #ccc; /* Border style */
+  border-radius: 5px; /* Border radius */
+  margin-right: 10px; /* Add some space between input and buttons */
+}
+
+/* Search result text */
+.search-result-text {
+  font-size: 12px; /* Adjust font size as needed */
+  margin-right: 10px; /* Add some space between text and buttons */
+}
+
+/* Search buttons */
+.search-bar button {
+  background-color: transparent; /* Button background color */
+  color: rgb(8, 8, 8); /* Button text color */
+  padding: 3px 8px; /* Adjust padding as needed to make the button smaller */
+  border: white; /* Remove border */
+  border-radius: 5px; /* Border radius */
+  cursor: pointer; /* Cursor style */
+}
+
+.search-bar.cancel-button {
+  background-color: transparent; /* Transparent background */
+  color: #ccc; /* Text color matches search bar input text */
+  border: 1px solid #ccc; /* Border color matches input border */
+  border-radius: 3px;
+  padding: 5px 8px; /* Adjust padding as needed */
+  font-size: 12px; /* Adjust font size */
+  cursor: pointer;
+}
+
+.updown-icon {
+  font-size: 15px;
+  color: rgb(150, 142, 142);
+  position: relative;
+}

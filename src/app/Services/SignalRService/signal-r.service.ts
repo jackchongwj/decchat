@@ -1,60 +1,96 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, Inject} from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
-import { ChatRoomMessages } from '../../Models/DTO/Messages/chatroommessages';
+import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
 
 import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
+import { DataShareService } from '../ShareDate/data-share.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private hubConnection!:signalR.HubConnection; 
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  isSignalRConnected: boolean = false
+  private manualDisconnect: boolean = false;
+  private reconnectInterval: any;
   https: string = environment.hubBaseUrl;
+  
 
   constructor(
     private ngZone: NgZone,
-    private localStorage: LocalstorageService) 
-    {
-      //this.buildConnection();
-    }
+    private _dataShareService: DataShareService) 
+    {}
 
   private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https+"?userId="+Id)
                           .build();
+
+                          this.hubConnection.onclose((error) => {
+                            console.log("Connection closed. Reconnecting...");
+                            this.isSignalRConnected = false;
+                            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+                          });
   }
 
-  public startConnection(Id:number): Promise<void>
-  {
-    if(!isNaN(Id) && Id != 0)
-    {
+  public startConnection(Id: number): Promise<void> {
+    if (!isNaN(Id) && Id != 0) {
       this.buildConnection(Id);
-      if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-        return this.hubConnection.start()
-        .then(() => {
-          console.log('Connection started');
-        })
-        .catch(err => console.log('Error while starting connection: ' + err));
-      }
+
+      const checkAndReconnect = async (): Promise<void> => {
+        //avoid the disconnet reconnect again
+        if (this.manualDisconnect) {
+          return;
+        }
+
+        if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+          try {
+            await this.hubConnection.start();
+            this.isSignalRConnected = true;
+            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+            console.log('Connection started');
+          } catch (err) {
+            console.log('Error while starting connection: ' + err);
+            this.isSignalRConnected = false;
+            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+          }
+        }
+      };
+
+      checkAndReconnect();
+
+      this.reconnectInterval = setInterval(() => {
+        checkAndReconnect();
+      }, 3000);
+
       return Promise.resolve();
+    } else {
+      return Promise.reject("Invalid ID");
     }
-    console.error("Invalid ID for signalR connection:", Id);
-    return Promise.reject("Invalid ID");
   }
 
   public stopConnection(): Promise<void> {
+    clearInterval(this.reconnectInterval);
+    this.manualDisconnect = true;
+
     return this.hubConnection.stop()
-    .then(() => console.log('SignalR connection closed'))
-    .catch(err => console.error('Error while closing connection'));
+      .then(() => {
+        this.isSignalRConnected = false;
+        this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+        console.log('SignalR connection closed');
+      })
+      .catch(err => console.error('Error while closing connection'))
+      .finally(() => {
+        this.manualDisconnect = false;
+      });
   }
 
   public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
@@ -86,7 +122,6 @@ export class SignalRService {
     return new Observable<ChatRoomMessages>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateMessage', (newMessage: ChatRoomMessages) => {
-          console.log('Received new message:', newMessage); 
           this.ngZone.run(() => {
             observer.next(newMessage);
           });
@@ -100,7 +135,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateSearchResults', (userId: number) => {
-          console.log('Received new search results:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -114,7 +148,6 @@ export class SignalRService {
     return new Observable<User[]>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateFriendRequest', (newResults: User[]) => {
-          console.log('Received new Friend Request results:', newResults); 
           this.ngZone.run(() => {
             observer.next(newResults);
           });
@@ -127,7 +160,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateSearchResultsAfterAccept', (userId: number) => {
-          console.log('Received new search results After Accept:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -140,7 +172,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdateSearchResultsAfterReject', (userId: number) => {
-          console.log('Received new search results After Reject:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -154,7 +185,6 @@ export class SignalRService {
     return new Observable<number>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('DeleteFriend', (userId: number) => {
-          console.log('Delete Friend Successfull:', userId); 
           this.ngZone.run(() => {
             observer.next(userId);
           });
@@ -168,7 +198,6 @@ export class SignalRService {
     return new Observable<ChatListVM>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('UpdatePrivateChatlist', (chatlist: ChatListVM) => {
-          console.log('Received new private chatlist:', chatlist); 
           this.ngZone.run(() => {
             observer.next(chatlist);
           });
@@ -182,7 +211,7 @@ export class SignalRService {
     return new Observable<ChatListVM[]>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('Chatlist', (newResults: ChatListVM[]) => {
-          console.log('Received chatlist', newResults); 
+          
           this.ngZone.run(() => {
             observer.next(newResults);
           });
@@ -206,7 +235,6 @@ export class SignalRService {
    removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('UserRemoved', (chatRoomId: number, userId: number) => {
-        console.log("RSR", { chatRoomId, userId })
         this.ngZone.run(() => {
           observer.next({ chatRoomId, userId });
         });
@@ -217,7 +245,6 @@ export class SignalRService {
   quitGroupListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('QuitGroup', (chatRoomId: number, userId: number) => {
-        console.log("QSR", { chatRoomId, userId })
         this.ngZone.run(() => {
           observer.next({ chatRoomId, userId });
         });
@@ -225,12 +252,16 @@ export class SignalRService {
     });
   }
   
-  // public invokeHubMethod(methodName: string, updateInfo: any): void {
-  //   if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-  //     this.hubConnection.invoke(methodName, updateInfo)
-  //       .catch(error => console.error('Error invoking method on hub:', methodName, error));
-  //   }
-  // }
+  // update group initiator signalR
+  updateGroupInitiatorListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('UpdateInitiatedBy', (chatRoomId: number, userId: number) => {
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
+    });
+  }
   
   public profileUpdateListener(): Observable<UserProfileUpdate> {
     return new Observable<UserProfileUpdate>(observer => {
@@ -258,5 +289,37 @@ export class SignalRService {
     });
   }
 
+  userOnlineStatusListener(): Observable<{ userId: string, isOnline: boolean }> {
+    return new Observable<{ userId: string, isOnline: boolean }>(observer => {
+      this.hubConnection.on('UpdateUserOnlineStatus', (userId: string, isOnline: boolean) => {
+        this.ngZone.run(() => {
+          observer.next({ userId, isOnline });
+        });
+      });
+    });
+  }
+
+  deleteMessageListener():Observable<number>{
+    return new Observable<number >( observer => {
+      this.hubConnection.on("DeleteMessage", (MessageId:number) => {
+        this.ngZone.run(() => {
+          observer.next(MessageId);
+        });
+
+      })
+    })
+  }
+
+  editMessageListener():Observable<ChatRoomMessages>{
+    return new Observable<ChatRoomMessages >( observer => {
+      this.hubConnection.on("EditMessage", (EdittedMessage:ChatRoomMessages) => {
+
+        this.ngZone.run(() => {
+          observer.next(EdittedMessage);
+        });
+
+      })
+    })
+  }
 
 }

@@ -11,7 +11,7 @@
 
     <div>
       <label for="roomName">Room Name:</label>
-      <input id="roomName" type="text" nz-input [(ngModel)]="roomName" />
+      <input id="roomName" type="text" nz-input [(ngModel)]="roomName" [maxlength]="50"/>
     </div>
     
     <div style="margin-top: 16px;">
@@ -27,7 +27,7 @@
       <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
     </div>
     <div nz-col nzSpan="12">
-      <button nz-button nzType="primary" (click)="handleOk()">Create Group</button>
+      <button nz-button nzType="primary" (click)="handleOk()">Create</button>
     </div>
   </div>
 </nz-modal>

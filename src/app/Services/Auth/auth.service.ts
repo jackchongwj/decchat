@@ -8,6 +8,7 @@ import { TokenService } from '../Token/token.service';
 import { Router } from '@angular/router';
 import { SignalRService } from '../SignalRService/signal-r.service';
 import { PasswordChange } from '../../Models/DTO/User/password-change';
+import { DataShareService } from '../ShareDate/data-share.service';
 
 const AuthUrl: string = environment.apiBaseUrl + 'Auth/'
 
@@ -20,7 +21,8 @@ export class AuthService {
     private http: HttpClient,
     private localStorageService: LocalstorageService,
     private tokenService: TokenService,
-    private signalRService: SignalRService) { }
+    private signalRService: SignalRService,
+    private _dsService:DataShareService) { }
 
 
   register(registrationData: any): Observable<any> {
@@ -32,7 +34,7 @@ export class AuthService {
       map(response => {
         this.tokenService.setToken(response.AccessToken);
         this.localStorageService.setItem('userId', response.UserId);
-        
+        this._dsService.updateUserId(response.UserId);
         return response;
       })
     );

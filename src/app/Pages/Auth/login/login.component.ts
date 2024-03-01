@@ -26,8 +26,7 @@ export class LoginComponent{
     private fb: NonNullableFormBuilder,
     private router: Router,
     private authService: AuthService,
-    private message: NzMessageService,
-    private shareDataService: DataShareService
+    private message: NzMessageService
     ) {}
 
   submitForm(): void {

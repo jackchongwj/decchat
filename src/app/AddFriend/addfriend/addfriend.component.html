@@ -10,7 +10,9 @@
   
 <!-- Modal -->
 <nz-modal 
-  [(nzVisible)]="isVisible" nzTitle="Friend Request Lists" (nzOnCancel)="handleCancel()"
+  [(nzVisible)]="isVisible" 
+  zTitle="Friend Request Lists"
+  (nzOnCancel)="handleCancel()"
   [nzFooter]="footerTemplate">
   
   <ng-container *nzModalContent>
@@ -23,6 +25,7 @@
             <span class="profile-name">{{ request.ProfileName }}</span>
             <div class="action-buttons">
               <button mat-icon-button class="accept-button" color="primary"
+                [disabled]="request.UserId ? requestStates.get(request.UserId.toString()) ?? false : true"
                 (click)="request.UserId !== null ? acceptFriendRequest(request.UserId) : null">
                 <i class="custom-icon" nz-icon nzType="check"></i> Accept
               </button>

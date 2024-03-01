@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Friend } from '../../Models/Friend/friend';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { DeleteFriendRequest } from '../../Models/DTO/DeleteFriend/delete-friend-request';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,6 @@ export class FriendsService {
 
   DeleteFriend(deleteFriendRequest: DeleteFriendRequest): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });      
-    console.log("sf p", deleteFriendRequest);
     return this.http.post<number>(`${this.url}DeleteFriend`, deleteFriendRequest);
   }
 }

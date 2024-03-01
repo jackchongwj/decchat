@@ -2,18 +2,24 @@
   <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed" >
 
     <!-- Private Chat -->
-    <li nz-submenu nzTitle="Private Chat" nzIcon="message" (click)="getChatList()">
+    <li nz-submenu nzTitle="Private Chat" nzIcon="message">
       <ul class="chat-item-list">
         <!-- Display List of Conversation -->
         <li nz-menu-item *ngFor="let user of privateChat" class="chat-item" (click)="getSelectedChatRoom(user)">
           <img class="circular-image" alt="Profile" [src]="user.ProfilePicture">
           <strong class="user-info">{{ user.ChatRoomName }}</strong>
+          <span *ngIf="privateChat">
+            <!-- Online Status Indicator -->
+            <nz-badge *ngIf="user.IsOnline" nzStatus="success" class="status-badge"></nz-badge>
+            <!-- Offline Status Indicator -->
+            <nz-badge *ngIf="!user.IsOnline" nzStatus="error" class="status-badge"></nz-badge>
+          </span>
         </li>
       </ul>
     </li>
 
     <!-- Group Chat -->
-    <li nz-submenu  nzTitle="Group Chat" nzIcon="usergroup-add" (click)="getChatList()">
+    <li nz-submenu  nzTitle="Group Chat" nzIcon="usergroup-add">
       <ul class="chat-item-list">
         <li nz-menu-item *ngFor="let user of groupChat" class="chat-item" (click)="getSelectedChatRoom(user)">
           <img class="circular-image" alt="Profile" [src]="user.ProfilePicture">
@@ -21,6 +27,5 @@
         </li>
       </ul>
     </li>
-    
   </ul>
 </div>

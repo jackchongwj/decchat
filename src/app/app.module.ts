@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SearchbarComponent } from './Searchbar/searchbar.component';
-import { ChatlistComponent } from './chatlist/chatlist.component';
+import { ChatlistComponent } from './Chatlist/chatlist.component';
 import { AppRoutingModule } from './app-routing.module';
 import { IconsProviderModule } from './icons-provider.module';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -15,7 +15,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from './Sidebar/sidebar.component';
 import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdisplay/chatroomdisplay.component';
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
 import { LoginComponent } from './Pages/Auth/Login/login.component';
@@ -29,6 +28,8 @@ import { ChatRoomMessageComponent } from './Components/ChatRoomMessage/chat-room
 import { MessageboxComponent } from './Components/MessageBox/messagebox/messagebox.component';
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
+import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
+import { SpinComponent } from './Loading/spin/spin.component';
 
 registerLocaleData(ms);
 
@@ -53,7 +54,9 @@ registerLocaleData(ms);
     ChatHeaderComponent,
     UserProfileComponent,
     ChangePasswordComponent,
-    ChatRoomMessageComponent
+    ChatRoomMessageComponent,
+    MessageExtraFuncComponent,
+    SpinComponent
   ],
     imports: [
     BrowserModule,
@@ -62,7 +65,6 @@ registerLocaleData(ms);
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatDialogModule,
     ImportNgZorroAntdModule,
     ReactiveFormsModule
   ],

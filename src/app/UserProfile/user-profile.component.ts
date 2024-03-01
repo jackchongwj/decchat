@@ -52,14 +52,26 @@ export class UserProfileComponent implements OnInit {
     let fileList: FileList | null = element.files;
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
-  
-      // Use FileReader to read the file for preview
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.previewImageUrl = e.target?.result as string; 
-      };
-      reader.readAsDataURL(this.selectedFile);
+
+      if(this.isImage(this.selectedFile.name))
+      {
+        // Use FileReader to read the file for preview
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          this.previewImageUrl = e.target?.result as string; 
+        };
+        reader.readAsDataURL(this.selectedFile);
+      }
+      else
+      {
+        this.message.error("Invalid File Format Uploaded");
+      }
+   
     }
+  }
+
+  isImage(fileName: string): boolean {
+    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
 
   saveProfileName(): void {
@@ -98,7 +110,6 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUserById(this.userId).subscribe({
       next: (data) => {
         this.User = data;
-        console.log("Current user data: ", data);
         this.dsService.updateLoginUserPN(data.ProfileName);
       },
       error: (error) => {
@@ -110,13 +121,22 @@ export class UserProfileComponent implements OnInit {
   deleteAccount() {
     this.userService.deleteUser(this.userId).subscribe({
       next: () => {
+<<<<<<< HEAD
         this.showDeleteConfirm = false;
+=======
+
+        this.showDeleteConfirm = false;
+
+>>>>>>> origin
         this.authService.logout().subscribe({
           next: (res) => {
             this.router.navigate(['/login']);
           },
           error: (e) => {
+<<<<<<< HEAD
             console.error('Account deletion failed', e);
+=======
+>>>>>>> origin
             this.message.error(e.error.Error || 'Account deletion failed');
           }
         });
@@ -127,6 +147,7 @@ export class UserProfileComponent implements OnInit {
         console.error('Error deleting account:', error);
       }
     });
+    
   }
   
   cancelPreview() {

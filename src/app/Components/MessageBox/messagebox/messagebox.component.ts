@@ -1,6 +1,8 @@
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable, Subject } from 'rxjs';
-import { ChatRoomMessages } from '../../../Models/DTO/Messages/chatroommessages';
+import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
@@ -23,7 +25,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     private _mService:MessageService,
     private _sService:SignalRService,
     private _lsService:LocalstorageService,
-    private _dataShareService:DataShareService){}
+    private _dataShareService:DataShareService,
+    private _msgBox: NzMessageService){}
 
   // Current User
   userId:number = Number(this._lsService.getItem("userId"));
@@ -34,6 +37,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   // Limit Message Sending
   sendCooldownOn:boolean = false;
   previewVisible = false;
+  isSending:boolean = false;
 
   // File Uploads
   uploadedFiles: File | null = null;
@@ -56,6 +60,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     this._dataShareService.LoginUserProfileName.subscribe( data => {
       this.currentUserPN = data;
     })
+
+    this.updateMessageListenerListener();
   }
 
   ngOnDestroy(): void {
@@ -75,7 +81,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     if (fileInput) {
       fileInput.click();
     } else {
-      console.error('The file input element was not found!');
+      this._msgBox.error("The file input element was not found!");
     }
   }
 
@@ -98,7 +104,6 @@ export class MessageboxComponent implements OnInit, OnDestroy{
         const reader = new FileReader();
 
         reader.onload = (e) => {
-          //console.log(reader.result);
           this.previewFile = reader.result as string;
         };
 
@@ -106,8 +111,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
       else
       {
-        console.log("Invalid File Size, file too big");
-        
+        this._msgBox.error("File upload failed: The selected file exceeds the maximum allowed size of 8MB. Please choose a smaller file.");
+        this.removeFile();
       }
     }
   }
@@ -117,18 +122,16 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       event.preventDefault();
     }
 
-    //share Data
-    this._dataShareService.selectedChatRoomData.subscribe
-    (
-      data =>{
-        this.currentUserChatRoomId = data.UserChatRoomId;
-      }
-    )
-    
+    if(!this.uploadedFiles && this.messageText.trim().length == 0)
+    {
+      this._msgBox.error("Please enter a message");
+      this.resetInputField();
+      return;
+    }
+
     this.message.Content = this.messageText;
     this.message.UserChatRoomId = this.currentUserChatRoomId;
     this.message.ResourceUrl = '';
-    this.message.MessageType = 1;
     this.message.IsDeleted = false;
     this.message.ChatRoomId = this.currentChatRoom;
     this.message.UserId = this.userId;
@@ -136,16 +139,18 @@ export class MessageboxComponent implements OnInit, OnDestroy{
 
     // Create FormData and append message and file (if exists)
     const formData = new FormData();
-    formData.append('message', JSON.stringify(this.message));
-    
-    if (this.uploadedFiles) {
-      console.log(this.uploadedFiles);
-        formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
-    }
 
+    if (this.uploadedFiles) {
+      formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
+    }
+    formData.append('message', JSON.stringify(this.message));
+
+    this.isSending = true;
+
+    // HTTP Client
     this._mService.sendMessage(formData).subscribe({
       next: (res:ChatRoomMessages) => {
-        //this._sService.notifyMessage(res);
+        
         // Limit message send rate
         this.sendCooldownOn = true; // Activate cooldown
         setTimeout(() => this.sendCooldownOn = false, 1000); 
@@ -154,11 +159,10 @@ export class MessageboxComponent implements OnInit, OnDestroy{
         this.resetInputField();
       },
       error: (e) => {
-        console.error(e);
+        this.isSending = false;
       }
-    }); 
+    });
 
-    // this._sService.notifyMessage(this.message);
   }
 
   private resizeAndPreviewImage(file: File): void 
@@ -223,7 +227,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   isImage(fileName: string): boolean {
     return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
-  
+ 
   isVideo(fileName: string): boolean {
     return /\.(mp4)$/i.test(fileName);
   }
@@ -289,6 +293,13 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     if (fileInput) {
         fileInput.value = '';
     }
+  }
+
+  private updateMessageListenerListener(): void {
+    this._sService.updateMessageListener()
+      .subscribe((newResults: ChatRoomMessages) => {
+        this.isSending = false;
+      });
   }
 
 }
