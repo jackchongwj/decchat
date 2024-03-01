@@ -84,7 +84,7 @@
   <!-- Dropdown Menu For INITIATED BY USER -->
   <div *ngIf="currentChatRoom.RoomType == true">
     <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button"
-      *ngIf="currentChatRoom.InitiatedBy == userId">
+      *ngIf="currentChatRoom.InitiatedBy == userId && showSearchBar == false">
       <i nz-icon nzType="more" nzTheme="outline"></i>
     </button>
     <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
@@ -97,7 +97,7 @@
     </nz-dropdown-menu>
 
     <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button"
-      *ngIf="currentChatRoom.InitiatedBy != userId">
+      *ngIf="currentChatRoom.InitiatedBy != userId && showSearchBar == false" >
       <i nz-icon nzType="more" nzTheme="outline"></i>
     </button>
     <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">
@@ -110,7 +110,7 @@
   </div>
 
   <div *ngIf="currentChatRoom.RoomType == false">
-    <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button">
+    <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button" *ngIf="showSearchBar == false">
       <i nz-icon nzType="more" nzTheme="outline"></i>
     </button>
     <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">

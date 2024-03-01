@@ -25,7 +25,6 @@ export class SignalRService {
 
   constructor(
     private ngZone: NgZone,
-    // private localStorage: LocalstorageService,
     private _dataShareService: DataShareService) 
     {
       //this.buildConnection();
@@ -43,33 +42,12 @@ export class SignalRService {
                             this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
                           });
   }
-
-  // public startConnection(Id:number): Promise<void>
-  // {
-  //   if(!isNaN(Id) && Id != 0)
-  //   {
-  //     this.buildConnection(Id);
-
-  //     if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-  //       return this.hubConnection.start()
-  //       .then(() => {
-  //         this.isSignalRConnected = true;
-  //         this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-  //         console.log('Connection started');
-  //       })
-  //       .catch(err => console.log('Error while starting connection: ' + err));
-  //     }
-  //     return Promise.resolve();
-  //   }
-  //   return Promise.reject("Invalid ID");
-  // }
   
   public startConnection(Id: number): Promise<void> {
     if (!isNaN(Id) && Id != 0) {
       this.buildConnection(Id);
 
       const checkAndReconnect = async (): Promise<void> => {
-        console.log(this.manualDisconnect);
         //avoid the disconnet reconnect again
         if (this.manualDisconnect) {
           return;
