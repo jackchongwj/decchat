@@ -18,9 +18,9 @@ export class MessageService {
     return this.http.post<ChatRoomMessages>(`${MessageUrl}AddMessage`, formData, { withCredentials: true });
   }
 
-  getMessage(ChatRoomId: number): Observable<any>
+  getMessage(ChatRoomId: number, MessageId: number): Observable<any>
   {
-    const params = new HttpParams().set('ChatRoomId', ChatRoomId);
+    const params = new HttpParams().set('ChatRoomId', ChatRoomId).set('MessageId', MessageId);
     return this.http.get(`${MessageUrl}GetMessage`, {params})
   }
 

@@ -1,5 +1,5 @@
-import { DatePipe } from '@angular/common';
-import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked, Renderer2 } from '@angular/core';
+import { DatePipe, Time } from '@angular/common';
+import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked, Renderer2, HostListener } from '@angular/core';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
@@ -19,7 +19,6 @@ import { start } from 'repl';
 export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('scroll') myScrollContainer !: ElementRef;
-
 
   constructor(
     private _dataShareService: DataShareService,
@@ -43,6 +42,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   positions: number[] = []
   currentPossition: number = 0;
   searchPositions: { message: ChatRoomMessages, position: number }[] = [];
+ 
 
   ngOnInit() {
 
@@ -51,8 +51,9 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       this.currentChatRoom = chatroom;
 
       // HTTP Get Message Service
-      this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
+      this._messageService.getMessage(this.currentChatRoom.ChatRoomId, 0).subscribe(response => {
         this.messageList = response;
+        this.messageList.reverse();
         this.scrollLast();
       }, error => {
         console.error('Error fetching messages:', error);
@@ -75,10 +76,36 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this.deleteMessageListener();
     this.editMessageListener();
   }
-
-
+  
   ngAfterViewChecked(): void {
 
+  }
+
+  @HostListener('scroll', ['$event'])
+  onScroll(event: Event) {
+    const target = event.target as HTMLElement;
+
+    if (target.scrollTop === 0) {
+      const referenceMessage = this.myScrollContainer.nativeElement.firstElementChild;
+
+      setTimeout(() => {
+        this._messageService.getMessage(this.currentChatRoom.ChatRoomId,  this.messageList[0].MessageId!).subscribe(response => {
+          
+          if(response && response.length > 0)
+          {
+            console.log("mB",this.messageList.length)
+            this.messageList.unshift(...response.reverse());
+            // Adjusting scroll position after new messages are loaded
+            setTimeout(() => {
+              referenceMessage?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
+            }, 100);
+          }
+        
+        }, error => {
+          console.error('Error fetching messages:', error);
+        });
+      }, 500);
+    }
   }
 
   public scrollLast(): void {
@@ -88,6 +115,8 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       lastElement?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, 100);
   }
+
+
 
   isUserSend(message: ChatRoomMessages): boolean {
     if (message.UserId == this.currentUser) {
@@ -204,7 +233,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     if (this.searchValue.trim() === '' || !this.positions.length) {
       return this.sanitizer.bypassSecurityTrustHtml(messageContent);
     } else {
-      const regex = new RegExp(this.searchValue, 'gi');
+      const regex = new RegExp(this.searchValue, 'i');
       this._dataShareService.currentSearchMessageResult.subscribe(value => {
         this.currentPossition = value;
       });
@@ -212,7 +241,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       const lastPosition = this.positions[this.positions.length - this.currentPossition];
 
       if (this.messageList.indexOf(message) === lastPosition) {
-        const highlightedText = messageContent.replace(regex, match => `<mark style="background-color: yellow">${match}</mark>`);
+        const highlightedText = messageContent.replace(regex, match => `<mark style="background-color: yellow;">${match}</mark>`);
         const messageElement = this.myScrollContainer.nativeElement.children[this.positions[this.positions.length - this.currentPossition]];
 
         messageElement.scrollIntoView({ behavior: 'smooth', block: 'end' });

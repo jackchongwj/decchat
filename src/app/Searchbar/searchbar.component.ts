@@ -34,6 +34,7 @@ export class SearchbarComponent implements OnInit {
   // get username form local storage
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
   isVisible = false;
+  
 
   ngOnInit(): void {
     this.searchSubject.pipe(
@@ -64,9 +65,11 @@ export class SearchbarComponent implements OnInit {
         this.message.success('Friend Request send successfully');
       },
       (error) => {
-        this.message.error('Friend Has Added Before!!!');
+        this.message.error('Friend Has Added Before');
       });
   }
+
+  
 
   //signalR: update data after click add button to add friend
   private UpdateSearchToPending(): void {
