@@ -6,6 +6,7 @@ import { MessageService } from '../../../Services/MessageService/message.service
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { UserProfileUpdate } from '../../../Models/DTO/UserProfileUpdate/user-profile-update';
 
 @Component({
   selector: 'app-chat-room-message',
@@ -50,10 +51,10 @@ export class ChatRoomMessageComponent implements OnInit {
         
         // HTTP Get Message Service
         this._messageService.getMessage(this.currentChatRoom.ChatRoomId, 0, true).subscribe(response => {
-          
-          this.messageList = [] = [];
+
           this.messageList = response;
           this.messageList.reverse();
+          
           this.scrollLast();
 
         }, error => {
@@ -78,6 +79,7 @@ export class ChatRoomMessageComponent implements OnInit {
     this.updateMessageListenerListener();
     this.deleteMessageListener();
     this.editMessageListener();
+    this.ProfileDetailChanges();
   }
 
   @HostListener('scroll', ['$event'])
@@ -89,11 +91,12 @@ export class ChatRoomMessageComponent implements OnInit {
 
       setTimeout(() => {
         this._messageService.getMessage(this.currentChatRoom.ChatRoomId, this.messageList[0].MessageId!, true).subscribe(response => {
-          
+
           if(response && response.length > 0)
           {
-            this.messageList.unshift(...response.reverse());
-            
+            response.reverse().pop();
+            this.messageList.unshift(...response);
+
             // Adjusting scroll position after new messages are loaded
             setTimeout(() => {
               referenceMessage?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
@@ -250,5 +253,23 @@ export class ChatRoomMessageComponent implements OnInit {
         return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
       }
     }
+  }
+
+  private ProfileDetailChanges(): void {
+    this._signalRService.profileUpdateListener().subscribe({
+      next: (updateInfo: UserProfileUpdate) => {
+        this.messageList.forEach((chat) => {
+          if(chat.UserId === updateInfo.UserId) {
+            if(updateInfo.ProfileName) {
+              chat.ProfileName = updateInfo.ProfileName;             
+            }
+            if(updateInfo.ProfilePicture) {
+              chat.ProfilePicture = updateInfo.ProfilePicture;
+            }
+          }
+        });
+      },
+      error: (error) => console.error('Error listening for profile updates:', error),
+    });
   }
 }

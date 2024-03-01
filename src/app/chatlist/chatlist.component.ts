@@ -84,6 +84,7 @@ export class ChatlistComponent implements OnInit {
       .subscribe(({ chatRoomId, userId }) => {
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
+          this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
         }
       });
   }
