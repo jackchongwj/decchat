@@ -84,7 +84,6 @@ export class ChatlistComponent implements OnInit {
       .subscribe(({ chatRoomId, userId }) => {
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
-          // this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
         }
       });
   }
@@ -101,7 +100,7 @@ export class ChatlistComponent implements OnInit {
 
   private addNewGroupListener(): void {
     this.signalRService.addNewGroupListener().subscribe((chatListVM: ChatListVM[]) => {
-      const myChats = chatListVM.filter(chat => chat.UserId === this.userId);
+      const myChats = chatListVM.filter(chat => chat.UserId == this.userId);
       // Add the new room to the groupChat array
       this.groupChat.push(...myChats);
     });
@@ -113,8 +112,7 @@ export class ChatlistComponent implements OnInit {
         this.privateChat.forEach((chat) => {
           if(chat.UserId === updateInfo.UserId) {
             if(updateInfo.ProfileName) {
-              chat.ChatRoomName = updateInfo.ProfileName;
-              
+              chat.ChatRoomName = updateInfo.ProfileName;             
             }
             if(updateInfo.ProfilePicture) {
               chat.ProfilePicture = updateInfo.ProfilePicture;

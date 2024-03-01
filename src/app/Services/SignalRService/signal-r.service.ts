@@ -252,6 +252,17 @@ export class SignalRService {
     });
   }
   
+  // update group initiator signalR
+  updateGroupInitiatorListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('UpdateInitiatedBy', (chatRoomId: number, userId: number) => {
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
+    });
+  }
+  
   public profileUpdateListener(): Observable<UserProfileUpdate> {
     return new Observable<UserProfileUpdate>(observer => {
       if (this.hubConnection) {

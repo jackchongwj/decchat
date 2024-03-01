@@ -14,7 +14,7 @@ export class GroupMemberServiceService {
   constructor(private http: HttpClient) { }
 
   getGroupMembers(chatRoomId: number, userId: number): Observable<any> {
-    const params = new HttpParams().set('chatRoomID', chatRoomId.toString()).set('userId', userId.toString());
+    const params = new HttpParams().set('chatRoomID', chatRoomId.toString()).set('userId', userId.toString()).set('timestamp',new Date().toString());
     return this.http.get(`${this.url}groupMembers`, {params: params});
   }
 
