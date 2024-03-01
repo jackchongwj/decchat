@@ -27,6 +27,7 @@ export class RegisterComponent {
     username: FormControl<string>;
     password: FormControl<string>;
     confirmPassword: FormControl<string>;
+    profileName: FormControl<string>;
   }>;
 
   constructor
@@ -41,7 +42,8 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, this.usernameValidator], [this.usernameAsyncValidator()]],
       password: ['', [Validators.required, this.passwordValidator]],
-      confirmPassword: ['', [Validators.required, this.confirmationValidator]]
+      confirmPassword: ['', [Validators.required, this.confirmationValidator]],
+      profileName: ['', [this.profileNameValidator]]
     });
 
     const passwordControl = this.registerForm.get('password');
@@ -140,6 +142,22 @@ export class RegisterComponent {
     return errors;
   }
 
+  get profileNameErrorMessage() {
+    const profileNameControl = this.registerForm.controls["profileName"];
+    const errors: string[] = [];
+
+    if (profileNameControl.hasError("invalid")) {
+      errors.push("Invalid character(s) detected")
+    }
+    else if (profileNameControl.hasError("spaces")) {
+      errors.push("Cannot start with space(s)")
+    }
+    else if (profileNameControl.hasError("maximum")) {
+      errors.push("Maximum length (15) reached")
+    }
+    return errors;
+  }
+
   usernameValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
     const value: string = control.value;
   
@@ -166,6 +184,7 @@ export class RegisterComponent {
   };
 
   usernameAsyncValidator(): AsyncValidatorFn {
+    // Check for if username exists dynamically
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return this.userService.doesUsernameExist(control.value)
         .pipe(
@@ -253,6 +272,32 @@ export class RegisterComponent {
     return null;
   };
   
+  profileNameValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
+    const value: string = control.value || '';
+  
+    if (value === '') {
+      return null;
+    }
+
+    if (value.startsWith(' ')) {
+      return { spaces: true };
+    }
+  
+    const maxLength = 15;
+
+    if (value.length > maxLength) {
+      return { maximum: true };
+    }
+
+    const invalidCharsRegex = /^[\p{L}\p{N}_-]+$/u;
+  
+    if (!invalidCharsRegex.test(value)) {
+      return { invalid: true };
+    }
+  
+    return null; // Return null if no errors are found
+  };  
+
   getValidationStatus(controlName: string): string {
     const control = this.registerForm.get(controlName);
   
@@ -274,10 +319,17 @@ export class RegisterComponent {
           return passwordControl && control.value === passwordControl.value ? 'success' : 'error';
         }
       }
+      else if (controlName === 'profileName') {
+        if (control.hasError('spaces') || control.hasError('invalid') || control.hasError('maximum')) {
+          return 'error';
+        } else {
+          return 'success';
+        }
+      }
     }
   
     return '';
-  }
+  }  
 
   updateConfirmValidator(): void {
     Promise.resolve().then(() => this.registerForm.controls.confirmPassword.updateValueAndValidity());
@@ -290,12 +342,18 @@ export class RegisterComponent {
   submitForm(): void {
     if (this.registerForm.valid) {
       this.isLoading = true;
-      const registrationData = this.registerForm.value;
+      const registrationData =  { ...this.registerForm.value };
+
+      // Check if the profileName field is empty and set it to the username value if so
+      if (!registrationData.profileName || registrationData.profileName.trim() === '') {
+        registrationData.profileName = registrationData.username;
+      }
 
       this.authService.register(registrationData).subscribe({
         next: (res) => {
           this.isLoading = false;
           
+          // console.log('Registration successful!', res);
           this.message.success(res.Message || 'Registration successful!');
           this.router.navigate(['/login']);
         },

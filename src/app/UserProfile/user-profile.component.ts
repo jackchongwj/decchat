@@ -141,7 +141,7 @@ export class UserProfileComponent implements OnInit {
     });
     
   }
-
+  
   cancelPreview() {
     this.previewImageUrl = null;
     

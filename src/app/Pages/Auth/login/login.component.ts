@@ -17,7 +17,7 @@ export class LoginComponent{
     password: FormControl<string>;
     remember: FormControl<boolean>;
   }> = this.fb.group({
-    username: ['', [Validators.required]],
+    username: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+$/)]],
     password: ['', [Validators.required]],
     remember: [true]
   });
@@ -35,6 +35,7 @@ export class LoginComponent{
 
       this.authService.login(loginData).subscribe({
         next: (res) => {
+          // console.log('Login successful!', res);
           this.message.success(res.Message || 'Login successful!');
           this.router.navigate(['/dashboard']);
         },
