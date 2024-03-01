@@ -119,19 +119,27 @@ export class UserProfileComponent implements OnInit {
   }
 
   deleteAccount() {
-    // Use your userService to delete the account
     this.userService.deleteUser(this.userId).subscribe({
       next: () => {
-        this.showDeleteConfirm = false; // Close the modal on success
-        this.authService.logout();
-        this.signalRService.stopConnection();
+
+        this.showDeleteConfirm = false;
+
+        this.authService.logout().subscribe({
+          next: (res) => {
+            this.router.navigate(['/login']);
+          },
+          error: (e) => {
+            this.message.error(e.error.Error || 'Account deletion failed');
+          }
+        });
         this.message.success('Account Deleted');
       },
       error: error => {
-        this.showDeleteConfirm = false; // Close the modal on error
+        this.showDeleteConfirm = false;
         console.error('Error deleting account:', error);
       }
     });
+    
   }
 
   cancelPreview() {

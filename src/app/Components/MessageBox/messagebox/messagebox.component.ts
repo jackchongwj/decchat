@@ -81,7 +81,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     if (fileInput) {
       fileInput.click();
     } else {
-      console.error('The file input element was not found!');
+      this._msgBox.error("The file input element was not found!");
     }
   }
 

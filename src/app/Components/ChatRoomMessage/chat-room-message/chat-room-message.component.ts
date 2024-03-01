@@ -1,5 +1,4 @@
-import { DatePipe, Time } from '@angular/common';
-import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked, Renderer2, HostListener } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
@@ -7,16 +6,13 @@ import { MessageService } from '../../../Services/MessageService/message.service
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { match } from 'assert';
-import { start } from 'repl';
-
 
 @Component({
   selector: 'app-chat-room-message',
   templateUrl: './chat-room-message.component.html',
   styleUrl: './chat-room-message.component.css'
 })
-export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
+export class ChatRoomMessageComponent implements OnInit {
 
   @ViewChild('scroll') myScrollContainer !: ElementRef;
 
@@ -25,9 +21,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     private _messageService: MessageService,
     private _signalRService: SignalRService,
     private lsService: LocalstorageService,
-    private ngZone: NgZone,
-    private sanitizer: DomSanitizer,
-    private renderer: Renderer2
+    private sanitizer: DomSanitizer
   ) { }
 
   currentChatRoom = {} as ChatListVM;
@@ -76,10 +70,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this.deleteMessageListener();
     this.editMessageListener();
   }
-  
-  ngAfterViewChecked(): void {
-
-  }
 
   @HostListener('scroll', ['$event'])
   onScroll(event: Event) {
@@ -93,7 +83,6 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
           
           if(response && response.length > 0)
           {
-            console.log("mB",this.messageList.length)
             this.messageList.unshift(...response.reverse());
             // Adjusting scroll position after new messages are loaded
             setTimeout(() => {
@@ -108,8 +97,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  public scrollLast(): void {
-    // Use setTimeout to ensure the DOM has been updated
+  private scrollLast(): void {
     setTimeout(() => {
       const lastElement = this.myScrollContainer.nativeElement.lastElementChild;
       lastElement?.scrollIntoView({ behavior: 'smooth', block: 'end' });
