@@ -35,7 +35,7 @@ export class ChatlistService {
   }
 
   RetrieveChatListByUser(userID: number): Observable<any> {
-    const params = new HttpParams().set('userId', userID.toString());
+    const params = new HttpParams().set('userId', userID.toString()).set('timestamp',new Date().toString());
     return this.http.get(`${this.url}RetrieveChatListByUser`,{ params });
   }
 }

@@ -8,6 +8,12 @@
         <li nz-menu-item *ngFor="let user of privateChat" class="chat-item" (click)="getSelectedChatRoom(user)">
           <img class="circular-image" alt="Profile" [src]="user.ProfilePicture">
           <strong class="user-info">{{ user.ChatRoomName }}</strong>
+          <span *ngIf="privateChat">
+            <!-- Online Status Indicator -->
+            <nz-badge *ngIf="user.IsOnline" nzStatus="success" class="status-badge"></nz-badge>
+            <!-- Offline Status Indicator -->
+            <nz-badge *ngIf="!user.IsOnline" nzStatus="error" class="status-badge"></nz-badge>
+          </span>
         </li>
       </ul>
     </li>
@@ -21,6 +27,5 @@
         </li>
       </ul>
     </li>
-    
   </ul>
 </div>

@@ -4,12 +4,17 @@
 
   <div class="user-info">
     <!-- Name -->
-    <h1>{{ truncateGroupChatRoomName(currentChatRoom) }}</h1>
-    <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
-      is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    <h1>{{ truncateGroupChatRoomName(currentChatRoom) }}
+      <span *ngIf="IsCurrentChatUser&&!currentChatRoom.RoomType" class="typing-indicator">
+        is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+      </span>
+    </h1>
+    <span *ngIf="!currentChatRoom.RoomType">
+      <!-- Online Status Indicator -->
+      <nz-badge *ngIf="currentChatRoom.IsOnline" nzStatus="success" nzText="Online"></nz-badge>
+      <!-- Offline Status Indicator -->
+      <nz-badge *ngIf="!currentChatRoom.IsOnline" nzStatus="error" nzText="Offline"></nz-badge>
     </span>
-    <span *ngIf="isCurrentUserOnline" class="online-status">Online</span>
-    <span *ngIf="!isCurrentUserOnline" class="online-status">Offline</span>
   </div>
 
   <!-- Searchbar -->
@@ -190,6 +195,21 @@
       </div>
       <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>
     </div>
+
+    <!-- Display Group Members-->
+    <div class="group-member-container">
+      <p>Group Members:</p>
+      <div *ngIf="groupMembers.length > 0" class="no-result-message">
+        <div *ngFor="let user of groupMembers" class="group-member-item-small">
+          <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image-small">
+          <span class="profile-name">{{ user.ProfileName }}</span>
+        </div>
+      </div>
+      <div *ngIf="groupMembers.length === 0" class="no-result-message">
+        No users selected.
+      </div>
+    </div>
+
 
   </ng-container>
 </nz-modal>

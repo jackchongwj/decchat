@@ -51,3 +51,10 @@
   z-index: 2;
 }
 
+.status-badge {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%) scale(1.5);
+  z-index: 3;
+}

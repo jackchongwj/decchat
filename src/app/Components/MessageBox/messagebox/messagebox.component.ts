@@ -1,3 +1,4 @@
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable, Subject } from 'rxjs';
@@ -36,6 +37,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   // Limit Message Sending
   sendCooldownOn:boolean = false;
   previewVisible = false;
+  isSending:boolean = false;
 
   // File Uploads
   uploadedFiles: File | null = null;
@@ -58,6 +60,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     this._dataShareService.LoginUserProfileName.subscribe( data => {
       this.currentUserPN = data;
     })
+
+    this.updateMessageListenerListener();
   }
 
   ngOnDestroy(): void {
@@ -107,8 +111,8 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       }
       else
       {
-        console.log("Invalid File Size, file too big");
-        
+        this._msgBox.error("File upload failed: The selected file exceeds the maximum allowed size of 8MB. Please choose a smaller file.");
+        this.removeFile();
       }
     }
   }
@@ -122,49 +126,42 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     {
       this._msgBox.error("Please enter a message");
       this.resetInputField();
+      return;
     }
-    else
-    {
-      //share Data
-      this._dataShareService.selectedChatRoomData.subscribe
-      (
-        data =>{
-          this.currentUserChatRoomId = data.UserChatRoomId;
-        }
-      )
-      
-      this.message.Content = this.messageText;
-      this.message.UserChatRoomId = this.currentUserChatRoomId;
-      this.message.ResourceUrl = '';
-      this.message.IsDeleted = false;
-      this.message.ChatRoomId = this.currentChatRoom;
-      this.message.UserId = this.userId;
-      this.message.ProfileName = this.currentUserPN;
 
-      // Create FormData and append message and file (if exists)
-      const formData = new FormData();
+    this.message.Content = this.messageText;
+    this.message.UserChatRoomId = this.currentUserChatRoomId;
+    this.message.ResourceUrl = '';
+    this.message.IsDeleted = false;
+    this.message.ChatRoomId = this.currentChatRoom;
+    this.message.UserId = this.userId;
+    this.message.ProfileName = this.currentUserPN;
 
-      if (this.uploadedFiles) {
-        formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
+    // Create FormData and append message and file (if exists)
+    const formData = new FormData();
+
+    if (this.uploadedFiles) {
+      formData.append('file', this.uploadedFiles, this.uploadedFiles.name);
+    }
+    formData.append('message', JSON.stringify(this.message));
+
+    this.isSending = true;
+
+    // HTTP Client
+    this._mService.sendMessage(formData).subscribe({
+      next: (res:ChatRoomMessages) => {
+        
+        // Limit message send rate
+        this.sendCooldownOn = true; // Activate cooldown
+        setTimeout(() => this.sendCooldownOn = false, 1000); 
+
+        // Reset field
+        this.resetInputField();
+      },
+      error: (e) => {
+        this.isSending = false;
       }
-      
-      formData.append('message', JSON.stringify(this.message));
-      
-      this._mService.sendMessage(formData).subscribe({
-        next: (res:ChatRoomMessages) => {
-          
-          // Limit message send rate
-          this.sendCooldownOn = true; // Activate cooldown
-          setTimeout(() => this.sendCooldownOn = false, 1000); 
-
-          // Reset field
-          this.resetInputField();
-        },
-        error: (e) => {
-          console.error(e);
-        }
-      });
-    }
+    });
 
   }
 
@@ -230,7 +227,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   isImage(fileName: string): boolean {
     return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
-  
+ 
   isVideo(fileName: string): boolean {
     return /\.(mp4)$/i.test(fileName);
   }
@@ -296,6 +293,13 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     if (fileInput) {
         fileInput.value = '';
     }
+  }
+
+  private updateMessageListenerListener(): void {
+    this._sService.updateMessageListener()
+      .subscribe((newResults: ChatRoomMessages) => {
+        this.isSending = false;
+      });
   }
 
 }

@@ -26,9 +26,7 @@ export class SignalRService {
   constructor(
     private ngZone: NgZone,
     private _dataShareService: DataShareService) 
-    {
-      //this.buildConnection();
-    }
+    {}
 
   private buildConnection = (Id:number) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -42,7 +40,7 @@ export class SignalRService {
                             this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
                           });
   }
-  
+
   public startConnection(Id: number): Promise<void> {
     if (!isNaN(Id) && Id != 0) {
       this.buildConnection(Id);
@@ -94,17 +92,6 @@ export class SignalRService {
         this.manualDisconnect = false;
       });
   }
-
-    
-  // public stopConnection(): Promise<void> {
-  //   return this.hubConnection.stop()
-  //   .then(() => {
-  //       this.isSignalRConnected = false;
-  //       this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-  //     console.log('SignalR connection closed')
-  //   })
-  //   .catch(err => console.error('Error while closing connection'));
-  // }
 
   public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
   {
@@ -265,6 +252,17 @@ export class SignalRService {
     });
   }
   
+  // update group initiator signalR
+  updateGroupInitiatorListener(): Observable<{ chatRoomId: number, userId: number }> {
+    return new Observable<{ chatRoomId: number, userId: number }>(observer => {
+      this.hubConnection.on('UpdateInitiatedBy', (chatRoomId: number, userId: number) => {
+        this.ngZone.run(() => {
+          observer.next({ chatRoomId, userId });
+        });
+      });
+    });
+  }
+  
   public profileUpdateListener(): Observable<UserProfileUpdate> {
     return new Observable<UserProfileUpdate>(observer => {
       if (this.hubConnection) {
@@ -291,6 +289,15 @@ export class SignalRService {
     });
   }
 
+  userOnlineStatusListener(): Observable<{ userId: string, isOnline: boolean }> {
+    return new Observable<{ userId: string, isOnline: boolean }>(observer => {
+      this.hubConnection.on('UpdateUserOnlineStatus', (userId: string, isOnline: boolean) => {
+        this.ngZone.run(() => {
+          observer.next({ userId, isOnline });
+        });
+      });
+    });
+  }
 
   deleteMessageListener():Observable<number>{
     return new Observable<number >( observer => {

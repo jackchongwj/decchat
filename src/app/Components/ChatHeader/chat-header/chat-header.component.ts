@@ -126,6 +126,7 @@ export class ChatHeaderComponent implements OnInit {
         this.currenResult = 0;
       }
     });
+     this.updateGroupInitiatorListener();
   }
 
   toggleDropdown(): void {
@@ -244,8 +245,10 @@ export class ChatHeaderComponent implements OnInit {
     this.isVisibleRemoveUserModal = true;
 
     this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
-    ).subscribe(groupMembers => {
+    ).subscribe(groupMembers=> {
+
       this.groupMembers = groupMembers;
+      this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
     });
   }
 
@@ -263,19 +266,6 @@ export class ChatHeaderComponent implements OnInit {
     });
   }
 
-  ExitGroup(): void {
-    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
-      next: (response) => {
-        // Handle the response from the backend if needed
-        this.message.success('Group quit successfully');
-
-      },
-      error: (error) => {
-        console.log('Error from the backend:', error);
-      }
-    });
-  }
-
   handleOkRemoveUser(): void {
     this.isVisibleRemoveUserModal = false;
   }
@@ -283,17 +273,6 @@ export class ChatHeaderComponent implements OnInit {
   handleCancelRemoveUser(): void {
     this.isVisibleRemoveUserModal = false;
   }
-
-  // private subscribeToOnlineStatusUpdates(): void {
-  //   this._signalRService.onlineStatusListener().subscribe((onlineUsers: string[]) => {
-  //     if(this.currentChatRoom && onlineUsers.includes(this.currentChatRoom.UserId.toString())) {
-  //       this.isCurrentUserOnline = true;
-  //     } else {
-  //       this.isCurrentUserOnline = false;
-  //     }
-  //   });
-  // }
-
 
   //search
   Search(chatRoomid: number) {
@@ -340,4 +319,22 @@ export class ChatHeaderComponent implements OnInit {
     }
   }
 
+  ExitGroup(): void {
+    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
+      next: (response) => {
+        // Handle the response from the backend if needed
+        this.message.success('Group quit successfully');
+      },
+      error: (error) => {
+        console.log('Error from the backend:', error);
+      }
+    });
+  }
+
+  private updateGroupInitiatorListener(): void {
+    this._signalRService.updateGroupInitiatorListener()
+    .subscribe(({ chatRoomId, userId }) => {
+      this.currentChatRoom.InitiatedBy = userId
+    });
+  }
 }
