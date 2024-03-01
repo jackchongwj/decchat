@@ -1,5 +1,4 @@
-import { DatePipe } from '@angular/common';
-import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
@@ -7,28 +6,22 @@ import { MessageService } from '../../../Services/MessageService/message.service
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { match } from 'assert';
-import { start } from 'repl';
-
 
 @Component({
   selector: 'app-chat-room-message',
   templateUrl: './chat-room-message.component.html',
   styleUrl: './chat-room-message.component.css'
 })
-export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
+export class ChatRoomMessageComponent implements OnInit {
 
   @ViewChild('scroll') myScrollContainer !: ElementRef;
-
 
   constructor(
     private _dataShareService: DataShareService,
     private _messageService: MessageService,
     private _signalRService: SignalRService,
     private lsService: LocalstorageService,
-    private ngZone: NgZone,
-    private sanitizer: DomSanitizer,
-    private renderer: Renderer2
+    private sanitizer: DomSanitizer
   ) { }
 
   currentChatRoom = {} as ChatListVM;
@@ -76,13 +69,34 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this.editMessageListener();
   }
 
+  @HostListener('scroll', ['$event'])
+  onScroll(event: Event) {
+    const target = event.target as HTMLElement;
 
-  ngAfterViewChecked(): void {
+    if (target.scrollTop === 0) {
+      const referenceMessage = this.myScrollContainer.nativeElement.lastElementChild;
 
+      setTimeout(() => {
+        this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
+          
+          if(response && response.length > 0)
+          {
+            this.messageList.unshift(...response);
+
+            // Adjusting scroll position after new messages are loaded
+            setTimeout(() => {
+              referenceMessage?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
+            }, 100);
+          }
+        
+        }, error => {
+          console.error('Error fetching messages:', error);
+        });
+      }, 500);
+    }
   }
 
-  public scrollLast(): void {
-    // Use setTimeout to ensure the DOM has been updated
+  private scrollLast(): void {
     setTimeout(() => {
       const lastElement = this.myScrollContainer.nativeElement.lastElementChild;
       lastElement?.scrollIntoView({ behavior: 'smooth', block: 'end' });

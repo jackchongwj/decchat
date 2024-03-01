@@ -101,5 +101,6 @@ export class AddfriendComponent implements OnInit {
 
   handleCancel(): void {
     this.isVisible = false;
+    this.requestStates.clear();
   }
 }

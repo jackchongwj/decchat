@@ -60,8 +60,15 @@ app-message-extra-func{
 }
 
 .user-name {
-  font-weight: bold;
+  font-weight: normal;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   margin-bottom: 3px;
+}
+
+.timestamp{
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px; 
+  color: #757575;
 }
 
 /* ------------------------------------------------- Sender Alignment ------------------------------------------------- */
