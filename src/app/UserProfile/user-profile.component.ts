@@ -121,22 +121,14 @@ export class UserProfileComponent implements OnInit {
   deleteAccount() {
     this.userService.deleteUser(this.userId).subscribe({
       next: () => {
-<<<<<<< HEAD
-        this.showDeleteConfirm = false;
-=======
 
         this.showDeleteConfirm = false;
 
->>>>>>> origin
         this.authService.logout().subscribe({
           next: (res) => {
             this.router.navigate(['/login']);
           },
           error: (e) => {
-<<<<<<< HEAD
-            console.error('Account deletion failed', e);
-=======
->>>>>>> origin
             this.message.error(e.error.Error || 'Account deletion failed');
           }
         });
