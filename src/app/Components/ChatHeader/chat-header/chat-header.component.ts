@@ -315,7 +315,7 @@ export class ChatHeaderComponent implements OnInit {
     }
     else
     {
-      return ChatRoom.ChatRoomName.substring(0,15)+ '...';
+      return ChatRoom.ChatRoomName.length > 15?  ChatRoom.ChatRoomName.substring(0,15)+ '...' : ChatRoom.ChatRoomName;
     }
   }
 
