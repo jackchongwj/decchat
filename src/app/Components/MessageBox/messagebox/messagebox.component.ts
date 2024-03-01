@@ -253,11 +253,15 @@ export class MessageboxComponent implements OnInit, OnDestroy{
   // Voice Message Recording Session
   startRecording(): void {
     this.isRecording = true;
+    // Get Permission for audio input (Microphone)
     navigator.mediaDevices.getUserMedia({audio: true})
     .then(stream => {
       this.mediaRecorder = new MediaRecorder(stream);
+      // Event handler
       this.mediaRecorder.ondataavailable = (e) => this.chunks.push(e.data);
+      // Call when stop recording
       this.mediaRecorder.onstop = () => this.onRecordingStop();
+      // Start capture
       this.mediaRecorder.start();
     })
     .catch(error => {

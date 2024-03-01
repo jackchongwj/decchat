@@ -75,7 +75,7 @@ export class ChangePasswordComponent {
       this.authService.changePassword(this.userId, passwordChangeData).subscribe({
         next: () => {
           this.message.create('success', 'Password successfully changed');
-          this.router.navigate(['/']);
+          this.router.navigate(['/dashboard']);
           // You might want to navigate the user or reset the form here
         },
         error: error => {
@@ -95,6 +95,6 @@ export class ChangePasswordComponent {
   
 
   goBack() {
-    this.router.navigate(['/']); // Or use this.router.navigateByUrl('/') for a similar effect
+    this.router.navigate(['/dashboard']); // Or use this.router.navigateByUrl('/') for a similar effect
   }
 }
