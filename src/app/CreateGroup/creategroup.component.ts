@@ -20,11 +20,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 })
 export class CreategroupComponent implements OnInit {
   isVisible = false;
-  privateChat: any[] = [];
+   privateChat: any[] = [];
+  // privateChat: ChatListVM[] = [];
   roomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
   InitiatedBy = Number(this.localStorage.getItem("userId"));
-  // userId: number = 7; // Assuming userId is a number property
   groupChats: any[] = [];
   @Input() isCollapsed: boolean = false;
 
@@ -37,11 +37,13 @@ export class CreategroupComponent implements OnInit {
 
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+  }
 
   showModal(): void {
     this.isVisible = true;
     this.getFriendList();
+
   }
 
   //Create group validation
@@ -90,6 +92,5 @@ export class CreategroupComponent implements OnInit {
     ).subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
     });
-
-  }
+  }  
 }
