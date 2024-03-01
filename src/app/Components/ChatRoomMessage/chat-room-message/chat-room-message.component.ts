@@ -70,10 +70,6 @@ export class ChatRoomMessageComponent implements OnInit {
     this.deleteMessageListener();
     this.editMessageListener();
   }
-  
-  ngAfterViewChecked(): void {
-
-  }
 
   @HostListener('scroll', ['$event'])
   onScroll(event: Event) {
