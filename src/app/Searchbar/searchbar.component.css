@@ -29,9 +29,6 @@
   }
   
   .search-bar input:focus {
-    /* color: #001529;
-    border-color: #1890ff; 
-    background-color: #fff; */
     color: #000000; /* Brighter text color for better contrast on dark backgrounds */
     border-color: #64B5F6; /* A lighter shade of blue for the border */
     background-color: #e6dede; /* A slightly lighter background to highlight the focus */
@@ -60,6 +57,11 @@
   .custom-icon {
     font-size: 18px;
     margin-left: 70px;
+  }
+
+  .add:hover .custom-icon {
+    color: aqua;
+    cursor: pointer;
   }
 
   .st {

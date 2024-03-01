@@ -18,9 +18,14 @@ export class MessageService {
     return this.http.post<ChatRoomMessages>(`${MessageUrl}AddMessage`, formData, { withCredentials: true });
   }
 
-  getMessage(ChatRoomId: number, MessageId: number): Observable<any>
+  getMessage(ChatRoomId: number, MessageId: number, forceRefresh:boolean = false): Observable<any>
   {
-    const params = new HttpParams().set('ChatRoomId', ChatRoomId).set('MessageId', MessageId);
+    let params = new HttpParams().set('ChatRoomId', ChatRoomId).set('MessageId', MessageId);
+    if (forceRefresh) {
+      // Append a timestamp or a random value to force a fresh fetch
+      params = params.append('t', new Date().getTime().toString());
+    }
+    
     return this.http.get(`${MessageUrl}GetMessage`, {params})
   }
 

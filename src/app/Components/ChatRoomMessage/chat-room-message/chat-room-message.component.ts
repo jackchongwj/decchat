@@ -41,17 +41,26 @@ export class ChatRoomMessageComponent implements OnInit {
   ngOnInit() {
 
     // Get Chosen Chat Room
-    this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
-      this.currentChatRoom = chatroom;
+    this._dataShareService.selectedChatRoomData
+    .subscribe(chatroom => {
 
-      // HTTP Get Message Service
-      this._messageService.getMessage(this.currentChatRoom.ChatRoomId, 0).subscribe(response => {
-        this.messageList = response;
-        this.messageList.reverse();
-        this.scrollLast();
-      }, error => {
-        console.error('Error fetching messages:', error);
-      });
+      if(this.currentChatRoom?.ChatRoomId != chatroom.ChatRoomId)
+      {
+        this.currentChatRoom = chatroom;
+        
+        // HTTP Get Message Service
+        this._messageService.getMessage(this.currentChatRoom.ChatRoomId, 0, true).subscribe(response => {
+          
+          this.messageList = [] = [];
+          this.messageList = response;
+          this.messageList.reverse();
+          this.scrollLast();
+
+        }, error => {
+          console.error('Error fetching messages:', error);
+        });
+
+      }
 
     });
 
@@ -79,11 +88,12 @@ export class ChatRoomMessageComponent implements OnInit {
       const referenceMessage = this.myScrollContainer.nativeElement.firstElementChild;
 
       setTimeout(() => {
-        this._messageService.getMessage(this.currentChatRoom.ChatRoomId,  this.messageList[0].MessageId!).subscribe(response => {
+        this._messageService.getMessage(this.currentChatRoom.ChatRoomId, this.messageList[0].MessageId!, true).subscribe(response => {
           
           if(response && response.length > 0)
           {
             this.messageList.unshift(...response.reverse());
+            
             // Adjusting scroll position after new messages are loaded
             setTimeout(() => {
               referenceMessage?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
