@@ -85,7 +85,7 @@ export class ChatRoomMessageComponent implements OnInit {
   @HostListener('scroll', ['$event'])
   onScroll(event: Event) {
     const target = event.target as HTMLElement;
-
+    
     if (target.scrollTop === 0) {
       const referenceMessage = this.myScrollContainer.nativeElement.firstElementChild;
 
@@ -116,8 +116,6 @@ export class ChatRoomMessageComponent implements OnInit {
       lastElement?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, 100);
   }
-
-
 
   isUserSend(message: ChatRoomMessages): boolean {
     if (message.UserId == this.currentUser) {
@@ -245,7 +243,7 @@ export class ChatRoomMessageComponent implements OnInit {
         const highlightedText = messageContent.replace(regex, match => `<mark style="background-color: yellow;">${match}</mark>`);
         const messageElement = this.myScrollContainer.nativeElement.children[this.positions[this.positions.length - this.currentPossition]];
 
-        messageElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
       } else {
