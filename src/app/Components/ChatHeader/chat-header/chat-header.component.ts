@@ -13,7 +13,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { ChatroomService } from '../../../Services/ChatroomService/chatroom.service';
 import { Subject, of } from 'rxjs';
 import { debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
-import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-chat-header',
@@ -334,7 +333,12 @@ export class ChatHeaderComponent implements OnInit {
   private updateGroupInitiatorListener(): void {
     this._signalRService.updateGroupInitiatorListener()
     .subscribe(({ chatRoomId, userId }) => {
-      this.currentChatRoom.InitiatedBy = userId
+      if(this.currentChatRoom.ChatRoomId == chatRoomId)
+      {
+        this.currentChatRoom.InitiatedBy = userId
+      }
+      
     });
   }
+
 }

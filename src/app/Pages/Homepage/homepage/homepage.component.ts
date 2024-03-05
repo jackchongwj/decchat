@@ -1,5 +1,4 @@
 import { Component,OnInit, OnDestroy} from '@angular/core';
-import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
