@@ -208,7 +208,7 @@ export class ChatRoomMessageComponent implements OnInit {
       .subscribe((edittedMessage: ChatRoomMessages) => {
         this.messageList = this.messageList.map(message => {
           if(message.MessageId == edittedMessage.MessageId){
-            return edittedMessage;
+            return { ...message, Content: edittedMessage.Content };
           }
           return message;
         })

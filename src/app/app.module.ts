@@ -17,8 +17,8 @@ import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdispl
 import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
-import { LoginComponent } from './Pages/Auth/login/login.component';
-import { RegisterComponent } from './Pages/Auth/register/register.component';
+import { LoginComponent } from './Pages/Auth/Login/login.component';
+import { RegisterComponent } from './Pages/Auth/Register/register.component';
 import { LogoutComponent } from './Logout/logout.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { CreategroupComponent } from './CreateGroup/creategroup.component';

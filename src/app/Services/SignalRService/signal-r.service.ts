@@ -322,4 +322,14 @@ export class SignalRService {
     })
   }
 
+  invalidFormatUpload(): Observable<number> {
+    return new Observable<number>(observer => {
+      this.hubConnection.on('InformWrongFormat', (senderId:number) => {
+        this.ngZone.run(() => {
+          observer.next(senderId);
+        });
+      });
+    });
+  }
+
 }
