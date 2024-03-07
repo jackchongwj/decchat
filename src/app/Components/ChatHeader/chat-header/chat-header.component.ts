@@ -11,9 +11,12 @@ import { GroupMemberList } from '../../../Models/DTO/GroupMember/group-member-li
 import { GroupMemberServiceService } from '../../../Services/GroupMember/group-member-service.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ChatroomService } from '../../../Services/ChatroomService/chatroom.service';
-import { Subject, of } from 'rxjs';
-import { debounceTime, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { Subject, of, Observable } from 'rxjs';
+import { debounceTime, switchMap, distinctUntilChanged, tap, map } from 'rxjs/operators';
 import { ThisReceiver } from '@angular/compiler';
+import { ChatlistService } from '../../../Services/Chatlist/chatlist.service';
+import { BehaviorSubject } from 'rxjs';
+import { AddMember } from '../../../Models/DTO/AddMember/add-member';
 
 @Component({
   selector: 'app-chat-header',
@@ -27,6 +30,12 @@ export class ChatHeaderComponent implements OnInit {
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
   groupMembers: GroupMemberList[] = [];
   groupChat: ChatListVM[] = [];
+  privateChat: ChatListVM[] = [];
+  isVisibleAddUserModal: boolean = false;
+  mainFilterArray: BehaviorSubject<any> = new BehaviorSubject([]); //listen any changes in values, if v is updated function willbe called
+  populatePrivateChat: any;
+  selectedUsers: number[] = []; // Use an array to store selected user IDs
+
 
   constructor(
     private _dataShareService: DataShareService,
@@ -36,8 +45,10 @@ export class ChatHeaderComponent implements OnInit {
 
     private _chatRoomService: ChatroomService,
     private localStorage: LocalstorageService,
-    private groupMemberServiceService: GroupMemberServiceService, 
-    private message: NzMessageService // Inject NzMessageService
+    private groupMemberServiceService: GroupMemberServiceService,
+    private message: NzMessageService, // Inject NzMessageService,
+    private chatlistService: ChatlistService //privatelist
+
   ) { }
 
   private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
@@ -59,6 +70,9 @@ export class ChatHeaderComponent implements OnInit {
   searchValue: string = '';
   currenResult: number = 0;
   totalResult: number = 0;
+  friendList: ChatListVM[] = [];
+  groupMemberUserIds: number[] = [];
+
 
   ngOnInit(): void {
     this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
@@ -74,7 +88,6 @@ export class ChatHeaderComponent implements OnInit {
         this._dataShareService.updateSearchValue(this.searchValue);
         this.previousChatRoom = this.currentChatRoom;
       }
-
     });
 
     this.previousChatRoom = this.currentChatRoom;
@@ -104,7 +117,6 @@ export class ChatHeaderComponent implements OnInit {
       else {
         this.IsCurrentChatUser = false;
       }
-
     });
 
     this.searchSubject.pipe(
@@ -126,7 +138,12 @@ export class ChatHeaderComponent implements OnInit {
         this.currenResult = 0;
       }
     });
-     this.updateGroupInitiatorListener();
+    this.updateGroupInitiatorListener();
+
+    // this.updateSelecteduser();
+    this.updateGroupChatList();
+    this.updateNewuser();
+    this.updateQuitGroup();
   }
 
   toggleDropdown(): void {
@@ -171,12 +188,17 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   toggleModal(): void {
-    this.showModal = !this.showModal;
+    this.showModal = true;
 
     this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
-      ).subscribe(groupMembers => {
-        this.groupMembers = groupMembers;
-      });
+    ).subscribe(groupMembers => {
+      this.groupMembers = groupMembers;
+      console.log("gro:", this.groupMembers)
+    });
+  }
+
+  handleCancelGroupProfile(): void {
+    this.showModal = false;
   }
 
   toggleEditMode() {
@@ -189,20 +211,17 @@ export class ChatHeaderComponent implements OnInit {
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
 
-      if(this.isImage(this.selectedFile.name))
-      {
+      if (this.isImage(this.selectedFile.name)) {
         // Use FileReader to read the file for preview
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
-          this.previewImageUrl = e.target?.result as string; 
+          this.previewImageUrl = e.target?.result as string;
         };
         reader.readAsDataURL(this.selectedFile);
       }
-      else
-      {
+      else {
         this.message.error("Invalid File Format Uploaded");
       }
-   
     }
   }
 
@@ -241,29 +260,59 @@ export class ChatHeaderComponent implements OnInit {
     this.isVisibleDeleteFriendModal = true;
   }
 
-  showModalRemoveUser(): void {
-    this.isVisibleRemoveUserModal = true;
-
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
-    ).subscribe(groupMembers=> {
-
-      this.groupMembers = groupMembers;
-      this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
-    });
-  }
-
   Delete(userId: number): void {
 
-    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.userId).subscribe({
+    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.currentChatRoom.InitiatedBy, this.userId).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
         this.message.success('User removed successfully');
-        this.isVisibleRemoveUserModal=false;
+        this.isVisibleRemoveUserModal = false;
       },
       error: (error) => {
         console.log('Error from the backend:', error);
       }
     });
+  }
+
+  private updateGroupChatList(): void {
+    this._signalRService.removeUserListener()
+      .subscribe(({ chatRoomId, userId }) => {
+        if(this.currentChatRoom.ChatRoomId == chatRoomId){
+          this.groupMembers = this.groupMembers.filter(chat => chat.UserId != userId);
+        }
+      });
+  }
+
+
+  private updateNewuser(): void {
+    this._signalRService.addNewMemberListener()
+      .subscribe((list: ChatListVM[]) => {
+        console.log("l",list)
+
+        const memberlist: GroupMemberList[] = list.map(item => ({
+          ChatRoomId: item.ChatRoomId,
+          UserId: item.UserId,
+          ProfileName: item.ProfileName,
+          ProfilePicture: item.ProfilePicture,
+          SelectedUsers: []
+        }));
+        // console.log("ml", memberlist);
+        // console.log("sinalGB", this.groupMembers)
+        this.groupMembers.push(...memberlist)
+      });
+      // console.log("sinalGA", this.groupMembers)
+  }
+
+  private updateQuitGroup(): void {
+    this._signalRService.quitGroupListener()
+      .subscribe(({ chatRoomId, userId }) => {
+        if (this.currentChatRoom.ChatRoomId == chatRoomId) {
+          console.log("a", userId);
+          console.log("gl", this.groupMembers)
+          this.groupMembers = this.groupMembers.filter(list => list.UserId != userId);
+          console.log("glA", this.groupMembers)
+        }
+      });
   }
 
   handleOkRemoveUser(): void {
@@ -300,7 +349,6 @@ export class ChatHeaderComponent implements OnInit {
     }
   }
 
-
   showNextSearchResult(): void {
     if (this.currenResult > 1) {
       this.currenResult--;
@@ -308,14 +356,12 @@ export class ChatHeaderComponent implements OnInit {
     }
   }
 
-  truncateGroupChatRoomName(ChatRoom:ChatListVM):string{
-    if(!ChatRoom.RoomType)
-    {
+  truncateGroupChatRoomName(ChatRoom: ChatListVM): string {
+    if (!ChatRoom.RoomType) {
       return ChatRoom.ChatRoomName
     }
-    else
-    {
-      return ChatRoom.ChatRoomName.substring(0,15)+ '...';
+    else {
+      return ChatRoom.ChatRoomName.substring(0, 15) + '...';
     }
   }
 
@@ -333,8 +379,72 @@ export class ChatHeaderComponent implements OnInit {
 
   private updateGroupInitiatorListener(): void {
     this._signalRService.updateGroupInitiatorListener()
-    .subscribe(({ chatRoomId, userId }) => {
-      this.currentChatRoom.InitiatedBy = userId
+      .subscribe(({ chatRoomId, userId }) => {
+        this.currentChatRoom.InitiatedBy = userId
+      });
+  }
+
+  showModalRemoveUser(): void {
+    this.isVisibleRemoveUserModal = true;
+
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    ).subscribe(groupMembers => {
+
+      this.groupMembers = groupMembers;
+      this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
     });
+  }
+
+  showModalAddUser(): void {
+    this.getUniqueUsers();
+
+    this.isVisibleAddUserModal = true;
+    const addMember = new AddMember(this.currentChatRoom.ChatRoomId, this.selectedUsers);
+  }
+
+  handleOkAddUser(): void {
+    this.isVisibleAddUserModal = false;
+    const addMember = new AddMember(this.currentChatRoom.ChatRoomId, this.selectedUsers);
+
+    // Send data to the backend
+    this.chatlistService.addMemberToGroup(addMember).subscribe({
+      next: (response) => {
+        // Handle the response from the backend if needed
+        this.message.success('User added successfully');
+        this.selectedUsers = [];
+
+      },
+      error: (error) => {
+        console.log('Error from the backend:', error);
+      }
+    });
+  }
+
+  handleCancelAddUser(): void {
+    this.isVisibleAddUserModal = false;
+    this.selectedUsers = [];
+
+  }
+
+  getUniqueUsers(): void {
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    ).subscribe(groupMembers => {
+
+      this.groupMembers = groupMembers;
+      this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
+
+      this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
+      console.log("haha," , this.groupMemberUserIds)
+    });
+
+    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+      tap(),
+    ).subscribe((chats: ChatListVM[]) => {
+      this.privateChat = chats.filter(chat => chat.RoomType === false);
+      this.friendList = this.privateChat.filter((chat) => !this.groupMemberUserIds.includes(chat.UserId));
+      console.log("friendList" , this.friendList)
+
+    });
+
   }
 }

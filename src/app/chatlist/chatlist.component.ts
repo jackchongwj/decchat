@@ -70,20 +70,23 @@ export class ChatlistComponent implements OnInit {
       });
   }
   
-  private RetrieveChatlist() : void
+  private RetrieveChatlist() : void //
   {
     this.signalRService.retrieveChatlistListener()
     .subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.groupChat = chats.filter(chat => chat.RoomType === true); 
+      console.log("list", this.groupChat);
     });
   }
 
-  private updateGroupChatList(): void {
+  private updateGroupChatList(): void {  //signalR at the sidebar
     this.signalRService.removeUserListener()
       .subscribe(({ chatRoomId, userId }) => {
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
+          console.log("removetesting-updateGroupChatList")
+
         }
       });
   }
@@ -100,9 +103,12 @@ export class ChatlistComponent implements OnInit {
 
   private addNewGroupListener(): void {
     this.signalRService.addNewGroupListener().subscribe((chatListVM: ChatListVM[]) => {
+      console.log("new", chatListVM)
       const myChats = chatListVM.filter(chat => chat.UserId == this.userId);
+      console.log("a", myChats)
       // Add the new room to the groupChat array
       this.groupChat.push(...myChats);
+      console.log("addNewGroup - chatlistts");
     });
   }
 
