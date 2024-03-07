@@ -56,7 +56,7 @@
         <button nz-button nzType="default" (click)="handleCancelDeleteFriend()">Cancel</button>
       </div>
       <div nz-col nzSpan="12">
-        <button nz-button nzType="primary" (click)="handleOkDeleteFriend()">Delete Friend</button>
+        <button nz-button nzType="primary" (click)="handleOkDeleteFriend()">UnFriend</button>
       </div>
     </div>
 
@@ -96,33 +96,13 @@
 
         </nz-option>  
       </nz-select>
-
-      <!-- <ul>
-        <li nz-menu-item nzMatchRouter *ngFor="let result of searchResult">
-          <img [src]="result.ProfilePicture" alt="Image" class="circular-image">
-          {{ result.ProfileName }}
-          <div class="st" *ngIf= "result.Status == 1">
-            Pending
-          </div> 
-          <div class="st" *ngIf= "result.Status  == 2">
-            Friend
-          </div> 
-
-          <div class="add" *ngIf= "result.Status  == 0 || result.Status  == 3 || result.Status  == 4">
-            <button class="custom-button" (click)="OnSendFriendRequest(result.UserId)">
-              <i class="custom-icon" nz-icon nzType="user-add"></i>
-            </button>
-          </div>
-        </li>
-      </ul> -->
-
     </ng-container>
   </nz-modal>
 
   <!-- Dropdown Menu For INITIATED BY USER -->
   <div *ngIf="currentChatRoom.RoomType == true">
     <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button"
-      *ngIf="currentChatRoom.InitiatedBy == userId">
+      *ngIf="currentChatRoom.InitiatedBy == userId && showSearchBar == false">
       <i nz-icon nzType="more" nzTheme="outline"></i>
     </button>
     <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
@@ -136,20 +116,20 @@
     </nz-dropdown-menu>
 
     <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button"
-      *ngIf="currentChatRoom.InitiatedBy != userId">
+      *ngIf="currentChatRoom.InitiatedBy != userId && showSearchBar == false" >
       <i nz-icon nzType="more" nzTheme="outline"></i>
     </button>
     <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
         <li nz-menu-item (click)="Search(currentChatRoom.ChatRoomId)">Search Message</li>
+        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
         <li nz-menu-item (click)="ExitGroup()">Quit</li>
       </ul>
     </nz-dropdown-menu>
   </div>
 
   <div *ngIf="currentChatRoom.RoomType == false">
-    <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button">
+    <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenuMember" class="dropdown-button" *ngIf="showSearchBar == false">
       <i nz-icon nzType="more" nzTheme="outline"></i>
     </button>
     <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">

@@ -1,5 +1,4 @@
-import { DatePipe } from '@angular/common';
-import { Component, ElementRef, NgZone, OnInit, ViewChild, ChangeDetectorRef, AfterViewChecked, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { ChatListVM } from '../../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
@@ -7,28 +6,23 @@ import { MessageService } from '../../../Services/MessageService/message.service
 import { DataShareService } from '../../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { match } from 'assert';
-import { start } from 'repl';
-
+import { UserProfileUpdate } from '../../../Models/DTO/UserProfileUpdate/user-profile-update';
 
 @Component({
   selector: 'app-chat-room-message',
   templateUrl: './chat-room-message.component.html',
   styleUrl: './chat-room-message.component.css'
 })
-export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
+export class ChatRoomMessageComponent implements OnInit {
 
   @ViewChild('scroll') myScrollContainer !: ElementRef;
-
 
   constructor(
     private _dataShareService: DataShareService,
     private _messageService: MessageService,
     private _signalRService: SignalRService,
     private lsService: LocalstorageService,
-    private ngZone: NgZone,
-    private sanitizer: DomSanitizer,
-    private renderer: Renderer2
+    private sanitizer: DomSanitizer
   ) { }
 
   currentChatRoom = {} as ChatListVM;
@@ -43,20 +37,31 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
   positions: number[] = []
   currentPossition: number = 0;
   searchPositions: { message: ChatRoomMessages, position: number }[] = [];
+ 
 
   ngOnInit() {
 
     // Get Chosen Chat Room
-    this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
-      this.currentChatRoom = chatroom;
+    this._dataShareService.selectedChatRoomData
+    .subscribe(chatroom => {
 
-      // HTTP Get Message Service
-      this._messageService.getMessage(this.currentChatRoom.ChatRoomId).subscribe(response => {
-        this.messageList = response;
-        this.scrollLast();
-      }, error => {
-        console.error('Error fetching messages:', error);
-      });
+      if(this.currentChatRoom?.ChatRoomId != chatroom.ChatRoomId)
+      {
+        this.currentChatRoom = chatroom;
+        
+        // HTTP Get Message Service
+        this._messageService.getMessage(this.currentChatRoom.ChatRoomId, 0, true).subscribe(response => {
+
+          this.messageList = response;
+          this.messageList.reverse();
+          
+          this.scrollLast();
+
+        }, error => {
+          console.error('Error fetching messages:', error);
+        });
+
+      }
 
     });
 
@@ -74,15 +79,38 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     this.updateMessageListenerListener();
     this.deleteMessageListener();
     this.editMessageListener();
+    this.ProfileDetailChanges();
   }
 
+  @HostListener('scroll', ['$event'])
+  onScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    
+    if (target.scrollTop === 0) {
+      const referenceMessage = this.myScrollContainer.nativeElement.firstElementChild;
 
-  ngAfterViewChecked(): void {
+      setTimeout(() => {
+        this._messageService.getMessage(this.currentChatRoom.ChatRoomId, this.messageList[0].MessageId!, true).subscribe(response => {
 
+          if(response && response.length > 0)
+          {
+            response.reverse().pop();
+            this.messageList.unshift(...response);
+
+            // Adjusting scroll position after new messages are loaded
+            setTimeout(() => {
+              referenceMessage?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
+            }, 100);
+          }
+        
+        }, error => {
+          console.error('Error fetching messages:', error);
+        });
+      }, 500);
+    }
   }
 
-  public scrollLast(): void {
-    // Use setTimeout to ensure the DOM has been updated
+  private scrollLast(): void {
     setTimeout(() => {
       const lastElement = this.myScrollContainer.nativeElement.lastElementChild;
       lastElement?.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -204,7 +232,7 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
     if (this.searchValue.trim() === '' || !this.positions.length) {
       return this.sanitizer.bypassSecurityTrustHtml(messageContent);
     } else {
-      const regex = new RegExp(this.searchValue, 'gi');
+      const regex = new RegExp(this.searchValue, 'i');
       this._dataShareService.currentSearchMessageResult.subscribe(value => {
         this.currentPossition = value;
       });
@@ -212,10 +240,10 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
       const lastPosition = this.positions[this.positions.length - this.currentPossition];
 
       if (this.messageList.indexOf(message) === lastPosition) {
-        const highlightedText = messageContent.replace(regex, match => `<mark style="background-color: yellow">${match}</mark>`);
+        const highlightedText = messageContent.replace(regex, match => `<mark style="background-color: yellow;">${match}</mark>`);
         const messageElement = this.myScrollContainer.nativeElement.children[this.positions[this.positions.length - this.currentPossition]];
 
-        messageElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
       } else {
@@ -223,5 +251,23 @@ export class ChatRoomMessageComponent implements OnInit, AfterViewChecked {
         return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
       }
     }
+  }
+
+  private ProfileDetailChanges(): void {
+    this._signalRService.profileUpdateListener().subscribe({
+      next: (updateInfo: UserProfileUpdate) => {
+        this.messageList.forEach((chat) => {
+          if(chat.UserId === updateInfo.UserId) {
+            if(updateInfo.ProfileName) {
+              chat.ProfileName = updateInfo.ProfileName;             
+            }
+            if(updateInfo.ProfilePicture) {
+              chat.ProfilePicture = updateInfo.ProfilePicture;
+            }
+          }
+        });
+      },
+      error: (error) => console.error('Error listening for profile updates:', error),
+    });
   }
 }

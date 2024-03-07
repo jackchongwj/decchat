@@ -5,7 +5,7 @@ import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@ang
 import { AuthGuard } from './auth.guard';
 
 describe('AuthGuard', () => {
-  let guard: CanActivateFn;
+  let guard: AuthGuard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

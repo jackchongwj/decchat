@@ -1,20 +1,8 @@
-<!-- Create group button at sidebar -->
-<!-- <button nz-button class="custom-button" (click)="showModal()" nzTheme="dark">
-  <i nz-icon nzType="search" nzTheme="outline"></i>
-  Search
-</button> -->
-<!-- 
-<div class="search-button-container">
-  <button nz-button class="custom-button" (click)="showModal()" nzTheme="dark">
-    <i nz-icon nzType="search" nzTheme="outline"></i>
-    <input type="text" [(ngModel)]="searchValue" name="searchTerm" class="search-input" placeholder="Search" disabled>
-  </button>
-</div> -->
 
 <div class="search-button-container" [ngClass]="{'search-button-collapsed': isCollapsed}">
   <button nz-button nzType="default" class="search-button" (click)="ShowSearchModal()">
-    <i nz-icon  nzType="search" class="search-icon"  ></i>
-    <span class="search-button-text" *ngIf="!iSCollapsed">Search to Add Friend</span>
+    <i nz-icon  nzType="search" class="search-icon"></i>
+    <span class="search-button-text" *ngIf="iSCollapsed == false">Search to Add Friend</span>
   </button>
 </div>
 
@@ -22,9 +10,9 @@
   <div *nzModalContent>
     <!-- Place the search bar code here, as you initially defined -->
     <nz-input-group class="search-bar" nzTheme="dark">
-      <div *nzPrefix>
+      <!-- <div *nzPrefix>
         <i nz-icon nzType="search" nzTheme="outline"></i>
-      </div>
+      </div> -->
       <input nz-input [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}" (ngModelChange)="onSearchInputChange()"/>
     </nz-input-group>
 

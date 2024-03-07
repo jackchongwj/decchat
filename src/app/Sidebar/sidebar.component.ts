@@ -1,9 +1,5 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DataShareService } from '../Services/ShareDate/data-share.service';
-import { UserService } from '../Services/UserService/user.service';
-import { UserProfileComponent } from '../UserProfile/user-profile.component';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { Console } from 'console';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,6 +28,4 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-
-  
 }

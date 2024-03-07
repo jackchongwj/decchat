@@ -139,8 +139,6 @@ export class ChatHeaderComponent implements OnInit {
       }
     });
     this.updateGroupInitiatorListener();
-
-    // this.updateSelecteduser();
     this.updateGroupChatList();
     this.updateNewuser();
     this.updateQuitGroup();
@@ -193,7 +191,6 @@ export class ChatHeaderComponent implements OnInit {
     this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
     ).subscribe(groupMembers => {
       this.groupMembers = groupMembers;
-      console.log("gro:", this.groupMembers)
     });
   }
 
@@ -211,15 +208,17 @@ export class ChatHeaderComponent implements OnInit {
     if (fileList && fileList.length > 0) {
       this.selectedFile = fileList[0];
 
-      if (this.isImage(this.selectedFile.name)) {
+      if(this.isImage(this.selectedFile.name))
+      {
         // Use FileReader to read the file for preview
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
-          this.previewImageUrl = e.target?.result as string;
+          this.previewImageUrl = e.target?.result as string; 
         };
         reader.readAsDataURL(this.selectedFile);
       }
-      else {
+      else
+      {
         this.message.error("Invalid File Format Uploaded");
       }
     }
@@ -287,8 +286,6 @@ export class ChatHeaderComponent implements OnInit {
   private updateNewuser(): void {
     this._signalRService.addNewMemberListener()
       .subscribe((list: ChatListVM[]) => {
-        console.log("l",list)
-
         const memberlist: GroupMemberList[] = list.map(item => ({
           ChatRoomId: item.ChatRoomId,
           UserId: item.UserId,
@@ -296,21 +293,15 @@ export class ChatHeaderComponent implements OnInit {
           ProfilePicture: item.ProfilePicture,
           SelectedUsers: []
         }));
-        // console.log("ml", memberlist);
-        // console.log("sinalGB", this.groupMembers)
         this.groupMembers.push(...memberlist)
       });
-      // console.log("sinalGA", this.groupMembers)
   }
 
   private updateQuitGroup(): void {
     this._signalRService.quitGroupListener()
       .subscribe(({ chatRoomId, userId }) => {
         if (this.currentChatRoom.ChatRoomId == chatRoomId) {
-          console.log("a", userId);
-          console.log("gl", this.groupMembers)
           this.groupMembers = this.groupMembers.filter(list => list.UserId != userId);
-          console.log("glA", this.groupMembers)
         }
       });
   }
@@ -360,8 +351,9 @@ export class ChatHeaderComponent implements OnInit {
     if (!ChatRoom.RoomType) {
       return ChatRoom.ChatRoomName
     }
-    else {
-      return ChatRoom.ChatRoomName.substring(0, 15) + '...';
+    else
+    {
+      return ChatRoom.ChatRoomName.length > 15?  ChatRoom.ChatRoomName.substring(0,15)+ '...' : ChatRoom.ChatRoomName;
     }
   }
 
@@ -396,7 +388,7 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   showModalAddUser(): void {
-    this.getUniqueUsers();
+    this.getFilteredUsers();
 
     this.isVisibleAddUserModal = true;
     const addMember = new AddMember(this.currentChatRoom.ChatRoomId, this.selectedUsers);
@@ -426,7 +418,7 @@ export class ChatHeaderComponent implements OnInit {
 
   }
 
-  getUniqueUsers(): void {
+  getFilteredUsers(): void {
     this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
     ).subscribe(groupMembers => {
 
@@ -434,7 +426,6 @@ export class ChatHeaderComponent implements OnInit {
       this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
 
       this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
-      console.log("haha," , this.groupMemberUserIds)
     });
 
     this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
@@ -442,8 +433,6 @@ export class ChatHeaderComponent implements OnInit {
     ).subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.friendList = this.privateChat.filter((chat) => !this.groupMemberUserIds.includes(chat.UserId));
-      console.log("friendList" , this.friendList)
-
     });
 
   }
