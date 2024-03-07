@@ -14,7 +14,7 @@ import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from './Sidebar/sidebar.component';
 import { ChatRoomDisplayComponent } from './Layout/ChatRoomDisplay/chatroomdisplay/chatroomdisplay.component';
-import { HomepageComponent } from './Pages/Homepage/homepage/homepage.component';
+import { HomepageComponent } from './Pages/Homepage/homepage.component';
 import { ImportNgZorroAntdModule } from './ng-zorro-antd.module';
 import { AddfriendComponent } from './AddFriend/addfriend/addfriend.component';
 import { LoginComponent } from './Pages/Auth/Login/login.component';
@@ -30,6 +30,11 @@ import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
 import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
 import { SpinComponent } from './Loading/spin/spin.component';
+import { NZ_ICONS, NzIconModule } from 'ng-zorro-antd/icon';
+import { IconDefinition } from '@ant-design/icons-angular';
+import { MenuFoldOutline, MenuUnfoldOutline } from '@ant-design/icons-angular/icons';
+
+const icons: IconDefinition[] = [ MenuFoldOutline, MenuUnfoldOutline ];
 
 registerLocaleData(ms);
 
@@ -66,14 +71,15 @@ registerLocaleData(ms);
     HttpClientModule,
     BrowserAnimationsModule,
     ImportNgZorroAntdModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NzIconModule.forChild(icons)
   ],
   
   
   providers: [
     provideClientHydration(),
     { provide: NZ_I18N, useValue: en_US },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

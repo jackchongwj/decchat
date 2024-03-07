@@ -47,7 +47,7 @@ describe('Chatroom', () => {
       initiatedBy,
       isDeleted
     );
-    expect(chatroom.ChatRoomId).toEqual(0);
+    expect(chatroom.ChatRoomId).toBeNull();
   });
 
 
