@@ -11,10 +11,7 @@ import { AddMember } from '../../Models/DTO/AddMember/add-member';
   providedIn: 'root'
 })
 export class ChatlistService {
-  getUniqueUsers() {
-    throw new Error('Method not implemented.');
-  }
-
+  
   private url: string = environment.apiBaseUrl + 'Users/'
   private chatRoomUrl: string = environment.apiBaseUrl + 'Chatroom/';
 
