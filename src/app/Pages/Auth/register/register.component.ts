@@ -40,7 +40,7 @@ export class RegisterComponent {
   ) 
   {
     this.registerForm = this.fb.group({
-      username: ['', [Validators.required, this.usernameValidator], [this.usernameAsyncValidator()]],
+      username: ['', [Validators.required, this.usernameValidator]],
       password: ['', [Validators.required, this.passwordValidator]],
       confirmPassword: ['', [Validators.required, this.confirmationValidator]],
       profileName: ['', [this.profileNameValidator]]
@@ -96,9 +96,6 @@ export class RegisterComponent {
     }
     else if (usernameControl.hasError("maximum")) {
       errors.push("Maximum length (15) reached");
-    }
-    else if (usernameControl.hasError("duplicate")) {
-      errors.push("That username already exists");
     }
 
     return errors;
@@ -182,18 +179,6 @@ export class RegisterComponent {
   
     return null;
   };
-
-  usernameAsyncValidator(): AsyncValidatorFn {
-    // Check for if username exists dynamically
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return this.userService.doesUsernameExist(control.value)
-        .pipe(
-          map(isExist => {
-            return isExist ? { duplicate: true } : null;
-          })
-        );
-    };
-  }
 
   passwordValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
     const value: string = control.value;
@@ -303,7 +288,7 @@ export class RegisterComponent {
   
     if (control && control.touched && !this.isLoading) {
       if (controlName === 'username') {
-        if (control.hasError('required') || control.hasError('invalid') || control.hasError('maxLength') || control.hasError('duplicate')) {
+        if (control.hasError('required') || control.hasError('invalid') || control.hasError('maxLength')) {
           return 'error';
         } else {
           return 'success';
@@ -361,7 +346,7 @@ export class RegisterComponent {
           this.isLoading = false;
 
           console.error('Registration failed:', e);
-          this.message.error(e.error.Error || 'Registration failed');
+          this.message.error(e.error || 'Registration failed');
         }
       });
     } else {
