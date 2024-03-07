@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
+import { EditMessage } from '../../../Models/DTO/EditMessage/edit-message';
 import { MessageService } from '../../../Services/MessageService/message.service';
 
 @Component({
@@ -7,39 +8,47 @@ import { MessageService } from '../../../Services/MessageService/message.service
   templateUrl: './message-extra-func.component.html',
   styleUrl: './message-extra-func.component.css'
 })
-export class MessageExtraFuncComponent implements OnInit{
+export class MessageExtraFuncComponent implements OnInit {
 
   @Input() messageData = {} as ChatRoomMessages;
 
-  editIsVisible:boolean = false;
-  deleteIsVisible:boolean = false;
+  editIsVisible: boolean = false;
+  deleteIsVisible: boolean = false;
 
-  newMessageContent:string = '';
+  newMessageContent: string = '';
 
   constructor(
-    private _mService:MessageService
-  ) {}
+    private _mService: MessageService
+  ) { }
 
   ngOnInit(): void {
     this.newMessageContent = this.messageData.Content;
   }
 
-  OpenEditMessage(){
+  OpenEditMessage() {
     this.editIsVisible = true;
   }
 
-  handleEditModalCancel(){
+  handleEditModalCancel() {
     this.editIsVisible = false;
   }
 
-  handleEditModalOk(){
+  handleEditModalOk() {
     this.editIsVisible = false;
-    if(this.newMessageContent != this.messageData.Content)
-    {
-      this.messageData.Content = this.newMessageContent;
+    if (this.newMessageContent != this.messageData.Content) {
 
-      this._mService.editMessage(this.messageData).subscribe({
-        next: (res:ChatRoomMessages) => {
+      const editMessage: EditMessage =
+      {
+        ChatRoomId: this.messageData.ChatRoomId,
+        Content: this.messageData.Content,
+        MessageId: this.messageData.MessageId
+      }
+
+      console.log("ed", editMessage)
+      editMessage.Content = this.newMessageContent;
+
+      this._mService.editMessage(editMessage).subscribe({
+        next: (res: EditMessage) => {
         },
         error: (e) => {
           console.error(e);
@@ -48,23 +57,23 @@ export class MessageExtraFuncComponent implements OnInit{
     }
   }
 
-  OpenDeleteMessage(){
+  OpenDeleteMessage() {
     this.deleteIsVisible = true;
   }
 
-  handleDeleteModalCancel(){
+  handleDeleteModalCancel() {
     this.deleteIsVisible = false;
   }
 
-  handleDeleteModalOk(){
+  handleDeleteModalOk() {
     this.deleteIsVisible = false;
 
     this._mService.deleteMessage(this.messageData.MessageId!, this.messageData.ChatRoomId).subscribe({
-      next: (res:number) => {
+      next: (res: number) => {
       },
       error: (e) => {
         console.error(e);
       }
-    }); 
+    });
   }
 }

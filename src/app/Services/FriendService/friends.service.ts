@@ -1,18 +1,16 @@
 import { HttpClient ,HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import internal from 'stream';
 import { environment } from '../../../environments/environment';
 import { Friend } from '../../Models/Friend/friend';
 import { FriendRequest } from '../../Models/DTO/Friend/friend-request';
 import { DeleteFriendRequest } from '../../Models/DTO/DeleteFriend/delete-friend-request';
-import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FriendsService {
-  private url: string = environment.apiBaseUrl + 'Friends/'
+  protected url: string = environment.apiBaseUrl + 'Friends/'
 
   constructor(private http: HttpClient) { }
 
@@ -21,8 +19,8 @@ export class FriendsService {
     return this.http.post<Friend>(`${this.url}AddFriend`, friends)
   }
 
-  UpdateFriendRequest(friendRequest: FriendRequest, userId: number): Observable<any> {
-    return this.http.post<number>(`${this.url}UpdateFriendRequest`, friendRequest, { params: { userId: userId.toString() } });
+  UpdateFriendRequest(friendRequest: FriendRequest): Observable<any> {
+    return this.http.post<number>(`${this.url}UpdateFriendRequest`, friendRequest);
   }
 
   DeleteFriend(deleteFriendRequest: DeleteFriendRequest): Observable<any> {

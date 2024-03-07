@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone, Input } from '@angular/core';
 import { Subject, of } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap, distinctUntilChanged, catchError } from 'rxjs/operators';
 import { FriendsService } from '../Services/FriendService/friends.service';
 import { UserService } from '../Services/UserService/user.service';
 import { UserSearchDetails } from '../Models/DTO/User/user-search-details';
@@ -16,9 +16,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class SearchbarComponent implements OnInit {
 
   constructor(
-    private friendService: FriendsService, 
-    private search: UserService, 
-    private ngZone: NgZone, 
+    private friendService: FriendsService,
+    private search: UserService,
+    private ngZone: NgZone,
     private localStorage: LocalstorageService,
     private signalR: SignalRService,
     private message: NzMessageService) { }
@@ -28,18 +28,28 @@ export class SearchbarComponent implements OnInit {
 
   //search
   public searchValue: string = '';
-  public searchResult: UserSearchDetails[] = []; 
+  public searchResult: UserSearchDetails[] = [];
   private searchSubject: Subject<string> = new Subject<string>()
   @Input() iSCollapsed: boolean = false;
-  // get username form local storage
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  private userId: number = parseInt(this.localStorage.getItem('userId') || '');   // get username form local storage
   isVisible = false;
-  
+
 
   ngOnInit(): void {
+
+
     this.searchSubject.pipe(
-      debounceTime(300),
-      switchMap(searchValue => searchValue !== '' ? this.search.getSearch(searchValue, this.userId) : of([]))
+      debounceTime(100),
+      distinctUntilChanged(),
+      switchMap(searchValue => {
+        if (searchValue.trim().length !== 0) {
+          return this.search.getSearch(searchValue, this.userId);
+        } else {
+          this.message.error('Please enter a search value');
+          this.searchValue = '';
+          return of([]); 
+        }
+      })
     ).subscribe(response => {
       this.searchResult = response;
     });
@@ -64,12 +74,12 @@ export class SearchbarComponent implements OnInit {
       .subscribe(response => {
         this.message.success('Friend Request send successfully');
       },
-      (error) => {
-        this.message.error('Friend Has Added Before');
-      });
+        (error) => {
+          this.message.error('Friend Has Added Before');
+        });
   }
 
-  
+
 
   //signalR: update data after click add button to add friend
   private UpdateSearchToPending(): void {
@@ -104,7 +114,7 @@ export class SearchbarComponent implements OnInit {
       });
   }
 
-  
+
   private UpdateDeletePrivateChatlist(): void {
     this.signalR.DelteFriend()
       .subscribe((UserId: number) => {
@@ -116,13 +126,11 @@ export class SearchbarComponent implements OnInit {
   }
 
   //Model
-  ShowSearchModal(): void
-  {
+  ShowSearchModal(): void {
     this.isVisible = true;
   }
 
-  CloseModel(): void
-  {
+  CloseModel(): void {
     this.searchValue = "";
     this.isVisible = false;
   }
