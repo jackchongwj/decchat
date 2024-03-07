@@ -15,30 +15,24 @@ export class UserService {
 
   getSearch(searchValue: string, userId: Number): Observable<any> {
     const params = new HttpParams().set('profileName', searchValue).set('userId',userId.toString());
-    return this.http.get(`${UserUrl}Search`, {params})
+    return this.http.get(`${UserUrl}Search`, {params, withCredentials: true})
   }
 
   getFriendRequest(userId: Number): Observable<any>
   {
     const params = new HttpParams().set('userId',userId.toString());
-    return this.http.get(`${UserUrl}FriendRequest`, {params})
-  }
-
-  doesUsernameExist(username: string): Observable<boolean> {
-    return this.http.get<any>(`${UserUrl}DoesUsernameExist?username=${encodeURIComponent(username)}`)
-        .pipe(
-            map(response => response === true)
-        );
+    return this.http.get(`${UserUrl}FriendRequest`, {params, withCredentials: true})
   }
 
   getUserById(id: number): Observable<any> {
     const params = new HttpParams().set('id',id.toString());
-    return this.http.get(`${UserUrl}UserDetails`, {params});
+    console.log(params);
+    return this.http.get(`${UserUrl}UserDetails`, {params, withCredentials: true});
   }
 
   updateProfileName(id: number, newProfileName: string): Observable<any> {
     const params = { id, newProfileName }; // Create a body object directly
-    return this.http.post(`${UserUrl}UpdateProfileName`, params);
+    return this.http.post(`${UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
   updateProfilePicture(userId: number, file: File): Observable<any> {
@@ -46,12 +40,12 @@ export class UserService {
     formData.append('file', file, file.name);
     formData.append('id', userId.toString());
     const params = { formData };
-    return this.http.post<any>(`${UserUrl}UpdateProfilePicture`, formData);
+    return this.http.post<any>(`${UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
   }
   
   deleteUser(id: number): Observable<any> {
     const params = new HttpParams().set('id', id);
-    return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} );
+    return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} , { withCredentials: true });
   }
 
   

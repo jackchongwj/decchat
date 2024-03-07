@@ -16,15 +16,15 @@ export class FriendsService {
 
   addFriends(friends: Friend): Observable<any>
   {
-    return this.http.post<Friend>(`${this.url}AddFriend`, friends)
+    return this.http.post<Friend>(`${this.url}AddFriend`, friends, { withCredentials: true })
   }
 
   UpdateFriendRequest(friendRequest: FriendRequest, userId: number): Observable<any> {
-    return this.http.post<number>(`${this.url}UpdateFriendRequest`, friendRequest, { params: { userId: userId.toString() } });
+    return this.http.post<number>(`${this.url}UpdateFriendRequest`, friendRequest, { params: { userId: userId.toString() } , withCredentials: true });
   }
 
   DeleteFriend(deleteFriendRequest: DeleteFriendRequest): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });      
-    return this.http.post<number>(`${this.url}DeleteFriend`, deleteFriendRequest);
+    return this.http.post<number>(`${this.url}DeleteFriend`, deleteFriendRequest, { withCredentials: true });
   }
 }

@@ -16,12 +16,13 @@ export class LogoutComponent {
 
     this.authService.logout().subscribe({
       next: (res) => {
+        console.log(res);
         this.message.success(res.Message || 'Logout successful');
         this.router.navigate(['/login']);
       },
       error: (e) => {
         console.error('Logout failed', e);
-        this.message.error(e.error.Error || 'Logout failed');
+        this.message.error(e.error || 'Logout failed');
       }
     });
   }
