@@ -15,11 +15,9 @@ export class LoginComponent{
   validateForm: FormGroup<{
     username: FormControl<string>;
     password: FormControl<string>;
-    remember: FormControl<boolean>;
   }> = this.fb.group({
     username: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9]+$/)]],
     password: ['', [Validators.required]],
-    remember: [true]
   });
 
   constructor(
@@ -41,7 +39,7 @@ export class LoginComponent{
         },
         error: (e) => {
           console.error('Login failed:', e);
-          this.message.error(e.error.Error || 'Login failed. Please try again.');
+          this.message.error(e.error || 'Login failed. Please try again.');
         }
     });
     } else {
