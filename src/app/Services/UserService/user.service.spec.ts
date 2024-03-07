@@ -16,6 +16,10 @@ describe('UserService', () => {
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
@@ -100,4 +104,44 @@ describe('UserService', () => {
 
     req.flush(mockUser);
   });
+
+  it('should update the profile name', () => {
+    const userId = 1;
+    const newProfileName = 'NewProfileName';
+
+    service.updateProfileName(userId, newProfileName).subscribe(response => {
+      expect(response).toBeDefined();
+    });
+  
+    const req = httpTestingController.expectOne(`${service['UserUrl']}UpdateProfileName`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ id: userId, newProfileName });
+
+    req.flush(1);
+  });
+
+  it('should update the profile picture', () => {
+    const userId = 1;
+    const file = new File(['abcd'], 'test.jpg');
+
+    service.updateProfilePicture(userId, file).subscribe();
+    const req = httpTestingController.expectOne(`${service['UserUrl']}UpdateProfilePicture`);
+
+    expect(req.request.method).toEqual('POST');
+    expect(req.request.headers.get('Content-Type')).toBeFalsy(); 
+
+    req.flush(1);
+  });
+
+  it('should delete a user', () => {
+    const userId = 1; 
+
+    service.deleteUser(userId).subscribe();
+
+    const req = httpTestingController.expectOne(`${service['UserUrl']}UserDeletion?id=${userId}`);
+    expect(req.request.method).toEqual('POST');
+
+    req.flush(1); 
+  });
+
 });
