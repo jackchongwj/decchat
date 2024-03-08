@@ -26,16 +26,15 @@ describe('UserService', () => {
 
   it('should send a GET request for search', () => {
     const searchValue = 'leow';
-    const userId = 1;
     
     // mock data
     const mockUser = { profilename: "leow" , id: 1}
 
-    service.getSearch(searchValue, userId).subscribe(response => {
+    service.getSearch(searchValue).subscribe(response => {
       expect(response).toEqual(mockUser);
     });
 
-    const req = httpTestingController.expectOne(`${service['UserUrl']}Search?profileName=${searchValue}&userId=${userId}`);
+    const req = httpTestingController.expectOne(`${service['UserUrl']}Search?profileName=${searchValue}`);
     expect(req.request.method).toBe('GET');
 
     // Provide a mock response
@@ -60,7 +59,7 @@ describe('UserService', () => {
       },
     ];
 
-    service.getFriendRequest(userId).subscribe(response => {
+    service.getFriendRequest().subscribe(response => {
       expect(response).toEqual(friendRequest);
     });
 
@@ -72,34 +71,33 @@ describe('UserService', () => {
   });
 
   
-  it('should check if username exists', () => {
-    const username = 'testUser';
-    const mockResponse = true;
+  // it('should check if username exists', () => {
+  //   const username = 'testUser';
+  //   const mockResponse = true;
 
-    service.doesUsernameExist(username).subscribe((response) => {
-      expect(response).toBe(mockResponse);
-    });
+  //   service.doesUsernameExist(username).subscribe((response) => {
+  //     expect(response).toBe(mockResponse);
+  //   });
 
-    const req = httpTestingController.expectOne(`${service['UserUrl']}DoesUsernameExist?username=${encodeURIComponent(username)}`);
+  //   const req = httpTestingController.expectOne(`${service['UserUrl']}DoesUsernameExist?username=${encodeURIComponent(username)}`);
 
-    expect(req.request.method).toBe('GET');
+  //   expect(req.request.method).toBe('GET');
 
-    req.flush(mockResponse);
-  });
+  //   req.flush(mockResponse);
+  // });
 
   
   it('should get user by userId', () => {
-    const userId = 1;
     const mockUser = { 
       UserId: 1,
       ProfileName: 'leow'
     };
 
-    service.getUserById(userId).subscribe(response => {
+    service.getUserById().subscribe(response => {
       expect(response).toEqual(mockUser);
     });
 
-    const req = httpTestingController.expectOne(`${service['UserUrl']}UserDetails?id=${userId}`);
+    const req = httpTestingController.expectOne(`${service['UserUrl']}UserDetails`);
     expect(req.request.method).toBe('GET');
 
     req.flush(mockUser);

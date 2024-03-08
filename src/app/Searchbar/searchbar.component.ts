@@ -43,7 +43,7 @@ export class SearchbarComponent implements OnInit {
       distinctUntilChanged(),
       switchMap(searchValue => {
         if (searchValue.trim().length !== 0) {
-          return this.search.getSearch(searchValue, this.userId);
+          return this.search.getSearch(searchValue);
         } else {
           this.message.error('Please enter a search value');
           this.searchValue = '';

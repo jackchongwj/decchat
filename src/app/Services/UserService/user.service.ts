@@ -5,41 +5,31 @@ import { environment } from '../../../environments/environment';
 
 
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  protected UserUrl: string = environment.apiBaseUrl + 'Users/'
 
+  private UserUrl: string = environment.apiBaseUrl + 'Users/'
   constructor(private http: HttpClient) { }
 
-  getSearch(searchValue: string, userId: Number): Observable<any> {
-    const params = new HttpParams().set('profileName', searchValue).set('userId',userId.toString());
-    return this.http.get(`${this.UserUrl}Search`, {params})
+  getSearch(searchValue: string): Observable<any> {
+    const params = new HttpParams().set('profileName', searchValue)
+    return this.http.get(`${this.UserUrl}Search`, {params, withCredentials: true})
   }
 
-  getFriendRequest(userId: Number): Observable<any>
+  getFriendRequest(): Observable<any>
   {
-    const params = new HttpParams().set('userId',userId.toString());
-    return this.http.get(`${this.UserUrl}FriendRequest`, {params})
+    return this.http.get(`${this.UserUrl}FriendRequest`, {withCredentials: true})
   }
 
-  doesUsernameExist(username: string): Observable<boolean> {
-    return this.http.get<any>(`${this.UserUrl}DoesUsernameExist?username=${encodeURIComponent(username)}`)
-        .pipe(
-            map(response => response === true)
-        );
-  }
-
-  getUserById(id: number): Observable<any> {
-    const params = new HttpParams().set('id',id.toString());
-    return this.http.get(`${this.UserUrl}UserDetails`, {params});
+  getUserById(): Observable<any> {
+    return this.http.get(`${this.UserUrl}UserDetails`, {withCredentials: true});
   }
 
   updateProfileName(id: number, newProfileName: string): Observable<any> {
     const params = { id, newProfileName }; // Create a body object directly
-    return this.http.post(`${this.UserUrl}UpdateProfileName`, params);
+    return this.http.post(`${this.UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
   updateProfilePicture(userId: number, file: File): Observable<any> {
@@ -47,14 +37,12 @@ export class UserService {
     formData.append('file', file, file.name);
     formData.append('id', userId.toString());
     const params = { formData };
-    return this.http.post<any>(`${this.UserUrl}UpdateProfilePicture`, formData);
+    return this.http.post<any>(`${this.UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
   }
   
   deleteUser(id: number): Observable<any> {
     const params = new HttpParams().set('id', id);
-    return this.http.post(`${this.UserUrl}UserDeletion?id=${id}`, {} );
+    return this.http.post(`${this.UserUrl}UserDeletion?id=${id}`, {} , { withCredentials: true });
   }
-
-  
   
 }

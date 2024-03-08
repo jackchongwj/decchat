@@ -9,7 +9,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 })
 export class ChatroomService {
 
-  protected GroupUrl: string = environment.apiBaseUrl + 'Chatroom/'
+  private GroupUrl: string = environment.apiBaseUrl + 'Chatroom/'
   private url: string = environment.apiBaseUrl+ 'Users/'
 
   constructor(private http: HttpClient) { }

@@ -10,7 +10,7 @@ import { DeleteFriendRequest } from '../../Models/DTO/DeleteFriend/delete-friend
   providedIn: 'root'
 })
 export class FriendsService {
-  protected url: string = environment.apiBaseUrl + 'Friends/'
+  private url: string = environment.apiBaseUrl + 'Friends/'
 
   constructor(private http: HttpClient) { }
 

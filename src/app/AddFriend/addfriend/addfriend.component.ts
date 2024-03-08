@@ -84,7 +84,7 @@ export class AddfriendComponent implements OnInit {
 
   private GetFriendRequest()
   {
-    this.usersService.getFriendRequest(this.userId)
+    this.usersService.getFriendRequest()
       .subscribe(response => {
         this.getFriendRequest = response;
       });
