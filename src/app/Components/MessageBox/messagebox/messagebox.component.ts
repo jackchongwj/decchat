@@ -62,6 +62,7 @@ export class MessageboxComponent implements OnInit, OnDestroy{
     })
 
     this.updateMessageListenerListener();
+    this.InvalidUploadListener();
   }
 
   ngOnDestroy(): void {
@@ -304,6 +305,17 @@ export class MessageboxComponent implements OnInit, OnDestroy{
       .subscribe((newResults: ChatRoomMessages) => {
         this.isSending = false;
       });
+  }
+
+  private InvalidUploadListener():void{
+    this._sService.invalidFormatUpload()
+    .subscribe((senderId) => {
+      if(senderId == this.userId)
+      {
+        this.isSending = false;
+        this._msgBox.error("Invalid File Format Uploaded");
+      }
+    });
   }
 
 }

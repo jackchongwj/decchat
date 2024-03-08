@@ -36,7 +36,7 @@
       <!-- Message Input Field -->
       <input nz-input type="text" class="message-input" [(ngModel)]="messageText"
       (keydown.enter)="onSendMessage($event)" (focus)="OnInputFocus()" (blur)="OnInputBlur()"
-      placeholder="Type a message..." nzSize="default" [maxlength]="200"/>
+      placeholder="Type a message..." nzSize="default" maxlength="200"/>
 
       <!-- Voice Message Button -->
       <span nz-icon nzType="audio" class="icon-voice" 

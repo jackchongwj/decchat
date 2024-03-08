@@ -8,6 +8,7 @@ describe('User', () => {
       const profileName = 'John Doe';
       const password = 'securePassword123';
       const profilePicture = 'path/to/picture.jpg';
+      const salt = 'hjMEKamWoYi7lpDcDL99bReYeW+T2ldt0soIu/sKblw=';
       const isDeleted = false;
 
       const user = new User(
@@ -16,14 +17,16 @@ describe('User', () => {
           profileName,
           password,
           profilePicture,
+          salt,
           isDeleted
       );
 
       expect(user.UserId).toEqual(userId);
       expect(user.UserName).toEqual(userName);
       expect(user.ProfileName).toEqual(profileName);
-      expect(user.Password).toEqual(password);
+      expect(user.HashedPassword).toEqual(password);
       expect(user.ProfilePicture).toEqual(profilePicture);
+      expect(user.Salt).toEqual(salt);
       expect(user.IsDeleted).toBe(isDeleted);
   });
 
@@ -35,6 +38,7 @@ describe('User', () => {
           'Jane Doe',
           'anotherSecurePassword456',
           'path/to/another/picture.jpg',
+          'hjMEKamWoYi7lpDcDL99bReYeW+T2ldt0soIu/sKblw=',
           true
       );
 
@@ -43,10 +47,10 @@ describe('User', () => {
 
   // Test for logical consistency in deletion status
   it('should correctly reflect deletion status', () => {
-      const activeUser = new User(103, 'activeadam', 'Active Adam', 'ActivePassword!123', 'path/to/adam/picture.jpg', false);
+      const activeUser = new User(103, 'activeadam', 'Active Adam', 'ActivePassword!123', 'path/to/adam/picture.jpg', 'hjMEKamWoYi7lpDcDL99bReYeW+T2ldt0soIu/sKblw=', false);
       expect(activeUser.IsDeleted).toBeFalse();
 
-      const deletedUser = new User(104, 'deleteddiana', 'Deleted Diana', 'DeletedPassword123', 'path/to/diana/picture.jpg', true);
+      const deletedUser = new User(104, 'deleteddiana', 'Deleted Diana', 'DeletedPassword123', 'path/to/diana/picture.jpg', 'hjMEKamWoYi7lpDcDL99bReYeW+T2ldt0soIu/sKblw=', true);
       expect(deletedUser.IsDeleted).toBeTrue();
   });
 
