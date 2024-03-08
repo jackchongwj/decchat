@@ -25,9 +25,7 @@ export class UserService {
   }
 
   getUserById(id: number): Observable<any> {
-    const params = new HttpParams().set('id',id.toString());
-    console.log(params);
-    return this.http.get(`${UserUrl}UserDetails`, {params, withCredentials: true});
+    return this.http.get(`${UserUrl}UserDetails`, {withCredentials: true});
   }
 
   updateProfileName(id: number, newProfileName: string): Observable<any> {

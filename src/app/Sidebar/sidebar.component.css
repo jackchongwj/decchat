@@ -95,6 +95,7 @@ nz-content {
   background: #fff;
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%; 
   border-radius: 20px;
   border: 1px solid black;
@@ -103,10 +104,6 @@ nz-content {
 
 .message-layout{
   height: 100%;
-}
-
-app-user-login-page {
-  flex-grow: 1;
 }
 
 app-chatroomdisplay{
