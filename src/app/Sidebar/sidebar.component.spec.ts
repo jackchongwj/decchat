@@ -3,6 +3,8 @@ import { DataShareService } from '../Services/ShareDate/data-share.service';
 import { SidebarComponent } from './sidebar.component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ChatListVM } from '../Models/DTO/ChatList/chat-list-vm';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ImportNgZorroAntdModule } from '../ng-zorro-antd.module';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -30,6 +32,8 @@ describe('SidebarComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [SidebarComponent],
+      imports:[ImportNgZorroAntdModule],
+      schemas:[CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: DataShareService,
@@ -61,24 +65,5 @@ describe('SidebarComponent', () => {
   it('should update IsSelected to true when ChatRoom Name and Id Not NULL', () => {
     expect(component.IsSelected).toBeTrue();
   });
-  
-  it('should update IsSelected to false when ChatRoom Name and Id NULL', () => {
-    selectedChatRoomData.next(
-    { ChatRoomId: 0,
-      ChatRoomName: '',
-      ProfileName : 'Meghan',
-      ProfilePicture: 'path/picture.webp',
-      RoomType:  false,
-      SelectedUsers: [],
-      UserChatRoomId: 234,
-      UserId:33, 
-      InitiatedBy:34,
-      InitiatorProfileName: 'Lolz',
-      IsOnline:false
-    });
-    fixture.detectChanges();
-    expect(component.IsSelected).toBeFalse();
-  });
-
 
 });

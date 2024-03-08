@@ -8,7 +8,7 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'moduleProj';
+  title = 'DEChat';
   isCollapsed = false;
 
   static isBrowser: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

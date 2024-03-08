@@ -218,8 +218,7 @@ export class ChatRoomMessageComponent implements OnInit {
     this._signalRService.editMessageListener()
       .subscribe((edittedMessage: ChatRoomMessages) => {
         this.messageList = this.messageList.map(message => {
-          if (message.MessageId == edittedMessage.MessageId) {
-            // return edittedMessage;
+          if(message.MessageId == edittedMessage.MessageId){
             return { ...message, Content: edittedMessage.Content };
           }
           return message;

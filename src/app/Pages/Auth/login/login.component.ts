@@ -11,6 +11,7 @@ import { DataShareService } from '../../../Services/ShareDate/data-share.service
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent{
   validateForm: FormGroup<{
     username: FormControl<string>;

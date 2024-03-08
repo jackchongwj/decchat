@@ -25,9 +25,9 @@ describe('UserProfileUpdate', () => {
   it('should not be null', () => {
     const defaultProfile = new UserProfileUpdate();
 
-    expect(defaultProfile.UserId).not.toBeNull;
-    expect(defaultProfile.ProfileName).not.toBeNull;
-    expect(defaultProfile.ProfilePicture).not.toBeNull;
+    expect(defaultProfile.UserId).not.toBeNull();
+    expect(defaultProfile.ProfileName).not.toBeNull();
+    expect(defaultProfile.ProfilePicture).not.toBeNull();
   });
 
 });
