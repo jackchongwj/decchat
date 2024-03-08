@@ -11,6 +11,7 @@ import { User } from '../../Models/User/user';
 import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
 import { DataShareService } from '../ShareDate/data-share.service';
+import { AddMember } from '../../Models/DTO/AddMember/add-member';
 
 @Injectable({
   providedIn: 'root'
@@ -223,15 +224,29 @@ export class SignalRService {
   addNewGroupListener(): Observable<any> {
     return new Observable<any>(observer => {
       if (this.hubConnection) {
-        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM) => {
+        this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM[]) => {
         this.ngZone.run(() => {
-          observer.next(chatListVM); // Emit the roomName to observers
+          observer.next(chatListVM); // Emit the roomName to observers]
+          console.log("addnewgrplistern: -signalrservice", chatListVM)
         });       
         });
       }
     });
   }
   
+  addNewMemberListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UserAdded', (memberlist: ChatListVM) => {
+        this.ngZone.run(() => {
+          observer.next(memberlist); 
+          console.log("add", memberlist)
+        });       
+        });
+      }
+    });
+  }
+
    removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('UserRemoved', (chatRoomId: number, userId: number) => {

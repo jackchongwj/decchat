@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   changePassword(id: number, passwordChangeData: PasswordChange): Observable<any> {
-    return this.http.post(`${AuthUrl}PasswordChange?id=${id}`, passwordChangeData)
+    return this.http.post(`${AuthUrl}PasswordChange?id=${id}`, passwordChangeData, { withCredentials: true })
   }
 
 }

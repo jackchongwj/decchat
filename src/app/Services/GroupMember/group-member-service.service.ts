@@ -9,22 +9,22 @@ import { environment } from '../../../environments/environment';
 })
 
 export class GroupMemberServiceService {
-  private url: string = environment.apiBaseUrl+ 'Chatroom/';
+  private url: string = environment.apiBaseUrl + 'Chatroom/';
 
   constructor(private http: HttpClient) { }
 
   getGroupMembers(chatRoomId: number, userId: number): Observable<any> {
     const params = new HttpParams().set('chatRoomID', chatRoomId.toString()).set('userId', userId.toString()).set('timestamp',new Date().toString());
-    return this.http.get(`${this.url}groupMembers`, {params: params});
+    return this.http.get(`${this.url}groupMembers`, { params: params, withCredentials: true });
   }
 
-  removeUser(chatRoomId: number, userId: number, InitiatedBy: number): Observable<any> {
+  removeUser(chatRoomId: number, userId: number, InitiatedBy: number, currentUserId: number): Observable<any> {
     const params = new HttpParams()
       .set('chatRoomID', chatRoomId.toString())
       .set('userId', userId.toString())
-      .set('InitiatedBy', InitiatedBy.toString());
-  
-    return this.http.post<number>(`${this.url}RemoveFromGroup`, null, { params });
+      .set('InitiatedBy', InitiatedBy.toString())
+      .set('CurrentUserId', currentUserId.toString());
+    return this.http.post<number>(`${this.url}RemoveFromGroup`, null, { params , withCredentials : true });
   }
 
   quitGroup(chatRoomId: number, userId: number): Observable<any> {
@@ -32,8 +32,7 @@ export class GroupMemberServiceService {
       .set('chatRoomID', chatRoomId.toString())
       .set('userId', userId.toString())
   
-    return this.http.post<number>(`${this.url}QuitGroup`, null, { params });
+    return this.http.post<number>(`${this.url}QuitGroup`, null, { params , withCredentials : true });
   }
-  
 }
 

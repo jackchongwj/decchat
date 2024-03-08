@@ -12,6 +12,7 @@ import { Observable, tap } from 'rxjs';
 import { SignalRService } from '../Services/SignalRService/signal-r.service';
 import { Message } from '../Models/Message/message';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { GroupMemberList } from '../Models/DTO/GroupMember/group-member-list';
 
 @Component({
   selector: 'app-creategroup',
@@ -81,16 +82,16 @@ export class CreategroupComponent implements OnInit {
     this.isVisible = false;
   }
 
-
   handleCancel(): void {
     this.isVisible = false;
+    this.selectedUsers = [];
   }
 
-  getFriendList() {
+  getFriendList() { 
     this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
       tap(),
     ).subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
     });
   }  
-}
+} 

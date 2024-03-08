@@ -5,7 +5,7 @@ export class User {
         public ProfileName:string,
         public HashedPassword: string,
         public ProfilePicture:string,
-        public Salt: string,
+        public Salt:string,
         public IsDeleted:boolean
     )
     {}
