@@ -1,7 +1,7 @@
 import { Component,OnInit, OnDestroy} from '@angular/core';
-import { LocalstorageService } from '../../../Services/LocalStorage/local-storage.service';
-import { DataShareService } from '../../../Services/ShareDate/data-share.service';
-import { SignalRService } from '../../../Services/SignalRService/signal-r.service';
+import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
+import { DataShareService } from '../../Services/ShareDate/data-share.service';
+import { SignalRService } from '../../Services/SignalRService/signal-r.service';
 
 
 @Component({
@@ -19,10 +19,11 @@ export class HomepageComponent implements OnDestroy,OnInit{
 
   isSignalRConnection : boolean = false
   private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  
   ngOnInit(): void{
-
+    
     if (!isNaN(this.userId) && this.userId != 0){
-      this.signalRService.startConnection(this.userId);
+      this.signalRService.startConnection();
     }
 
 

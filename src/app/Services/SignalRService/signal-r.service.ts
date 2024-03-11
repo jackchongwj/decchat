@@ -12,6 +12,7 @@ import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
 import { DataShareService } from '../ShareDate/data-share.service';
 import { AddMember } from '../../Models/DTO/AddMember/add-member';
+import { TokenService } from '../../Services/Token/token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,17 +23,26 @@ export class SignalRService {
   private manualDisconnect: boolean = false;
   private reconnectInterval: any;
   https: string = environment.hubBaseUrl;
-  
+
 
   constructor(
     private ngZone: NgZone,
-    private _dataShareService: DataShareService) 
+    private _dataShareService: DataShareService,
+    private tokenService: TokenService) 
     {}
 
-  private buildConnection = (Id:number) => {
+
+
+  private buildConnection = () => {
+    const accessToken = this.tokenService.getToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https+"?userId="+Id)
+                          .withUrl(this.https, {
+                            transport: signalR.HttpTransportType.LongPolling,
+                            headers:{
+                              Authorization: `Bearer ${accessToken}`
+                            }
+                          })
                           .build();
 
                           this.hubConnection.onclose((error) => {
@@ -42,9 +52,8 @@ export class SignalRService {
                           });
   }
 
-  public startConnection(Id: number): Promise<void> {
-    if (!isNaN(Id) && Id != 0) {
-      this.buildConnection(Id);
+  public startConnection(): Promise<void> {
+      this.buildConnection();
 
       const checkAndReconnect = async (): Promise<void> => {
         //avoid the disconnet reconnect again
@@ -73,9 +82,6 @@ export class SignalRService {
       }, 3000);
 
       return Promise.resolve();
-    } else {
-      return Promise.reject("Invalid ID");
-    }
   }
 
   public stopConnection(): Promise<void> {
@@ -84,8 +90,7 @@ export class SignalRService {
 
     return this.hubConnection.stop()
       .then(() => {
-        this.isSignalRConnected = false;
-        this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+        this._dataShareService.updateSignalRConnectionStatus(false);
         console.log('SignalR connection closed');
       })
       .catch(err => console.error('Error while closing connection'))
@@ -336,4 +341,15 @@ export class SignalRService {
       })
     })
   }
+
+  invalidFormatUpload(): Observable<number> {
+    return new Observable<number>(observer => {
+      this.hubConnection.on('InformWrongFormat', (senderId:number) => {
+        this.ngZone.run(() => {
+          observer.next(senderId);
+        });
+      });
+    });
+  }
+
 }

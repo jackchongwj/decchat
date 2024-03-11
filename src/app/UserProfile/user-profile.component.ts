@@ -107,7 +107,7 @@ export class UserProfileComponent implements OnInit {
       return;
     }
 
-    this.userService.getUserById(this.userId).subscribe({
+    this.userService.getUserById().subscribe({
       next: (data) => {
         this.User = data;
         this.dsService.updateLoginUserPN(data.ProfileName);

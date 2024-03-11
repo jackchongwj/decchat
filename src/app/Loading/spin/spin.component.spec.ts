@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ImportNgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { SpinComponent } from './spin.component';
 
 describe('SpinComponent', () => {
@@ -8,10 +8,13 @@ describe('SpinComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SpinComponent]
+      declarations: [ SpinComponent ],
+      imports: [ ImportNgZorroAntdModule ] // Import the NzSpinModule for the nz-spin component
     })
     .compileComponents();
-    
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(SpinComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -20,4 +23,5 @@ describe('SpinComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });
