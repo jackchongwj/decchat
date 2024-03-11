@@ -4,33 +4,32 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 
-const UserUrl: string = environment.apiBaseUrl + 'Users/'
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+  private UserUrl: string = environment.apiBaseUrl + 'Users/'
   constructor(private http: HttpClient) { }
 
-  getSearch(searchValue: string, userId: Number): Observable<any> {
-    const params = new HttpParams().set('profileName', searchValue).set('userId',userId.toString());
-    return this.http.get(`${UserUrl}Search`, {params, withCredentials: true})
+  getSearch(searchValue: string): Observable<any> {
+    const params = new HttpParams().set('profileName', searchValue)
+    return this.http.get(`${this.UserUrl}Search`, {params, withCredentials: true})
   }
 
-  getFriendRequest(userId: Number): Observable<any>
+  getFriendRequest(): Observable<any>
   {
-    const params = new HttpParams().set('userId',userId.toString());
-    return this.http.get(`${UserUrl}FriendRequest`, {params, withCredentials: true})
+    return this.http.get(`${this.UserUrl}FriendRequest`, {withCredentials: true})
   }
 
-  getUserById(id: number): Observable<any> {
-    return this.http.get(`${UserUrl}UserDetails`, {withCredentials: true});
+  getUserById(): Observable<any> {
+    return this.http.get(`${this.UserUrl}UserDetails`, {withCredentials: true});
   }
 
   updateProfileName(id: number, newProfileName: string): Observable<any> {
     const params = { id, newProfileName }; // Create a body object directly
-    return this.http.post(`${UserUrl}UpdateProfileName`, params, { withCredentials: true });
+    return this.http.post(`${this.UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
   updateProfilePicture(userId: number, file: File): Observable<any> {
@@ -38,14 +37,12 @@ export class UserService {
     formData.append('file', file, file.name);
     formData.append('id', userId.toString());
     const params = { formData };
-    return this.http.post<any>(`${UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
+    return this.http.post<any>(`${this.UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
   }
   
   deleteUser(id: number): Observable<any> {
     const params = new HttpParams().set('id', id);
-    return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} , { withCredentials: true });
+    return this.http.post(`${this.UserUrl}UserDeletion?id=${id}`, {} , { withCredentials: true });
   }
-
-  
   
 }

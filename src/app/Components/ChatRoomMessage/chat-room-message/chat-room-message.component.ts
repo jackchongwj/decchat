@@ -37,33 +37,30 @@ export class ChatRoomMessageComponent implements OnInit {
   positions: number[] = []
   currentPossition: number = 0;
   searchPositions: { message: ChatRoomMessages, position: number }[] = [];
- 
+
 
   ngOnInit() {
 
     // Get Chosen Chat Room
     this._dataShareService.selectedChatRoomData
-    .subscribe(chatroom => {
+      .subscribe(chatroom => {
+        if (this.currentChatRoom?.ChatRoomId != chatroom.ChatRoomId) {
+          this.currentChatRoom = chatroom;
 
-      if(this.currentChatRoom?.ChatRoomId != chatroom.ChatRoomId)
-      {
-        this.currentChatRoom = chatroom;
-        
-        // HTTP Get Message Service
-        this._messageService.getMessage(this.currentChatRoom.ChatRoomId, 0, true).subscribe(response => {
+          // HTTP Get Message Service
+          this._messageService.getMessage(this.currentChatRoom.ChatRoomId, 0, true).subscribe(response => {
 
-          this.messageList = response;
-          this.messageList.reverse();
-          
-          this.scrollLast();
+            this.messageList = response;
+            this.messageList.reverse();
 
-        }, error => {
-          console.error('Error fetching messages:', error);
-        });
+            this.scrollLast();
 
-      }
+          }, error => {
+            console.error('Error fetching messages:', error);
+          });
 
-    });
+        }
+      });
 
     this._dataShareService.SearchMessageValue.subscribe(value => {
       this.searchValue = value;
@@ -85,15 +82,14 @@ export class ChatRoomMessageComponent implements OnInit {
   @HostListener('scroll', ['$event'])
   onScroll(event: Event) {
     const target = event.target as HTMLElement;
-    
-    if (target.scrollTop === 0) {
+
+    if (target.scrollTop <= 10) {
       const referenceMessage = this.myScrollContainer.nativeElement.firstElementChild;
 
       setTimeout(() => {
         this._messageService.getMessage(this.currentChatRoom.ChatRoomId, this.messageList[0].MessageId!, true).subscribe(response => {
 
-          if(response && response.length > 0)
-          {
+          if (response && response.length > 0) {
             response.reverse().pop();
             this.messageList.unshift(...response);
 
@@ -102,7 +98,11 @@ export class ChatRoomMessageComponent implements OnInit {
               referenceMessage?.scrollIntoView({ behavior: 'instant', block: 'nearest' });
             }, 100);
           }
-        
+
+          if (this.totalSearch != 0) {
+            this.FilterSearch()
+          }
+
         }, error => {
           console.error('Error fetching messages:', error);
         });
@@ -116,6 +116,7 @@ export class ChatRoomMessageComponent implements OnInit {
       lastElement?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, 100);
   }
+
 
   isUserSend(message: ChatRoomMessages): boolean {
     if (message.UserId == this.currentUser) {
@@ -183,6 +184,16 @@ export class ChatRoomMessageComponent implements OnInit {
     document.body.removeChild(a);
   }
 
+  FilterSearch(): void {
+    this.searchMessageList = this.messageList.filter(message =>
+      message.Content.toLowerCase().includes(this.searchValue.toLowerCase())
+    );
+
+    this.positions = this.searchMessageList.map(item => this.messageList.indexOf(item));
+
+    console.log("p", this.positions);
+  }
+
   private updateMessageListenerListener(): void {
     this._signalRService.updateMessageListener()
       .subscribe((newResults: ChatRoomMessages) => {
@@ -194,16 +205,16 @@ export class ChatRoomMessageComponent implements OnInit {
       });
   }
 
-  private deleteMessageListener():void{
+  private deleteMessageListener(): void {
     this._signalRService.deleteMessageListener()
       .subscribe((deletedMessage: number) => {
 
-       this.messageList = this.messageList.filter(message => message.MessageId != deletedMessage);
+        this.messageList = this.messageList.filter(message => message.MessageId != deletedMessage);
 
       });
   }
 
-  private editMessageListener():void{
+  private editMessageListener(): void {
     this._signalRService.editMessageListener()
       .subscribe((edittedMessage: ChatRoomMessages) => {
         this.messageList = this.messageList.map(message => {
@@ -216,52 +227,57 @@ export class ChatRoomMessageComponent implements OnInit {
   }
 
   private searchMessage(): void {
-    this.searchMessageList = this.messageList.filter(message =>
-      message.Content.toLowerCase().includes(this.searchValue.toLowerCase())
-    );
-    this.positions = this.searchMessageList.map(item => this.messageList.indexOf(item));
 
-    this.totalSearch = this.searchMessageList.length;
+    this.FilterSearch()
 
-    if (this.totalSearch > 0) {
-      this._dataShareService.updateTotalSearchMessageResult(this.totalSearch);
-    }
+    //get total search
+    this._messageService.getSearch(this.currentChatRoom.ChatRoomId, this.searchValue).subscribe(response => {
+      this.totalSearch = response
+      if (this.totalSearch > 0) {
+        this._dataShareService.updateTotalSearchMessageResult(this.totalSearch);
+      }
+    });
+
   }
 
+
   highlightSearchText(messageContent: string, message: ChatRoomMessages): SafeHtml {
-    if (this.searchValue.trim() === '' || !this.positions.length) {
+    if (this.searchValue.trim() === '' || this.totalSearch == 0 ) {
       return this.sanitizer.bypassSecurityTrustHtml(messageContent);
-    } else {
+    } 
+
       const regex = new RegExp(this.searchValue, 'i');
       this._dataShareService.currentSearchMessageResult.subscribe(value => {
         this.currentPossition = value;
       });
 
-      const lastPosition = this.positions[this.positions.length - this.currentPossition];
 
+      if (this.totalSearch !== 0 && this.positions.length === 0 || this.currentPossition > this.positions.length) {
+        this.myScrollContainer.nativeElement.firstElementChild.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return this.sanitizer.bypassSecurityTrustHtml(messageContent);
+      }
+
+      const lastPosition = this.positions[this.positions.length - this.currentPossition];
       if (this.messageList.indexOf(message) === lastPosition) {
         const highlightedText = messageContent.replace(regex, match => `<mark style="background-color: yellow;">${match}</mark>`);
-        const messageElement = this.myScrollContainer.nativeElement.children[this.positions[this.positions.length - this.currentPossition]];
-
-        messageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
+        this.myScrollContainer.nativeElement.children[lastPosition].scrollIntoView({ behavior: 'smooth', block: 'start' });
         return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
+
       } else {
         const highlightedText = messageContent.replace(regex, match => `<mark style="background-color: lightblue">${match}</mark>`);
         return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
       }
-    }
   }
 
   private ProfileDetailChanges(): void {
     this._signalRService.profileUpdateListener().subscribe({
       next: (updateInfo: UserProfileUpdate) => {
         this.messageList.forEach((chat) => {
-          if(chat.UserId === updateInfo.UserId) {
-            if(updateInfo.ProfileName) {
-              chat.ProfileName = updateInfo.ProfileName;             
+          if (chat.UserId === updateInfo.UserId) {
+            if (updateInfo.ProfileName) {
+              chat.ProfileName = updateInfo.ProfileName;
             }
-            if(updateInfo.ProfilePicture) {
+            if (updateInfo.ProfilePicture) {
               chat.ProfilePicture = updateInfo.ProfilePicture;
             }
           }
