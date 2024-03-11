@@ -70,7 +70,7 @@ export class SearchbarComponent implements OnInit {
   //signalR
   //signalR: send friend request
   OnSendFriendRequest(receiverId: number): void {
-    this.friendService.addFriends({ RequestId: null, SenderId: this.userId, ReceiverId: receiverId, Status: 0 })
+    this.friendService.addFriends({ RequestId: null, SenderId: 0, ReceiverId: receiverId, Status: 0 })
       .subscribe(response => {
         this.message.success('Friend Request send successfully');
       },

@@ -20,11 +20,10 @@ export class FriendsService {
   }
 
   UpdateFriendRequest(friendRequest: FriendRequest): Observable<any> {
-    return this.http.post<number>(`${this.url}UpdateFriendRequest`, friendRequest);
+    return this.http.post<number>(`${this.url}UpdateFriendRequest`, friendRequest,  { withCredentials: true });
   }
 
-  DeleteFriend(deleteFriendRequest: DeleteFriendRequest): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });      
+  DeleteFriend(deleteFriendRequest: DeleteFriendRequest): Observable<any> {   
     return this.http.post<number>(`${this.url}DeleteFriend`, deleteFriendRequest, { withCredentials: true });
   }
 }
