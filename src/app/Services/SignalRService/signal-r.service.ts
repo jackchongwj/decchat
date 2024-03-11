@@ -34,11 +34,13 @@ export class SignalRService {
 
 
   private buildConnection = (Id:number) => {
-    const accessToken = this.tokenService.getToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https + "?userId=" + Id, {
-                            accessTokenFactory: async () => accessToken || ""
+                          .withUrl(this.https, {
+                            accessTokenFactory: () => {
+                              const token = this.tokenService.getToken();
+                              return token ? token : '';
+                            }
                           })
                           .build();
 

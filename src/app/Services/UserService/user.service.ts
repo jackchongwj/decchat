@@ -27,8 +27,8 @@ export class UserService {
     return this.http.get(`${this.UserUrl}UserDetails`, {withCredentials: true});
   }
 
-  updateProfileName(id: number, newProfileName: string): Observable<any> {
-    const params = { id, newProfileName }; // Create a body object directly
+  updateProfileName(newProfileName: string): Observable<any> {
+    const params = { newProfileName }; // Create a body object directly
     return this.http.post(`${this.UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
