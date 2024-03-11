@@ -20,13 +20,11 @@ export class AddfriendComponent implements OnInit {
     private usersService: UserService,
     private friendService: FriendsService,
     private signalRService: SignalRService,
-    private localStorage: LocalstorageService,
     private message: NzMessageService,
     private zone:NgZone) 
   { }
 
   isVisible = false;
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
 
   requestStates = new Map<string, boolean>();
   getFriendRequest: User[] = [];

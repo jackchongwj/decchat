@@ -44,7 +44,6 @@ export class MessageExtraFuncComponent implements OnInit {
         MessageId: this.messageData.MessageId
       }
 
-      console.log("ed", editMessage)
       editMessage.Content = this.newMessageContent;
 
       this._mService.editMessage(editMessage).subscribe({
