@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommessages';
+import { EditMessage } from '../../Models/DTO/EditMessage/edit-message';
 
 const MessageUrl: string = environment.apiBaseUrl + 'Messages/'
 
@@ -29,8 +30,8 @@ export class MessageService {
     return this.http.get(`${MessageUrl}GetMessage`, { params, withCredentials: true })
   }
 
-  editMessage(EdittedMessage:ChatRoomMessages): Observable<any>{
-    return this.http.post<ChatRoomMessages>(`${MessageUrl}EditMessage`, EdittedMessage, { withCredentials: true });
+  editMessage(EdittedMessage:EditMessage): Observable<any>{
+    return this.http.post<EditMessage>(`${MessageUrl}EditMessage`, EdittedMessage);
   }
 
   deleteMessage(MessageId:number, ChatRoomId:number): Observable<any> {
@@ -42,6 +43,11 @@ export class MessageService {
       params: params,
       withCredentials: true
     });
+  }
+
+  getSearch(ChatRoomId: Number, searchValue: string): Observable<any> {
+    const params = new HttpParams().set('ChatRoomId', ChatRoomId.toString()).set('searchValue',searchValue);
+    return this.http.get(`${MessageUrl}GetTotalSearchMessage`, {params})
   }
   
   

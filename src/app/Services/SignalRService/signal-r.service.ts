@@ -12,6 +12,7 @@ import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
 import { DataShareService } from '../ShareDate/data-share.service';
 import { AddMember } from '../../Models/DTO/AddMember/add-member';
+import { TokenService } from '../../Services/Token/token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,17 +23,23 @@ export class SignalRService {
   private manualDisconnect: boolean = false;
   private reconnectInterval: any;
   https: string = environment.hubBaseUrl;
-  
+
 
   constructor(
     private ngZone: NgZone,
-    private _dataShareService: DataShareService) 
+    private _dataShareService: DataShareService,
+    private tokenService: TokenService) 
     {}
 
+
+
   private buildConnection = (Id:number) => {
+    const accessToken = this.tokenService.getToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https+"?userId="+Id)
+                          .withUrl(this.https + "?userId=" + Id, {
+                            accessTokenFactory: async () => accessToken || ""
+                          })
                           .build();
 
                           this.hubConnection.onclose((error) => {

@@ -75,22 +75,11 @@ export class ChatHeaderComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
-      this.currentChatRoom = chatroom;
-      this.IsCurrentChatUser = false;
-      //this.subscribeToOnlineStatusUpdates();
 
-      if (this.previousChatRoom.ChatRoomId != this.currentChatRoom.ChatRoomId) {
-        this.showSearchBar = false;
-        this.currenResult = 0;
-        this.totalResult = 0;
-        this.searchValue = '';
-        this._dataShareService.updateSearchValue(this.searchValue);
-        this.previousChatRoom = this.currentChatRoom;
-      }
-    });
+    //data share for get chatroom data
+    this.GetChatRoomData();
 
-    this.previousChatRoom = this.currentChatRoom;
+ 
 
     this._signalRService.UserTypingStatus().subscribe((status: TypingStatus) => {
       //Check If Current Chat Room
@@ -129,6 +118,38 @@ export class ChatHeaderComponent implements OnInit {
     ).subscribe(response => {
     });
 
+      this.GetTotalSearchMessageResult();
+      this.updateGroupInitiatorListener();
+  }
+
+  //data share
+
+  //get chatroom id
+  GetChatRoomData():void 
+  {
+    this._dataShareService.selectedChatRoomData.subscribe(chatroom => {
+      this.currentChatRoom = chatroom;
+      this.IsCurrentChatUser = false;
+      //this.subscribeToOnlineStatusUpdates();
+
+      if (this.previousChatRoom.ChatRoomId != this.currentChatRoom.ChatRoomId) {
+        this.showSearchBar = false;
+        this.currenResult = 0;
+        this.totalResult = 0;
+        this.searchValue = '';
+        this._dataShareService.updateSearchValue(this.searchValue);
+        this.previousChatRoom = this.currentChatRoom;
+      }
+      else
+      {
+        this.previousChatRoom = this.currentChatRoom;
+      }
+    });
+  }
+
+  //get total search result
+  GetTotalSearchMessageResult(): void
+  {
     this._dataShareService.totalSearchMessageResult.subscribe(value => {
       this.totalResult = value;
       if (this.totalResult > 0) {
@@ -144,6 +165,7 @@ export class ChatHeaderComponent implements OnInit {
     this.updateQuitGroup();
   }
 
+  
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown; // Toggle the visibility of the dropdown
   }
@@ -259,6 +281,7 @@ export class ChatHeaderComponent implements OnInit {
     this.isVisibleDeleteFriendModal = true;
   }
 
+  //delete friend service
   Delete(userId: number): void {
 
     this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.currentChatRoom.InitiatedBy).subscribe({
@@ -347,8 +370,10 @@ export class ChatHeaderComponent implements OnInit {
     }
   }
 
-  truncateGroupChatRoomName(ChatRoom: ChatListVM): string {
-    if (!ChatRoom.RoomType) {
+
+  truncateGroupChatRoomName(ChatRoom:ChatListVM):string{
+    if(!ChatRoom.RoomType)
+    {
       return ChatRoom.ChatRoomName
     }
     else
