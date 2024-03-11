@@ -86,6 +86,19 @@
     </ng-container>
   </nz-modal>
 
+  <!-- Modal 3: Add user Modal -->
+  <nz-modal [(nzVisible)]="isVisibleAddUserModal" nzTitle="Add users" (nzOnCancel)="handleCancelAddUser()"
+    (nzOnOk)="handleOkAddUser()">
+    <ng-container *nzModalContent>
+      <nz-select id="privateChatUsers" style="width: 100%;" nzMode="multiple" [(ngModel)]="selectedUsers" >
+        <nz-option *ngFor="let user of friendList" [nzLabel]="user.ChatRoomName" [nzValue]="user.UserId">
+          <img [src]="user.ProfilePicture" alt="Profile Image" class="profile-image">
+
+        </nz-option>  
+      </nz-select>
+    </ng-container>
+  </nz-modal>
+
   <!-- Dropdown Menu For INITIATED BY USER -->
   <div *ngIf="currentChatRoom.RoomType == true">
     <button nz-button nz-dropdown [nzDropdownMenu]="dropdownMenu" class="dropdown-button"
@@ -94,9 +107,10 @@
     </button>
     <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
-        <li nz-menu-item (click)="showModalRemoveUser()">Remove User</li>
         <li nz-menu-item (click)="Search(currentChatRoom.ChatRoomId)">Search Message</li>
+        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
+        <li nz-menu-item (click)="showModalAddUser()">Add User</li>
+        <li nz-menu-item (click)="showModalRemoveUser()">Remove User</li>
         <li nz-menu-item (click)="ExitGroup()">Quit</li>
       </ul>
     </nz-dropdown-menu>
@@ -107,8 +121,8 @@
     </button>
     <nz-dropdown-menu #dropdownMenuMember="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
         <li nz-menu-item (click)="Search(currentChatRoom.ChatRoomId)">Search Message</li>
+        <li nz-menu-item (click)="toggleModal()">Group Profile</li>
         <li nz-menu-item (click)="ExitGroup()">Quit</li>
       </ul>
     </nz-dropdown-menu>
@@ -125,7 +139,6 @@
       </ul>
     </nz-dropdown-menu>
   </div>
-  <!-- Modal 3: Remove User Confirmation Modal -->
 
 </div>
 
@@ -161,7 +174,8 @@
 </span>
 
 <!-- Group Profile Modal -->
-<nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnCancel)="toggleModal()" (nzOnOk) = "toggleModal()">
+<nz-modal [(nzVisible)]="showModal" nzTitle="Group Profile" (nzOnOk)="handleCancelGroupProfile()" (nzOnCancel)="handleCancelGroupProfile()">
+  
   <ng-container *nzModalContent>
     <!-- Group Picture with Edit Icon -->
     <div class="profile-picture-overlay">

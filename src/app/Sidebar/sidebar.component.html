@@ -29,9 +29,8 @@
     <!-- Header Start-->
     <nz-header>
       <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-          <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
-          
+        <span class="sidebar" (click)="isCollapsed = !isCollapsed">
+          <span class="sidebar-icon" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"></span>
         </span>
         <span><app-logout></app-logout></span>
       </div>

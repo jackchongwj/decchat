@@ -30,6 +30,7 @@ export class TokenService {
     return this.http.post< TokenResponse >(`${TokenUrl}RenewToken`, {}, { withCredentials: true })
       .pipe(
         map(response => {
+          console.log(response)
           const newToken = response.AccessToken;
           if (newToken) {
             this.setToken(newToken);

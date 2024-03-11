@@ -20,16 +20,21 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'moduleProj'`, () => {
+  it(`should have as title 'DEChat'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('moduleProj');
+    expect(app.title).toEqual('DEChat');
   });
 
-  it('should render title', () => {
+  it('should only contain <router-outlet> tag', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, moduleProj');
+
+    const appElement: HTMLElement = fixture.nativeElement;
+    const childElements = appElement.children;
+
+    expect(childElements.length).toEqual(1);
+    expect(childElements[0].tagName.toLowerCase()).toEqual('router-outlet');
   });
+
 });

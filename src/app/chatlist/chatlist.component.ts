@@ -73,7 +73,7 @@ export class ChatlistComponent implements OnInit {
       });
   }
   
-  private RetrieveChatlist() : void
+  private RetrieveChatlist() : void //
   {
     this.signalRService.retrieveChatlistListener()
     .subscribe((chats: ChatListVM[]) => {
@@ -82,12 +82,13 @@ export class ChatlistComponent implements OnInit {
     });
   }
 
-  private updateGroupChatList(): void {
+  private updateGroupChatList(): void {  //signalR at the sidebar
     this.signalRService.removeUserListener()
       .subscribe(({ chatRoomId, userId }) => {
         if (this.userId == userId) {
           this.groupChat = this.groupChat.filter(chat => chat.ChatRoomId != chatRoomId);
           this.dataShareService.clearSelectedChatRoom(this.isSelectedData);
+          
         }
       });
   }

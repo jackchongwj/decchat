@@ -18,7 +18,7 @@
   overflow-y: auto;
 }
 
-.header-trigger {
+.sidebar {
   display: flex;
   align-items: center;
   height: 100%;
@@ -37,7 +37,7 @@ app-logout{
   cursor: pointer;
 }
 
-.trigger:hover {
+.sidebar-icon:hover {
   color: #1890ff;
 }
 
@@ -95,6 +95,7 @@ nz-content {
   background: #fff;
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%; 
   border-radius: 20px;
   border: 1px solid black;
@@ -103,10 +104,6 @@ nz-content {
 
 .message-layout{
   height: 100%;
-}
-
-app-user-login-page {
-  flex-grow: 1;
 }
 
 app-chatroomdisplay{
@@ -174,20 +171,4 @@ img {
 
 .search-button-collapsed .search-icon {
   margin: auto; /* This centers the icon horizontally */
-}
-
-app-user-login-page{
-  background-image: url('/assets/loginpage.jpg');
-  
-  background-color: rgba(255, 255, 255, 0.5);
-
-  /* Use background-blend-mode to define the blending effect */
-  background-blend-mode: multiply; 
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat; 
-  
-  width: 100%;
-  height: 400px;
-  border-radius: 20px;
 }
