@@ -17,14 +17,6 @@ export class ChatlistService {
 
   constructor(private http: HttpClient) { }
 
-  getChatListByUserId(userid: number): Observable<any> {
-    // Construct HttpParams object with userId parameter
-    const params = new HttpParams().set('userId', userid);
-
-    // Use params object in the request
-    return this.http.get(`${this.url}RetrieveChatListByUser`, { params: params, withCredentials: true });
-  }
-
   createNewGroup(group: Group): Observable<any> {
     // Create data object from Group properties
     const data = {
@@ -37,11 +29,13 @@ export class ChatlistService {
 
 
   addMemberToGroup(addMember: AddMember): Observable<any> {
-    return this.http.post(`${this.chatRoomUrl}AddMembersToGroup`, addMember);
+    let params = new HttpParams().set('timestamp',new Date().toString());
+    return this.http.post(`${this.chatRoomUrl}AddMembersToGroup`, addMember, { withCredentials: true });
   }
 
-  RetrieveChatListByUser(userID: number): Observable<any> {
-    const params = new HttpParams().set('userId', userID.toString()).set('timestamp',new Date().toString());
-    return this.http.get(`${this.url}RetrieveChatListByUser`,{ params , withCredentials: true });
+  RetrieveChatListByUser(): Observable<any> {
+    let params = new HttpParams().set('timestamp',new Date().toString());
+
+    return this.http.get(`${this.url}RetrieveChatListByUser`,{ withCredentials: true });
   }
 }

@@ -36,7 +36,7 @@ export class AddfriendComponent implements OnInit {
   @Input() isCollapsed: boolean = false;
 
   ngOnInit(): void {
-    this.usersService.getFriendRequest(this.userId)
+    this.usersService.getFriendRequest()
       .subscribe(response => {
         this.getFriendRequest = response;
       });
@@ -79,7 +79,7 @@ export class AddfriendComponent implements OnInit {
   //service
   private UpdateFriendRequest(FRequest: FriendRequest): void {
 
-    this.friendService.UpdateFriendRequest(FRequest, this.userId)
+    this.friendService.UpdateFriendRequest(FRequest)
       .subscribe(response => {
         this.getFriendRequest = this.getFriendRequest.filter(User => User.UserId != FRequest.SenderId)
       });

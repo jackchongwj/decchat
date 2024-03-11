@@ -88,7 +88,7 @@ export class CreategroupComponent implements OnInit {
   }
 
   getFriendList() { 
-    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+    this.chatlistService.RetrieveChatListByUser().pipe(
       tap(),
     ).subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);

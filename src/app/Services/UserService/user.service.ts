@@ -13,39 +13,34 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getSearch(searchValue: string, userId: Number): Observable<any> {
-    const params = new HttpParams().set('profileName', searchValue).set('userId',userId.toString());
+  getSearch(searchValue: string): Observable<any> {
+    const params = new HttpParams().set('profileName', searchValue);
     return this.http.get(`${UserUrl}Search`, {params, withCredentials: true})
   }
 
-  getFriendRequest(userId: Number): Observable<any>
+  getFriendRequest(): Observable<any>
   {
-    const params = new HttpParams().set('userId',userId.toString());
-    return this.http.get(`${UserUrl}FriendRequest`, {params, withCredentials: true})
+    return this.http.get(`${UserUrl}FriendRequest`, { withCredentials: true})
   }
 
-  getUserById(id: number): Observable<any> {
+  getUserById(): Observable<any> {
     return this.http.get(`${UserUrl}UserDetails`, {withCredentials: true});
   }
 
-  updateProfileName(id: number, newProfileName: string): Observable<any> {
-    const params = { id, newProfileName }; // Create a body object directly
+  updateProfileName(newProfileName: string): Observable<any> {
+    const params = { newProfileName }; // Create a body object directly
     return this.http.post(`${UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
-  updateProfilePicture(userId: number, file: File): Observable<any> {
+  updateProfilePicture(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file, file.name);
-    formData.append('id', userId.toString());
     const params = { formData };
     return this.http.post<any>(`${UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
   }
   
-  deleteUser(id: number): Observable<any> {
-    const params = new HttpParams().set('id', id);
-    return this.http.post(`${UserUrl}UserDeletion?id=${id}`, {} , { withCredentials: true });
+  deleteUser(): Observable<any> {
+    return this.http.post(`${UserUrl}UserDeletion`, {} , { withCredentials: true });
   }
 
-  
-  
 }

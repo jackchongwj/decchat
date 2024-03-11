@@ -75,7 +75,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   saveProfileName(): void {
-    this.userService.updateProfileName(this.userId, this.User.ProfileName).subscribe({
+    this.userService.updateProfileName(this.User.ProfileName).subscribe({
       next: () => {
         this.editMode = false; // Exit edit mode
       },
@@ -87,7 +87,7 @@ export class UserProfileComponent implements OnInit {
 
   saveProfilePicture(): void {
     if (this.selectedFile && this.userId) {
-      this.userService.updateProfilePicture(this.userId, this.selectedFile).subscribe({
+      this.userService.updateProfilePicture(this.selectedFile).subscribe({
         next: () => {
           this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png';
           this.previewImageUrl = null;
@@ -107,7 +107,7 @@ export class UserProfileComponent implements OnInit {
       return;
     }
 
-    this.userService.getUserById(this.userId).subscribe({
+    this.userService.getUserById().subscribe({
       next: (data) => {
         this.User = data;
         this.dsService.updateLoginUserPN(data.ProfileName);
@@ -119,7 +119,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   deleteAccount() {
-    this.userService.deleteUser(this.userId).subscribe({
+    this.userService.deleteUser().subscribe({
       next: () => {
 
         this.showDeleteConfirm = false;

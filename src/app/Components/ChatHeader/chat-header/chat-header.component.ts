@@ -188,7 +188,7 @@ export class ChatHeaderComponent implements OnInit {
   toggleModal(): void {
     this.showModal = true;
 
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId).pipe(
     ).subscribe(groupMembers => {
       this.groupMembers = groupMembers;
     });
@@ -261,7 +261,7 @@ export class ChatHeaderComponent implements OnInit {
 
   Delete(userId: number): void {
 
-    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.currentChatRoom.InitiatedBy, this.userId).subscribe({
+    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.currentChatRoom.InitiatedBy).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
         this.message.success('User removed successfully');
@@ -358,7 +358,7 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   ExitGroup(): void {
-    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
+    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
         this.message.success('Group quit successfully');
@@ -379,7 +379,7 @@ export class ChatHeaderComponent implements OnInit {
   showModalRemoveUser(): void {
     this.isVisibleRemoveUserModal = true;
 
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId).pipe(
     ).subscribe(groupMembers => {
 
       this.groupMembers = groupMembers;
@@ -404,7 +404,7 @@ export class ChatHeaderComponent implements OnInit {
         // Handle the response from the backend if needed
         this.message.success('User added successfully');
         this.selectedUsers = [];
-
+        this.friendList = [];
       },
       error: (error) => {
         console.log('Error from the backend:', error);
@@ -415,25 +415,24 @@ export class ChatHeaderComponent implements OnInit {
   handleCancelAddUser(): void {
     this.isVisibleAddUserModal = false;
     this.selectedUsers = [];
-
   }
 
   getFilteredUsers(): void {
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
-    ).subscribe(groupMembers => {
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId)
+    .pipe(
+      switchMap(groupMembers => {
+        this.groupMembers = groupMembers;
+        this.groupMembers = this.groupMembers.filter(member => member.UserId !== this.userId);
+        this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
+        console.log("get current group members", this.groupMemberUserIds);
 
-      this.groupMembers = groupMembers;
-      this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
-
-      this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
-    });
-
-    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
-      tap(),
-    ).subscribe((chats: ChatListVM[]) => {
+        return this.chatlistService.RetrieveChatListByUser();
+      }),
+    )
+    .subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.friendList = this.privateChat.filter((chat) => !this.groupMemberUserIds.includes(chat.UserId));
+      console.log("Again retrieve chat list", this.friendList);
     });
-
   }
 }

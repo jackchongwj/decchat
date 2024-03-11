@@ -39,7 +39,7 @@ export class SearchbarComponent implements OnInit {
   ngOnInit(): void {
     this.searchSubject.pipe(
       debounceTime(300),
-      switchMap(searchValue => searchValue !== '' ? this.search.getSearch(searchValue, this.userId) : of([]))
+      switchMap(searchValue => searchValue !== '' ? this.search.getSearch(searchValue) : of([]))
     ).subscribe(response => {
       this.searchResult = response;
     });
