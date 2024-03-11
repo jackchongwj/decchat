@@ -23,7 +23,7 @@ export class HomepageComponent implements OnDestroy,OnInit{
   ngOnInit(): void{
     
     if (!isNaN(this.userId) && this.userId != 0){
-      this.signalRService.startConnection(this.userId);
+      this.signalRService.startConnection();
     }
 
 
