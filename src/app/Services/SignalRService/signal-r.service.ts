@@ -33,13 +33,14 @@ export class SignalRService {
 
 
 
-  private buildConnection = (Id:number) => {
+  private buildConnection = () => {
+    const accessToken = this.tokenService.getToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https, {
-                            accessTokenFactory: () => {
-                              const token = this.tokenService.getToken();
-                              return token ? token : '';
+                            transport: signalR.HttpTransportType.LongPolling,
+                            headers:{
+                              Authorization: `Bearer ${accessToken}`
                             }
                           })
                           .build();
@@ -51,9 +52,8 @@ export class SignalRService {
                           });
   }
 
-  public startConnection(Id: number): Promise<void> {
-    if (!isNaN(Id) && Id != 0) {
-      this.buildConnection(Id);
+  public startConnection(): Promise<void> {
+      this.buildConnection();
 
       const checkAndReconnect = async (): Promise<void> => {
         //avoid the disconnet reconnect again
@@ -82,9 +82,6 @@ export class SignalRService {
       }, 3000);
 
       return Promise.resolve();
-    } else {
-      return Promise.reject("Invalid ID");
-    }
   }
 
   public stopConnection(): Promise<void> {
@@ -93,8 +90,7 @@ export class SignalRService {
 
     return this.hubConnection.stop()
       .then(() => {
-        this.isSignalRConnected = false;
-        this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+        this._dataShareService.updateSignalRConnectionStatus(false);
         console.log('SignalR connection closed');
       })
       .catch(err => console.error('Error while closing connection'))

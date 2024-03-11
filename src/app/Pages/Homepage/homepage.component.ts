@@ -9,6 +9,7 @@ import { SignalRService } from '../../Services/SignalRService/signal-r.service';
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
+
 export class HomepageComponent implements OnDestroy,OnInit{
 
   constructor(
@@ -23,7 +24,7 @@ export class HomepageComponent implements OnDestroy,OnInit{
   ngOnInit(): void{
     
     if (!isNaN(this.userId) && this.userId != 0){
-      this.signalRService.startConnection(this.userId);
+      this.signalRService.startConnection();
     }
 
 

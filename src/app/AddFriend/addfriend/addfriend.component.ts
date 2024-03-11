@@ -51,7 +51,7 @@ export class AddfriendComponent implements OnInit {
       });
 
       this.request = {
-        ReceiverId: this.userId,
+        ReceiverId: 0,
         SenderId: senderId,
         Status: 2
       };
@@ -64,7 +64,7 @@ export class AddfriendComponent implements OnInit {
   rejectFriendRequest(senderId: number): void {
     
     this.request = {
-      ReceiverId: this.userId,
+      ReceiverId: 0,
       SenderId: senderId,
       Status: 3
     };

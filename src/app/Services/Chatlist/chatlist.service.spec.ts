@@ -40,7 +40,7 @@ describe('ChatlistService', () => {
       IsOnline: true
     };
 
-    service.getChatListByUserId(userId).subscribe();
+    service.RetrieveChatListByUser().subscribe();
 
     const req = httpTestingController.expectOne(`${service['url']}RetrieveChatListByUser?userId=${userId}`);
     expect(req.request.method).toEqual('GET');

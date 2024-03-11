@@ -253,7 +253,7 @@ export class ChatHeaderComponent implements OnInit {
   DeleteFriend(): void {
     this.request = {
       ChatRoomId: this.currentChatRoom.ChatRoomId,
-      UserId1: this.userId1,
+      UserId1: 0,
       UserId2: this.currentChatRoom.UserId
     };
 

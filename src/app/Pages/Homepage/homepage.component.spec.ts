@@ -55,7 +55,7 @@ describe('HomepageComponent', () => {
   // Test start connection for valid user Id
   it('should start SignalR connection if userId is valid', () => {
     component.ngOnInit();
-    expect(mockSignalRService.startConnection).toHaveBeenCalledWith(123);
+    expect(mockSignalRService.startConnection).toHaveBeenCalledWith();
   });
 
   it('should update isSignalRConnection based on DataShareService, case: true', () => {
