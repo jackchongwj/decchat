@@ -128,7 +128,7 @@ export class UserProfileComponent implements OnInit {
       this.message.error('Profile name must be at least 2 characters long.');
       return;
     }
-    this.userService.updateProfileName(this.userId, this.User.ProfileName).subscribe({
+    this.userService.updateProfileName(this.User.ProfileName).subscribe({
       next: () => {
         this.editMode = false;
         this.message.success('Profile name updated');
@@ -142,7 +142,7 @@ export class UserProfileComponent implements OnInit {
   saveProfilePicture(): void {
     if (this.selectedFile && this.userId) {
       this.isUploading = true;
-      this.userService.updateProfilePicture(this.userId, this.selectedFile).subscribe({
+      this.userService.updateProfilePicture(this.selectedFile).subscribe({
         next: () => {
           this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png';
           this.previewImageUrl = null;
@@ -178,7 +178,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   deleteAccount() {
-    this.userService.deleteUser(this.userId).subscribe({
+    this.userService.deleteUser().subscribe({
       next: () => {
 
         this.showDeleteConfirm = false;
@@ -203,7 +203,6 @@ export class UserProfileComponent implements OnInit {
   
   cancelPreview() {
     this.previewImageUrl = null;
-    
     this.selectedFile = null;
   }
 
