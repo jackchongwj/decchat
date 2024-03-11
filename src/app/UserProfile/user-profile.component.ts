@@ -24,8 +24,9 @@ export class UserProfileComponent implements OnInit {
   @Input() isCollapsed: boolean = false;
   selectedFile: File | null = null;
   previewImageUrl: string | null = null;
-  
+  originalProfileName: string = '';
   showDeleteConfirm = false;
+  isUploading: boolean = false;
 
   constructor(
     private userService: UserService, 
@@ -44,40 +45,93 @@ export class UserProfileComponent implements OnInit {
   }
   
   toggleEditMode() {
+    if (!this.editMode) {
+      this.originalProfileName = this.User.ProfileName;
+    }
     this.editMode = !this.editMode;
   }
 
   onFileSelected(event: Event) {
     const element = event.currentTarget as HTMLInputElement;
     let fileList: FileList | null = element.files;
-    if (fileList && fileList.length > 0) {
-      this.selectedFile = fileList[0];
-
-      if(this.isImage(this.selectedFile.name))
-      {
+      if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+  
+      if (file.size > 7 * 1024 * 1024) {
+        this.message.error("The file is too large. Please upload an image that is 7MB or smaller.");
+        return;
+      }
+  
+      if (this.isImage(file.name)) {
+        if (this.previewImageUrl) {
+          URL.revokeObjectURL(this.previewImageUrl);
+          this.previewImageUrl = null;
+        }
+        // Validate if it's a real image
+        const img = new Image();
+        img.onload = () => {
+          this.previewImageUrl = URL.createObjectURL(file);
+          this.selectedFile = file; 
+        };
+        img.onerror = () => {
+          this.message.error("The file is not a valid image.");
+        };
+        
         // Use FileReader to read the file for preview
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
-          this.previewImageUrl = e.target?.result as string; 
+          img.src = e.target?.result as string; // Trigger load for validation
         };
-        reader.readAsDataURL(this.selectedFile);
+        reader.readAsDataURL(file);
+      } else {
+        this.message.error("Invalid file format uploaded.");
       }
-      else
-      {
-        this.message.error("Invalid File Format Uploaded");
-      }
-   
+      // Clear the input to ensure change event fires even if the same file is selected again
+      element.value = '';
     }
   }
 
+  // onFileSelected(event: Event) {
+  //   const element = event.currentTarget as HTMLInputElement;
+  //   let fileList: FileList | null = element.files;
+  //   if (fileList && fileList.length > 0) {
+  //     const file = fileList[0];
+  
+  //     // Check if the file size is larger than 7MB (7 * 1024 * 1024 bytes)
+  //     if (file.size > 7 * 1024 * 1024) {
+  //       this.message.error("The file is too large. Please upload an image that is 7MB or smaller.");
+  //       return; // Exit the function if the file is too large
+  //     }
+  
+  //     if (this.isImage(file.name)) {
+  //       // Use FileReader to read the file for preview
+  //       const reader = new FileReader();
+  //       reader.onload = (e: ProgressEvent<FileReader>) => {
+  //         this.previewImageUrl = e.target?.result as string;
+  //       };
+  //       reader.readAsDataURL(file);
+  //       this.selectedFile = file; // Set the selected file only if it's within the size limit
+  //     } else {
+  //       this.message.error("Invalid file format uploaded.");
+  //     }
+  //   }
+  // }
+
   isImage(fileName: string): boolean {
-    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
+    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp|gif)$/i.test(fileName);
   }
 
   saveProfileName(): void {
+    this.User.ProfileName = this.User.ProfileName.trim();
+
+    if (this.User.ProfileName.length < 2) {
+      this.message.error('Profile name must be at least 2 characters long.');
+      return;
+    }
     this.userService.updateProfileName(this.userId, this.User.ProfileName).subscribe({
       next: () => {
-        this.editMode = false; // Exit edit mode
+        this.editMode = false;
+        this.message.success('Profile name updated');
       },
       error: (error) => {
         console.error('Error updating profile name:', error);
@@ -87,15 +141,20 @@ export class UserProfileComponent implements OnInit {
 
   saveProfilePicture(): void {
     if (this.selectedFile && this.userId) {
+      this.isUploading = true;
       this.userService.updateProfilePicture(this.userId, this.selectedFile).subscribe({
         next: () => {
           this.User.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png';
           this.previewImageUrl = null;
           this.showEditIcon = false;
           this.editMode = false;
+          this.message.success('Profile picture updated');
+          this.isUploading = false;
         },
         error: (error) => {
           console.error('Error uploading file:', error);
+          this.message.error('Error uploading file:');
+          this.isUploading = false;
         }
       });
     }
@@ -149,8 +208,9 @@ export class UserProfileComponent implements OnInit {
   }
 
   cancelEdit(): void {
+    this.User.ProfileName = this.originalProfileName;
     this.editMode = false;
-  }  
+  }
 
   changePassword() {
     this.router.navigate(['/change-password'], { state: { userId: this.userId } });

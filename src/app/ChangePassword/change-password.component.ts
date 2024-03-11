@@ -69,22 +69,18 @@ export class ChangePasswordComponent {
       const passwordChangeData: PasswordChange = {
         currentPassword: this.changePasswordForm.value.currentPassword,
         newPassword: this.changePasswordForm.value.newPassword,
-        // Include any additional fields required by your PasswordChange model
       };
   
       this.authService.changePassword(this.userId, passwordChangeData).subscribe({
         next: () => {
           this.message.create('success', 'Password successfully changed');
           this.router.navigate(['/dashboard']);
-          // You might want to navigate the user or reset the form here
         },
         error: error => {
           this.message.create('error', `Incorrect Current Password`);
-          // Handle your error state here
         }
       });
     } else {
-      // Trigger validation for all form fields
       Object.values(this.changePasswordForm.controls).forEach(control => {
         if (control instanceof FormControl) {
           control.markAsTouched();
@@ -95,6 +91,6 @@ export class ChangePasswordComponent {
   
 
   goBack() {
-    this.router.navigate(['/dashboard']); // Or use this.router.navigateByUrl('/') for a similar effect
+    this.router.navigate(['/dashboard']);
   }
 }

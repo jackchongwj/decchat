@@ -7,7 +7,6 @@
 
 .user-profile-image {
   margin-right: 10px;
-  cursor:pointer;
 }
 
 .user-profile-image nz-avatar {
@@ -20,12 +19,13 @@
 
 .user-profile-name h1 {
   margin: 0;
-  font-size: 16px; /* Adjust the font size as needed */
-  color: rgb(242, 247, 243); /* Dark text color for readability */
-  font-weight: 500; /* Medium font weight */
-  white-space: nowrap; /* Prevents the name from wrapping */
-  overflow: hidden; /* Hide overflow */
-  text-overflow: ellipsis; /* Add ellipsis for long names */
+  font-size: 16px; 
+  color: #FFFFFF; 
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  font-weight: 500; 
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
 }
 
 /* Modal content */
@@ -119,5 +119,28 @@ nz-button {
   justify-content: center; 
   flex-direction: column;
   align-items: center; 
+}
+
+.alert.alert-danger {
+  text-align: center; /* Centers the text inside the alert */
+  display: block; /* Ensures it's a block-level element */
+  clear: both; /* Ensures it will appear below the input if the input is floated */
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  padding: .75rem 1.25rem;
+  margin-top: .25rem;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  width: 100%; /* Ensures the alert takes the full width of its container */
+  box-sizing: border-box; /* Makes sure padding and border are included in the width */
+}
+
+
+/* If using flex in .profile-name-edit, ensure it allows the alert to wrap under the input */
+.profile-name-edit {
+  display: flex;
+  flex-direction: column; /* This stacks children vertically */
+  align-items: flex-start; /* Aligns children to the start of the flex container */
 }
 
