@@ -24,20 +24,19 @@ export class AuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> {
-    const token = this.tokenService.getToken();
+    const accessToken = this.tokenService.getAccessToken();
+    const refreshToken = this.tokenService.getRefreshToken();
     const isLoginPage = state.url.includes('/login') || state.url === '/';
 
-    if (!token) {
-      // No token available, handle accordingly
+    // If refresh token not available, redirect to login
+    if (!refreshToken) {
       return this.handleNoToken(isLoginPage, state.url);
     }
-
-    const tokenIsValid = !this.jwtHelper.isTokenExpired(token);
-    if (tokenIsValid) {
-      // Token is valid, handle accordingly
-      return this.handleValidToken(isLoginPage);
-    } else {
-      // Token is invalid or expired, attempt to renew it
+    
+    // Treat no accessToken or invalid accessToken the same way
+    const tokenIsValid = accessToken && !this.jwtHelper.isTokenExpired(accessToken);
+    if (!tokenIsValid) {
+      // Token is invalid, expired, or missing; attempt to renew it
       return this.tokenService.renewToken().pipe(
         switchMap(newToken => {
           if (newToken) {
@@ -53,6 +52,9 @@ export class AuthGuard implements CanActivate {
           return this.handleRedirect(isLoginPage, state.url);
         })
       );
+    } else {
+      // Token is valid, handle accordingly
+      return this.handleValidToken(isLoginPage);
     }
   }
 
