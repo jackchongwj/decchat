@@ -18,7 +18,7 @@ export class HomepageComponent implements OnDestroy,OnInit{
   {}
 
   isSignalRConnection : boolean = false
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  private userId: number = this.localStorage.getUserId();
   
   ngOnInit(): void{
     

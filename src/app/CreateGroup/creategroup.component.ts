@@ -25,7 +25,7 @@ export class CreategroupComponent implements OnInit {
   // privateChat: ChatListVM[] = [];
   roomName: string = '';
   selectedUsers: number[] = []; // Use an array to store selected user IDs
-  InitiatedBy = Number(this.localStorage.getItem("userId"));
+  InitiatedBy = this.localStorage.getUserId();
   groupChats: any[] = [];
   @Input() isCollapsed: boolean = false;
 
@@ -36,7 +36,7 @@ export class CreategroupComponent implements OnInit {
     private message: NzMessageService // Inject NzMessageService
   ) { }
 
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  private userId: number = this.localStorage.getUserId();
 
   ngOnInit(): void { 
   }
@@ -88,7 +88,7 @@ export class CreategroupComponent implements OnInit {
   }
 
   getFriendList() { 
-    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+    this.chatlistService.RetrieveChatListByUser().pipe(
       tap(),
     ).subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
