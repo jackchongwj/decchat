@@ -4,6 +4,8 @@ import { MessageExtraFuncComponent } from './message-extra-func.component';
 import { MessageService } from '../../../Services/MessageService/message.service';
 import { ChatRoomMessages } from '../../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { of, throwError } from 'rxjs';
+import { ImportNgZorroAntdModule } from '../../../ng-zorro-antd.module';
+import { EditMessage } from '../../../Models/DTO/EditMessage/edit-message';
 
 describe('MessageExtraFuncComponent', () => {
   let component: MessageExtraFuncComponent;
@@ -15,6 +17,7 @@ describe('MessageExtraFuncComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [MessageExtraFuncComponent],
+      imports:[ImportNgZorroAntdModule],
       providers:[
         {provide: MessageService, useValue:MockMessageService}
       ]
@@ -62,31 +65,46 @@ describe('MessageExtraFuncComponent', () => {
 
   it('should call editMessage on service when handleEditModalOk is called with changed content', () => {
     component.newMessageContent = 'Updated content';
-    MockMessageService.editMessage.and.returnValue(of({} as ChatRoomMessages));
+
+    const editMessage: EditMessage = {
+      ChatRoomId: component.messageData.ChatRoomId,
+      Content: component.newMessageContent,
+      MessageId: component.messageData.MessageId
+    };
+    
+    MockMessageService.editMessage.and.returnValue(of(editMessage));
+    component.handleEditModalOk();
+
+    expect(MockMessageService.editMessage).toHaveBeenCalledWith(editMessage);
+
+  });
+
+  it('should not call editMessage if content is unchanged', () => {
+    component.newMessageContent = component.messageData.Content; // No change in content
 
     component.handleEditModalOk();
 
-    // expect(MockMessageService.editMessage).toHaveBeenCalledWith({
-    //   MessageId: 1,
-    //   ChatRoomId: 1,
-    //   Content: 'Updated content'
-    // });
+    expect(MockMessageService.editMessage).not.toHaveBeenCalled();
   });
 
-  it('should handle delete visibility', () => {
+  it('should handle delete visibility, case: true', () => {
     component.OpenDeleteMessage();
     expect(component.deleteIsVisible).toBeTrue();
+  });
 
+  it('should handle delete visibility, case: false', () => {
     component.handleDeleteModalCancel();
     expect(component.deleteIsVisible).toBeFalse();
   });
 
   it('should call deleteMessage on service when handleDeleteModalOk is called', () => {
-    MockMessageService.deleteMessage.and.returnValue(of(1));
+    const messageId = component.messageData.MessageId;
+    const chatRoomId = component.messageData.ChatRoomId;
+    MockMessageService.deleteMessage.and.returnValue(of(1)); 
 
     component.handleDeleteModalOk();
 
-    expect(MockMessageService.deleteMessage).toHaveBeenCalledWith(1, 1);
+    expect(MockMessageService.deleteMessage).toHaveBeenCalledWith(messageId!, chatRoomId);
   });
 
   // Error handling scenarios
