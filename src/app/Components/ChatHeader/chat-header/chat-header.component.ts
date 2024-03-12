@@ -436,7 +436,7 @@ export class ChatHeaderComponent implements OnInit {
       }
     });
   }
-
+  
   handleCancelAddUser(): void {
     this.isVisibleAddUserModal = false;
     this.selectedUsers = [];
