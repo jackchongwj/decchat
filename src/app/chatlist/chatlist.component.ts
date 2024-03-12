@@ -7,7 +7,7 @@ import { ChatlistService } from '../Services/Chatlist/chatlist.service';
 import { Group } from '../Models/DTO/Group/group';
 import { UserProfileUpdate } from '../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../Models/DTO/GroupProfileUpdate/group-profile-update';
-
+import { ChatRoomMessages } from '../Models/DTO/ChatRoomMessages/chatroommessages';
 
 @Component({
   selector: 'app-chatlist',
