@@ -156,7 +156,6 @@ export class MessageboxComponent implements OnInit, OnDestroy {
     // HTTP Client
     this._mService.sendMessage(formData).subscribe({
       next: (res: ChatRoomMessages) => {
-        console.log(res);
         // Limit message send rate
         this.sendCooldownOn = true; // Activate cooldown
         setTimeout(() => this.sendCooldownOn = false, 1000);

@@ -3,7 +3,6 @@ import * as signalR from '@microsoft/signalr';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
-import { LocalstorageService } from '../LocalStorage/local-storage.service';
 import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
@@ -11,7 +10,6 @@ import { User } from '../../Models/User/user';
 import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
 import { DataShareService } from '../ShareDate/data-share.service';
-import { AddMember } from '../../Models/DTO/AddMember/add-member';
 import { TokenService } from '../../Services/Token/token.service';
 
 @Injectable({
@@ -37,10 +35,9 @@ export class SignalRService {
     const accessToken = this.tokenService.getAccessToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(this.https, {
-                            headers:{
-                              Authorization: `Bearer ${accessToken}`
-                            }
+                          .withUrl(`${this.https}?access_token=${accessToken}`, {
+                            skipNegotiation: true,
+                            transport: signalR.HttpTransportType.WebSockets
                           })
                           .build();
 
