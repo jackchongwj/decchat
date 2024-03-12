@@ -32,7 +32,7 @@ import { MessageExtraFuncComponent } from './Components/Message-Additional/messa
 import { SpinComponent } from './Loading/spin/spin.component';
 import { NZ_ICONS, NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
-import { MenuFoldOutline, MenuUnfoldOutline } from '@ant-design/icons-angular/icons';
+import { MenuFoldOutline, MenuUnfoldOutline, LockOutline, UserOutline } from '@ant-design/icons-angular/icons';
 
 const icons: IconDefinition[] = [ MenuFoldOutline, MenuUnfoldOutline ];
 
@@ -72,14 +72,15 @@ registerLocaleData(ms);
     BrowserAnimationsModule,
     ImportNgZorroAntdModule,
     ReactiveFormsModule,
-    NzIconModule.forChild(icons)
+    NzIconModule
   ],
   
   
   providers: [
     provideClientHydration(),
     { provide: NZ_I18N, useValue: en_US },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: NZ_ICONS, useValue: [LockOutline, UserOutline] }
   ],
   bootstrap: [AppComponent]
 })

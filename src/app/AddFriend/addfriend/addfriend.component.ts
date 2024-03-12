@@ -26,7 +26,7 @@ export class AddfriendComponent implements OnInit {
   { }
 
   isVisible = false;
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  private userId: number = this.localStorage.getUserId();
 
   requestStates = new Map<string, boolean>();
   getFriendRequest: User[] = [];

@@ -27,7 +27,7 @@ export class ChatHeaderComponent implements OnInit {
   isVisibleDeleteFriendModal: boolean = false; // Visibility property for Delete Friend modal
   isVisibleRemoveUserModal: boolean = false; // Visibility property for Remove User modal
   isVisible: boolean = false;
-  userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  userId: number = this.localStorage.getUserId();
   groupMembers: GroupMemberList[] = [];
   groupChat: ChatListVM[] = [];
   privateChat: ChatListVM[] = [];
@@ -51,7 +51,7 @@ export class ChatHeaderComponent implements OnInit {
 
   ) { }
 
-  private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
+  private userId1: number = this.localStorage.getUserId();
   private searchSubject: Subject<string> = new Subject<string>()
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   currentChatRoom = {} as ChatListVM;
