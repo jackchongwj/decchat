@@ -11,7 +11,6 @@ export class ChatListVM {
         public InitiatedBy:number = 0,
         public InitiatorProfileName: string = '',
         public IsOnline: boolean = false,
-        public UnreadCount: number = 0
     ){}
 }
 
