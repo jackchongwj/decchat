@@ -337,8 +337,6 @@ export class RegisterComponent {
       this.authService.register(registrationData).subscribe({
         next: (res) => {
           this.isLoading = false;
-          
-          // console.log('Registration successful!', res);
           this.message.success(res.Message || 'Registration successful!');
           this.router.navigate(['/login']);
         },

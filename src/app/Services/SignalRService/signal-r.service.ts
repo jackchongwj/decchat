@@ -34,11 +34,10 @@ export class SignalRService {
 
 
   private buildConnection = () => {
-    const accessToken = this.tokenService.getToken();
+    const accessToken = this.tokenService.getAccessToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https, {
-                            transport: signalR.HttpTransportType.LongPolling,
                             headers:{
                               Authorization: `Bearer ${accessToken}`
                             }
@@ -232,7 +231,6 @@ export class SignalRService {
         this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM[]) => {
         this.ngZone.run(() => {
           observer.next(chatListVM); // Emit the roomName to observers]
-          console.log("addnewgrplistern: -signalrservice", chatListVM)
         });       
         });
       }
