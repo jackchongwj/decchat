@@ -29,7 +29,7 @@ export class MessageboxComponent implements OnInit, OnDestroy {
     private _msgBox: NzMessageService) { }
 
   // Current User
-  userId: number = Number(this._lsService.getItem("userId"));
+  userId: number = this._lsService.getUserId();
   currentUserChatRoomId: number = 0;
   currentChatRoom: number = 0;
   currentUserPN: string = "";

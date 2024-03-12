@@ -27,7 +27,7 @@ export class ChatHeaderComponent implements OnInit {
   isVisibleDeleteFriendModal: boolean = false; // Visibility property for Delete Friend modal
   isVisibleRemoveUserModal: boolean = false; // Visibility property for Remove User modal
   isVisible: boolean = false;
-  userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  userId: number = this.localStorage.getUserId();
   groupMembers: GroupMemberList[] = [];
   groupChat: ChatListVM[] = [];
   privateChat: ChatListVM[] = [];
@@ -52,7 +52,7 @@ export class ChatHeaderComponent implements OnInit {
 
   ) { }
 
-  private userId1: number = parseInt(this.localStorage.getItem('userId') || '');
+  private userId1: number = this.localStorage.getUserId();
   private searchSubject: Subject<string> = new Subject<string>()
   request: DeleteFriendRequest = { ChatRoomId: 0, UserId1: 0, UserId2: 0 };
   currentChatRoom = {} as ChatListVM;
@@ -224,7 +224,7 @@ export class ChatHeaderComponent implements OnInit {
   toggleModal(): void {
     this.showModal = true;
 
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId).pipe(
     ).subscribe(groupMembers => {
       this.groupMembers = groupMembers;
     });
@@ -319,7 +319,7 @@ export class ChatHeaderComponent implements OnInit {
   //delete friend service
   Delete(userId: number): void {
 
-    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.currentChatRoom.InitiatedBy, this.userId).subscribe({
+    this.groupMemberServiceService.removeUser(this.currentChatRoom.ChatRoomId, userId, this.currentChatRoom.InitiatedBy).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
         this.message.success('User removed successfully');
@@ -418,7 +418,7 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   ExitGroup(): void {
-    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId, this.userId).subscribe({
+    this.groupMemberServiceService.quitGroup(this.currentChatRoom.ChatRoomId).subscribe({
       next: (response) => {
         // Handle the response from the backend if needed
         this.message.success('Group quit successfully');
@@ -439,7 +439,7 @@ export class ChatHeaderComponent implements OnInit {
   showModalRemoveUser(): void {
     this.isVisibleRemoveUserModal = true;
 
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId).pipe(
     ).subscribe(groupMembers => {
 
       this.groupMembers = groupMembers;
@@ -479,7 +479,7 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   getFilteredUsers(): void {
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId, this.userId).pipe(
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId).pipe(
     ).subscribe(groupMembers => {
 
       this.groupMembers = groupMembers;
@@ -488,7 +488,7 @@ export class ChatHeaderComponent implements OnInit {
       this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
     });
 
-    this.chatlistService.RetrieveChatListByUser(this.userId).pipe(
+    this.chatlistService.RetrieveChatListByUser().pipe(
       tap(),
     ).subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
