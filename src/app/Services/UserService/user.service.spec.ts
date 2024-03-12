@@ -107,7 +107,7 @@ describe('UserService', () => {
     const userId = 1;
     const newProfileName = 'NewProfileName';
 
-    service.updateProfileName(userId, newProfileName).subscribe(response => {
+    service.updateProfileName(newProfileName).subscribe(response => {
       expect(response).toBeDefined();
     });
   
@@ -122,7 +122,7 @@ describe('UserService', () => {
     const userId = 1;
     const file = new File(['abcd'], 'test.jpg');
 
-    service.updateProfilePicture(userId, file).subscribe();
+    service.updateProfilePicture(file).subscribe();
     const req = httpTestingController.expectOne(`${service['UserUrl']}UpdateProfilePicture`);
 
     expect(req.request.method).toEqual('POST');
@@ -134,7 +134,7 @@ describe('UserService', () => {
   it('should delete a user', () => {
     const userId = 1; 
 
-    service.deleteUser(userId).subscribe();
+    service.deleteUser().subscribe();
 
     const req = httpTestingController.expectOne(`${service['UserUrl']}UserDeletion?id=${userId}`);
     expect(req.request.method).toEqual('POST');

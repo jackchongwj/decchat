@@ -26,7 +26,7 @@ export class ChatRoomMessageComponent implements OnInit {
   ) { }
 
   currentChatRoom = {} as ChatListVM;
-  currentUser = Number(this.lsService.getItem("userId"));
+  currentUser = this.lsService.getUserId();
   messageList: ChatRoomMessages[] = [];
   searchMessageList: ChatRoomMessages[] = [];
   searchValue: string = '';

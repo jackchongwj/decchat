@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AppComponent} from '../../app.component';
 
-
 class LocalStorage implements Storage {
   [name: string]: any;
   readonly length!: number;
@@ -54,5 +53,25 @@ export class LocalstorageService implements Storage {
 
   setItem(key: string, value: string): void {
     return this.storage.setItem(key, value);
+  }
+
+  getUserId():number{
+    const token = this.storage.getItem("accessToken");
+    if (token === null) {
+      return 0; 
+    }
+    
+    const parts = token.split('.');
+    const payload = parts[1];
+    try 
+    {
+      // Decode the base64-encoded payload
+      const decodedPayload = JSON.parse(atob(payload));
+      return Number(decodedPayload.UserId);
+    } 
+    catch (error) {
+      console.error('Error decoding payload:', error);
+      return 0;
+    }
   }
 }

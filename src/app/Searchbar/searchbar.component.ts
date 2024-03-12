@@ -31,7 +31,7 @@ export class SearchbarComponent implements OnInit {
   public searchResult: UserSearchDetails[] = [];
   private searchSubject: Subject<string> = new Subject<string>()
   @Input() iSCollapsed: boolean = false;
-  private userId: number = parseInt(this.localStorage.getItem('userId') || '');   // get username form local storage
+  private userId: number = this.localStorage.getUserId();   // get username form local storage
   isVisible = false;
 
 

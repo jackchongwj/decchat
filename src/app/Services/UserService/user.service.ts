@@ -27,22 +27,20 @@ export class UserService {
     return this.http.get(`${this.UserUrl}UserDetails`, {withCredentials: true});
   }
 
-  updateProfileName(id: number, newProfileName: string): Observable<any> {
-    const params = { id, newProfileName }; // Create a body object directly
+  updateProfileName(newProfileName: string): Observable<any> {
+    const params = { newProfileName }; // Create a body object directly
     return this.http.post(`${this.UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
-  updateProfilePicture(userId: number, file: File): Observable<any> {
+  updateProfilePicture(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file, file.name);
-    formData.append('id', userId.toString());
     const params = { formData };
     return this.http.post<any>(`${this.UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
   }
   
-  deleteUser(id: number): Observable<any> {
-    const params = new HttpParams().set('id', id);
-    return this.http.post(`${this.UserUrl}UserDeletion?id=${id}`, {} , { withCredentials: true });
+  deleteUser(): Observable<any> {
+    return this.http.post(`${this.UserUrl}UserDeletion`, {} , { withCredentials: true });
   }
   
 }
