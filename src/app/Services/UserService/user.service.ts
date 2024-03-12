@@ -28,7 +28,8 @@ export class UserService {
   }
 
   updateProfileName(newProfileName: string): Observable<any> {
-    return this.http.post(`${this.UserUrl}UpdateProfileName`, newProfileName, { withCredentials: true });
+    const params = { newProfileName };
+    return this.http.post(`${this.UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
   updateProfilePicture(file: File): Observable<any> {

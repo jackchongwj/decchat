@@ -61,19 +61,3 @@
   transform: translateY(-50%) scale(1.5);
   z-index: 3;
 }
-
-.unread-messages {
-  margin-left: auto; /* Pushes the unread count to the right */
-  padding: 0 8px;
-  background-color: #f56a00;
-  color: white;
-  border-radius: 15px;
-  height: 20px;
-  line-height: 20px; /* Vertically centers the text */
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px; /* Space before the online status indicator */
-  z-index: 2; /* Ensure it's above the ::after pseudo-element */
-}

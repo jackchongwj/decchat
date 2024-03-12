@@ -14,7 +14,6 @@ import { LocalstorageService } from '../Services/LocalStorage/local-storage.serv
 })
 export class ChangePasswordComponent {
   changePasswordForm: FormGroup;
-  private userId: number = parseInt(this.lsService.getItem('userId') || '0', 10);
 
   constructor(
     private message: NzMessageService,
@@ -71,7 +70,7 @@ export class ChangePasswordComponent {
         newPassword: this.changePasswordForm.value.newPassword,
       };
   
-      this.authService.changePassword(this.userId, passwordChangeData).subscribe({
+      this.authService.changePassword(passwordChangeData).subscribe({
         next: () => {
           this.message.create('success', 'Password successfully changed');
           this.router.navigate(['/dashboard']);
@@ -89,7 +88,6 @@ export class ChangePasswordComponent {
     }
   }
   
-
   goBack() {
     this.router.navigate(['/dashboard']);
   }

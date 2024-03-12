@@ -40,7 +40,6 @@ export class UserProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userId = parseInt(this.lsService.getItem('userId') || '0', 10);
     this.fetchUserData();
   }
   
@@ -118,7 +117,7 @@ export class UserProfileComponent implements OnInit {
   // }
 
   isImage(fileName: string): boolean {
-    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp|gif)$/i.test(fileName);
+    return /\.(jpg|jpeg|png|jfif|pjpeg|pjp|webp)$/i.test(fileName);
   }
 
   saveProfileName(): void {
@@ -140,7 +139,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   saveProfilePicture(): void {
-    if (this.selectedFile && this.userId) {
+    if (this.selectedFile) {
       this.isUploading = true;
       this.userService.updateProfilePicture(this.selectedFile).subscribe({
         next: () => {
@@ -162,10 +161,6 @@ export class UserProfileComponent implements OnInit {
 
   fetchUserData(): void 
   {
-    if (!this.userId) {
-      return;
-    }
-
     this.userService.getUserById().subscribe({
       next: (data) => {
         this.User = data;
@@ -203,6 +198,7 @@ export class UserProfileComponent implements OnInit {
   
   cancelPreview() {
     this.previewImageUrl = null;
+    
     this.selectedFile = null;
   }
 

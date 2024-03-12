@@ -50,7 +50,7 @@ export class AuthService {
     );
   }
 
-  changePassword(id: number, passwordChangeData: PasswordChange): Observable<any> {
+  changePassword(passwordChangeData: PasswordChange): Observable<any> {
     return this.http.post(`${AuthUrl}PasswordChange`, passwordChangeData, { withCredentials: true })
   }
 

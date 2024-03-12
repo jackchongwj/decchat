@@ -22,7 +22,6 @@ export class ChatlistComponent implements OnInit {
   groupChat: ChatListVM[] = [];
   userId: number = parseInt(this.localStorage.getItem('userId') || '');
   isSelectedData: boolean = false;
-  newMessagesIndicator: boolean = false;
 
   constructor(
     private chatlistService: ChatlistService,
@@ -34,7 +33,6 @@ export class ChatlistComponent implements OnInit {
 
   ngOnInit(): void {
     this.getChatList();
-    this.listenForNewMessages();
   }
 
   getChatList() {
@@ -55,7 +53,6 @@ export class ChatlistComponent implements OnInit {
 
   getSelectedChatRoom(ChatRoom: ChatListVM) {
     this.dataShareService.updateSelectedChatRoom(ChatRoom);
-    ChatRoom.UnreadCount = 0; // Reset unread count
   }  
 
   private UpdatePrivateChatList(): void {
@@ -153,36 +150,6 @@ export class ChatlistComponent implements OnInit {
         }
       });
     })
-  }
-
-  private listenForNewMessages(): void {
-    this.signalRService.updateMessageListener().subscribe((newMessage: ChatRoomMessages) => {
-      //newMessage.ChatRoomId identifies group chats and newMessage.UserId identifies private chats
-      const isGroupMessage = newMessage.ChatRoomId !== undefined;
-      if (isGroupMessage) {
-        const chatIndex = this.groupChat.findIndex(chat => chat.ChatRoomId === newMessage.ChatRoomId);
-        if (chatIndex !== -1) {
-          // Increment unread count for group chat
-          this.groupChat[chatIndex].UnreadCount = (this.groupChat[chatIndex].UnreadCount || 0) + 1;
-        }
-      } else {
-        // Handle private chat
-        // Assuming newMessage.UserId is available and corresponds to the userId in the chat item
-        const chatIndex = this.privateChat.findIndex(chat => chat.UserId === newMessage.UserId);
-        if (chatIndex !== -1) {
-          // Increment unread count for private chat
-          this.privateChat[chatIndex].UnreadCount = (this.privateChat[chatIndex].UnreadCount || 0) + 1;
-        }
-      }
-
-      this.updateDropdownHeader();
-    });
-  }
-  
-  private updateDropdownHeader(): void {
-    // Check if there are any unread messages in either private or group chats
-    const hasUnreadMessages = this.privateChat.some(chat => chat.UnreadCount > 0) || this.groupChat.some(chat => chat.UnreadCount > 0);
-    this.newMessagesIndicator = hasUnreadMessages;
   }
 
 }
