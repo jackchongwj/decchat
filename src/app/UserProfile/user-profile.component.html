@@ -15,11 +15,12 @@
   <div class="profile-picture-overlay" >
     <nz-avatar class="modal-avatar" [nzSrc]="previewImageUrl || User.ProfilePicture" nzSize="large" (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
     <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
+    <nz-spin *ngIf="isUploading" nzSimple></nz-spin>
     <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png, image/webp">
   </div>
   <div *ngIf="previewImageUrl" class="image-options">
-    <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
-    <button nz-button nzType="default" (click)="cancelPreview()">✕</button>
+    <button nz-button nzType="primary" (click)="saveProfilePicture()" [disabled]="isUploading">✓</button>
+    <button nz-button nzType="default" (click)="cancelPreview()" [disabled]="isUploading">✕</button>
   </div>  
 
   <!-- User Details Display -->
@@ -33,10 +34,18 @@
       </p>
       <ng-container *ngIf="editMode">
         <nz-input-group nzCompact>
-          <input nz-input placeholder="Profile Name" [(ngModel)]="User.ProfileName" [maxlength]="15"/>
+          <input nz-input placeholder="Profile Name" name="profileName" [(ngModel)]="User.ProfileName" (ngModelChange)="User.ProfileName = $event.trim()" #profileName="ngModel" minlength="2" maxlength="15" required/>
+          <button nz-button nzType="primary" (click)="saveProfileName()" [disabled]="profileName.invalid">Save</button>
+          <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
         </nz-input-group>
-        <button nz-button nzType="primary" (click)="saveProfileName()">Save</button>
-        <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
+        <div *ngIf="profileName.invalid && (profileName.dirty || profileName.touched)" class="alert alert-danger">
+          <div *ngIf="profileName.errors?.['required']">
+            Profile name is required.
+          </div>
+          <div *ngIf="profileName.errors?.['minlength']">
+            Profile name must have at least 2 characters.
+          </div>
+        </div>
       </ng-container>
     </div>
   </div>  

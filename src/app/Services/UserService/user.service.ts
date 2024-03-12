@@ -27,14 +27,13 @@ export class UserService {
   }
 
   updateProfileName(newProfileName: string): Observable<any> {
-    const params = { newProfileName }; // Create a body object directly
+    const params = { newProfileName };
     return this.http.post(`${this.UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
   updateProfilePicture(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file, file.name);
-    const params = { formData };
     return this.http.post<any>(`${this.UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
   }
   
