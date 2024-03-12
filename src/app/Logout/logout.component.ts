@@ -13,10 +13,8 @@ export class LogoutComponent {
   constructor(private authService: AuthService, private message: NzMessageService, private router: Router) {}
 
   submit(): void {
-
     this.authService.logout().subscribe({
       next: (res) => {
-        console.log(res);
         this.message.success(res.Message || 'Logout successful');
         this.router.navigate(['/login']);
       },
