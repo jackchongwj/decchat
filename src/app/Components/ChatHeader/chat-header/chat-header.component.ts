@@ -464,36 +464,35 @@ export class ChatHeaderComponent implements OnInit {
         // Handle the response from the backend if needed
         this.message.success('User added successfully');
         this.selectedUsers = [];
-
+        this.friendList = [];
       },
       error: (error) => {
         console.log('Error from the backend:', error);
       }
     });
   }
-
+  
   handleCancelAddUser(): void {
     this.isVisibleAddUserModal = false;
     this.selectedUsers = [];
-
   }
 
   getFilteredUsers(): void {
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId).pipe(
-    ).subscribe(groupMembers => {
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId)
+    .pipe(
+      switchMap(groupMembers => {
+        this.groupMembers = groupMembers;
+        this.groupMembers = this.groupMembers.filter(member => member.UserId !== this.userId);
+        this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
+        console.log("get current group members", this.groupMemberUserIds);
 
-      this.groupMembers = groupMembers;
-      this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
-
-      this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
-    });
-
-    this.chatlistService.RetrieveChatListByUser().pipe(
-      tap(),
-    ).subscribe((chats: ChatListVM[]) => {
+        return this.chatlistService.RetrieveChatListByUser();
+      }),
+    )
+    .subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.friendList = this.privateChat.filter((chat) => !this.groupMemberUserIds.includes(chat.UserId));
+      console.log("Again retrieve chat list", this.friendList);
     });
-
   }
 }

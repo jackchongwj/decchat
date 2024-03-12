@@ -9,6 +9,7 @@ import { SignalRService } from '../../Services/SignalRService/signal-r.service';
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
+
 export class HomepageComponent implements OnDestroy,OnInit{
 
   constructor(

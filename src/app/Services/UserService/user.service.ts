@@ -3,11 +3,10 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
+
 export class UserService {
 
   private UserUrl: string = environment.apiBaseUrl + 'Users/'
@@ -41,5 +40,5 @@ export class UserService {
   deleteUser(): Observable<any> {
     return this.http.post(`${this.UserUrl}UserDeletion`, {} , { withCredentials: true });
   }
-  
+
 }

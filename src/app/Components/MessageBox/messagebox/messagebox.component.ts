@@ -47,12 +47,11 @@ export class MessageboxComponent implements OnInit, OnDestroy {
 
   // Voice Message
   isRecording: boolean = false;
-  private chunks: BlobPart[] = [];
+  chunks: BlobPart[] = [];
   mediaRecorder: MediaRecorder | null = null;
   recordingInProgress = new Subject<boolean>();
 
   ngOnInit(): void {
-
     this.GetChatRoomData();
 
     this._dataShareService.LoginUserProfileName.subscribe(data => {
@@ -72,7 +71,6 @@ export class MessageboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  
   ngOnDestroy(): void {
     if (this.isRecording) {
       this.stopRecording();
@@ -156,7 +154,6 @@ export class MessageboxComponent implements OnInit, OnDestroy {
     // HTTP Client
     this._mService.sendMessage(formData).subscribe({
       next: (res: ChatRoomMessages) => {
-
         // Limit message send rate
         this.sendCooldownOn = true; // Activate cooldown
         setTimeout(() => this.sendCooldownOn = false, 1000);

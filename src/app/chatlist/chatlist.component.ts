@@ -37,7 +37,6 @@ export class ChatlistComponent implements OnInit {
 
   getChatList() {
     // Create a Group instance with the userId
-    console.log("Getting chat List");
     if (this.privateChat.length === 0 && this.groupChat.length === 0)
     {
      
