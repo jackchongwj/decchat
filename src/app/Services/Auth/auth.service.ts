@@ -32,26 +32,31 @@ export class AuthService {
   login(loginData: any): Observable<any> {
     return this.http.post<any>(`${AuthUrl}login`, loginData, { withCredentials: true }).pipe(
       map(response => {
-        this.tokenService.setToken(response.AccessToken);
-        this.localStorageService.setItem('userId', response.UserId);
-        this._dsService.updateUserId(response.UserId);
+        this.tokenService.setTokens(response.AccessToken, response.RefreshToken);
+        // this._dsService.updateUserId(response.UserId);
         return response;
       })
     );
   }
 
   logout(): Observable<any> {
+    const refreshToken = this.tokenService.getRefreshToken();
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token found'));
+    }
+
+    const headers = { 'X-Refresh-Token': refreshToken };
     return from(this.signalRService.stopConnection()).pipe(
-      switchMap(() => this.http.post<any>(`${AuthUrl}logout`, {}, { withCredentials: true })),
+      switchMap(() => this.http.post<any>(`${AuthUrl}logout`, {}, { headers, withCredentials: true })),
       map(response => {
-        this.localStorageService.clear();
+        this.tokenService.clearTokens();
         return response;
       })
     );
   }
 
-  changePassword(id: number, passwordChangeData: PasswordChange): Observable<any> {
-    return this.http.post(`${AuthUrl}PasswordChange?id=${id}`, passwordChangeData, { withCredentials: true })
+  changePassword(passwordChangeData: PasswordChange): Observable<any> {
+    return this.http.post(`${AuthUrl}PasswordChange`, passwordChangeData, { withCredentials: true })
   }
 
 }

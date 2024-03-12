@@ -19,7 +19,7 @@ export class DataShareService {
   private ChatlistSubject = new BehaviorSubject<ChatListVM[]>([]);
   private SelectedChatRoom = new BehaviorSubject<ChatListVM>({} as ChatListVM); 
   private CurrentLoginUserProfileName = new BehaviorSubject<string>('');
-  private userId = new BehaviorSubject<number>(Number(this.lsService.getItem("userId")));
+  private userId = new BehaviorSubject<number>(Number(this.lsService.getUserId()));
   private IsSelected =  new BehaviorSubject<boolean>(false);
   private CurrentSearchValue =  new BehaviorSubject<string>('');
   private totalResult =  new BehaviorSubject<number>(0);

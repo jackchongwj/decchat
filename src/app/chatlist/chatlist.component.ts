@@ -20,7 +20,7 @@ export class ChatlistComponent implements OnInit {
   showChatList = false;
   privateChat: ChatListVM[] = [];
   groupChat: ChatListVM[] = [];
-  userId: number = parseInt(this.localStorage.getItem('userId') || '');
+  userId: number = this.localStorage.getUserId();
   isSelectedData: boolean = false;
 
   constructor(
@@ -37,8 +37,10 @@ export class ChatlistComponent implements OnInit {
 
   getChatList() {
     // Create a Group instance with the userId
+    console.log("Getting chat List");
     if (this.privateChat.length === 0 && this.groupChat.length === 0)
     {
+     
       this.RetrieveChatlist();
       this.UpdatePrivateChatList();
       this.updateGroupChatList();

@@ -34,7 +34,7 @@ export class SignalRService {
 
 
   private buildConnection = () => {
-    const accessToken = this.tokenService.getToken();
+    const accessToken = this.tokenService.getAccessToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
                           .configureLogging(signalR.LogLevel.Debug)
                           .withUrl(this.https, {

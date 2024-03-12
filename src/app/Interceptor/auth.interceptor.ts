@@ -29,15 +29,18 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    const accessToken = this.tokenService.getToken();
+    // Attach access token to Authorization header
+    const accessToken = this.tokenService.getAccessToken();
     if (accessToken) {
       request = this.addAuthorizationHeader(request, accessToken);
     }
 
     return next.handle(request).pipe(
       catchError(error => {
+        // Handle invalid authorization
         if (error instanceof HttpErrorResponse && error.status === 401 && !this.isRefreshing.value) {
           return this.handle401Error(request, next);
+        // Handle rate limiting
         } else if (error.status === 429){
           this.handleReturnTooManyRequests();
         }
@@ -55,6 +58,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return bypassRoutes.some(route => url.endsWith(route));
   }
 
+  // Send refresh token to server to try renew the access token
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.isRefreshing.next(true);
     return this.tokenService.renewToken().pipe(
