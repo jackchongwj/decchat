@@ -3,11 +3,10 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
+
 export class UserService {
 
   private UserUrl: string = environment.apiBaseUrl + 'Users/'
@@ -28,19 +27,18 @@ export class UserService {
   }
 
   updateProfileName(newProfileName: string): Observable<any> {
-    const params = { newProfileName }; // Create a body object directly
+    const params = { newProfileName };
     return this.http.post(`${this.UserUrl}UpdateProfileName`, params, { withCredentials: true });
   }
   
   updateProfilePicture(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file, file.name);
-    const params = { formData };
     return this.http.post<any>(`${this.UserUrl}UpdateProfilePicture`, formData, { withCredentials: true });
   }
   
   deleteUser(): Observable<any> {
     return this.http.post(`${this.UserUrl}UserDeletion`, {} , { withCredentials: true });
   }
-  
+
 }

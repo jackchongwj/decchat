@@ -50,5 +50,4 @@ export class MessageService {
     return this.http.get(`${MessageUrl}GetTotalSearchMessage`, {params})
   }
   
-  
 }

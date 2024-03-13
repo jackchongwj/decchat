@@ -183,12 +183,12 @@
         [nzSrc]="previewImageUrl || currentChatRoom.ProfilePicture" nzSize="large"
         (mouseenter)="showEditIcon = true" (mouseleave)="showEditIcon = false" (click)="fileInput.click()"></nz-avatar>
       <i nz-icon nzType="edit" class="edit-icon" *ngIf="showEditIcon"></i>
-      <input type="file" #fileInput (change)="onFileSelected($event)"
-      hidden accept="image/jpeg, image/png, image/webp">
+      <nz-spin *ngIf="isUploading" nzSimple></nz-spin>
+      <input type="file" #fileInput (change)="onFileSelected($event)" hidden accept="image/jpeg, image/png, image/webp">
     </div>
     <div *ngIf="previewImageUrl" class="image-options">
-      <button nz-button nzType="primary" (click)="saveProfilePicture()">✓</button>
-      <button nz-button nzType="default" (click)="cancelPreview()">✕</button>
+      <button nz-button nzType="primary" (click)="saveGroupPicture()" [disabled]="isUploading">✓</button>
+      <button nz-button nzType="default" (click)="cancelPreview()" [disabled]="isUploading">✕</button>
     </div>
 
     <!-- Group Details Display -->
@@ -201,10 +201,18 @@
         </p>
         <ng-container *ngIf="editMode">
           <nz-input-group nzCompact>
-            <input nz-input placeholder="Group Name" [(ngModel)]="currentChatRoom.ChatRoomName" [maxlength]="50"/>
+            <input nz-input placeholder="Group Name" name="groupName" [(ngModel)]="currentChatRoom.ChatRoomName" (ngModelChange)="currentChatRoom.ChatRoomName = $event.trim()" #groupName="ngModel" minlength="2" [maxlength]="50"  required/>
+            <button nz-button nzType="primary" (click)="saveGroupName()" [disabled]="groupName.invalid">Save</button>
+            <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
           </nz-input-group>
-          <button nz-button nzType="primary" (click)="saveGroupName()">Save</button>
-          <button nz-button nzType="default" (click)="cancelEdit()">Cancel</button>
+          <div *ngIf="groupName.invalid && (groupName.dirty || groupName.touched)" class="alert alert-danger">
+            <div *ngIf="groupName.errors?.['required']">
+              Group name is required.
+            </div>
+            <div *ngIf="groupName.errors?.['minlength']">
+              Group name must have at least 2 characters.
+            </div>
+          </div>
         </ng-container>
       </div>
       <p>Created By: <span>{{ currentChatRoom.InitiatorProfileName }}</span></p>

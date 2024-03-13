@@ -35,7 +35,8 @@ export class ChatHeaderComponent implements OnInit {
   mainFilterArray: BehaviorSubject<any> = new BehaviorSubject([]); //listen any changes in values, if v is updated function willbe called
   populatePrivateChat: any;
   selectedUsers: number[] = []; // Use an array to store selected user IDs
-
+  originalGroupName: string = '';
+  isUploading: boolean = false;
 
   constructor(
     private _dataShareService: DataShareService,
@@ -171,27 +172,39 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   saveGroupName(): void {
+    this.currentChatRoom.ChatRoomName = this.currentChatRoom.ChatRoomName.trim();
+
+     if (this.currentChatRoom.ChatRoomName.length < 2) {
+       this.message.error('Group name must be at least 2 characters long.');
+       return;
+     }
     this._chatRoomService.updateGroupName(this.currentChatRoom.ChatRoomId, this.currentChatRoom.ChatRoomName).subscribe({
       next: () => {
         this.editMode = false;
+        this.message.success('Group name updated');
       },
       error: (error) => {
-        console.error('Error updating profile name:', error);
+        console.error('Error updating group name:', error);
       }
     });
   }
 
-  saveProfilePicture(): void {
+  saveGroupPicture(): void {
     if (this.selectedFile && this.currentChatRoom.ChatRoomId) {
+      this.isUploading = true;
       this._chatRoomService.updateGroupPicture(this.currentChatRoom.ChatRoomId, this.selectedFile).subscribe({
         next: () => {
           this.currentChatRoom.ProfilePicture = this.previewImageUrl || 'default-profile-picture-url.png';
           this.previewImageUrl = null;
           this.showEditIcon = false;
           this.editMode = false;
+          this.message.success('Group picture updated');
+          this.isUploading = false;
         },
         error: (error) => {
           console.error('Error uploading file:', error);
+          this.message.error('Error uploading file:');
+          this.isUploading = false;
         }
       });
     }
@@ -204,6 +217,7 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   cancelEdit(): void {
+    this.currentChatRoom.ChatRoomName = this.originalGroupName;
     this.editMode = false;
   }
 
@@ -221,28 +235,49 @@ export class ChatHeaderComponent implements OnInit {
   }
 
   toggleEditMode() {
+    if (!this.editMode) {
+      this.originalGroupName = this.currentChatRoom.ChatRoomName;
+    }
     this.editMode = !this.editMode;
   }
 
   onFileSelected(event: Event) {
     const element = event.currentTarget as HTMLInputElement;
     let fileList: FileList | null = element.files;
-    if (fileList && fileList.length > 0) {
-      this.selectedFile = fileList[0];
-
-      if(this.isImage(this.selectedFile.name))
-      {
+      if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+  
+      if (file.size > 7 * 1024 * 1024) {
+        this.message.error("The file is too large. Please upload an image that is 7MB or smaller.");
+        return;
+      }
+  
+      if (this.isImage(file.name)) {
+        if (this.previewImageUrl) {
+          URL.revokeObjectURL(this.previewImageUrl);
+          this.previewImageUrl = null;
+        }
+        // Validate if it's a real image
+        const img = new Image();
+        img.onload = () => {
+          this.previewImageUrl = URL.createObjectURL(file);
+          this.selectedFile = file; 
+        };
+        img.onerror = () => {
+          this.message.error("The file is not a valid image.");
+        };
+        
         // Use FileReader to read the file for preview
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
-          this.previewImageUrl = e.target?.result as string; 
+          img.src = e.target?.result as string; // Trigger load for validation
         };
-        reader.readAsDataURL(this.selectedFile);
+        reader.readAsDataURL(file);
+      } else {
+        this.message.error("Invalid file format uploaded.");
       }
-      else
-      {
-        this.message.error("Invalid File Format Uploaded");
-      }
+      // Clear the input to ensure change event fires even if the same file is selected again
+      element.value = '';
     }
   }
 
@@ -429,36 +464,35 @@ export class ChatHeaderComponent implements OnInit {
         // Handle the response from the backend if needed
         this.message.success('User added successfully');
         this.selectedUsers = [];
-
+        this.friendList = [];
       },
       error: (error) => {
         console.log('Error from the backend:', error);
       }
     });
   }
-
+  
   handleCancelAddUser(): void {
     this.isVisibleAddUserModal = false;
     this.selectedUsers = [];
-
   }
 
   getFilteredUsers(): void {
-    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId).pipe(
-    ).subscribe(groupMembers => {
+    this.groupMemberServiceService.getGroupMembers(this.currentChatRoom.ChatRoomId)
+    .pipe(
+      switchMap(groupMembers => {
+        this.groupMembers = groupMembers;
+        this.groupMembers = this.groupMembers.filter(member => member.UserId !== this.userId);
+        this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
+        console.log("get current group members", this.groupMemberUserIds);
 
-      this.groupMembers = groupMembers;
-      this.groupMembers = this.groupMembers.filter(member => member.UserId != this.userId);
-
-      this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
-    });
-
-    this.chatlistService.RetrieveChatListByUser().pipe(
-      tap(),
-    ).subscribe((chats: ChatListVM[]) => {
+        return this.chatlistService.RetrieveChatListByUser();
+      }),
+    )
+    .subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.friendList = this.privateChat.filter((chat) => !this.groupMemberUserIds.includes(chat.UserId));
+      console.log("Again retrieve chat list", this.friendList);
     });
-
   }
 }
