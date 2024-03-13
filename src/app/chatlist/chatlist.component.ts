@@ -104,7 +104,6 @@ export class ChatlistComponent implements OnInit {
   private addNewGroupListener(): void {
     this.signalRService.addNewGroupListener()
     .subscribe((chatListVM: ChatListVM[]) => {
-      console.log("New Group Created: ", chatListVM);
       const myChats = chatListVM.filter(chat => chat.UserId == this.userId);
       this.groupChat.push(...myChats);
     });
