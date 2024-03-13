@@ -253,7 +253,6 @@ export class SignalRService {
         this.hubConnection.on('UserAdded', (memberlist: ChatListVM) => {
         this.ngZone.run(() => {
           observer.next(memberlist); 
-          console.log("add", memberlist)
         });       
         });
       }

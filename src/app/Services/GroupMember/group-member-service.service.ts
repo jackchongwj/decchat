@@ -18,10 +18,10 @@ export class GroupMemberServiceService {
     return this.http.get(`${this.url}groupMembers`, { params: params, withCredentials: true });
   }
 
-  removeUser(chatRoomId: number, userId: number, InitiatedBy: number): Observable<any> {
+  removeUser(chatRoomId: number, removedUserId: number, InitiatedBy: number): Observable<any> {
     const params = new HttpParams()
       .set('chatRoomID', chatRoomId.toString())
-      .set('userId', userId.toString())
+      .set('removedUserId', removedUserId.toString())
       .set('InitiatedBy', InitiatedBy.toString());
     return this.http.post<number>(`${this.url}RemoveFromGroup`, null, { params , withCredentials : true });
   }
