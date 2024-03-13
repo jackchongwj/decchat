@@ -42,9 +42,12 @@ export class SignalRService {
                           .build();
 
                           this.hubConnection.onclose((error) => {
-                            console.log("Connection closed. Reconnecting...");
+                            console.log('Connection closed', error);
                             this.isSignalRConnected = false;
                             this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+                            if (!this.manualDisconnect) {
+                              console.log("Attempting to reconnect...");
+                            }
                           });
   }
 
@@ -53,7 +56,7 @@ export class SignalRService {
 
       const checkAndReconnect = async (): Promise<void> => {
         //avoid the disconnet reconnect again
-        if (this.manualDisconnect) {
+        if (this.manualDisconnect && (this.hubConnection.state === signalR.HubConnectionState.Disconnecting || this.hubConnection.state === signalR.HubConnectionState.Disconnected)) {
           return;
         }
 
@@ -82,17 +85,27 @@ export class SignalRService {
 
   public stopConnection(): Promise<void> {
     clearInterval(this.reconnectInterval);
-    this.manualDisconnect = true;
+    this.manualDisconnect = true;  // Prevent reconnect
 
-    return this.hubConnection.stop()
-      .then(() => {
-        this._dataShareService.updateSignalRConnectionStatus(false);
-        console.log('SignalR connection closed');
-      })
-      .catch(err => console.error('Error while closing connection'))
-      .finally(() => {
-        this.manualDisconnect = false;
-      });
+    // Check if the connection is in a state that allows it to be stopped.
+    if (this.hubConnection.state !== signalR.HubConnectionState.Disconnected &&
+        this.hubConnection.state !== signalR.HubConnectionState.Disconnecting) {
+        return this.hubConnection.stop()
+            .then(() => {
+                console.log('SignalR connection closed');
+                this._dataShareService.updateSignalRConnectionStatus(false);
+            })
+            .catch(err => {
+                console.error('Error while closing connection: ', err);
+            })
+            .finally(() => {
+                // Reset manualDisconnect here if you want to allow reconnections in the future.
+                // this.manualDisconnect = false;
+            });
+    } else {
+        console.log('Connection is already disconnecting or disconnected.');
+        return Promise.resolve(); // Resolve immediately if in an unsuitable state.
+    }
   }
 
   public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
