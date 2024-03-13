@@ -40,14 +40,12 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    const refreshToken = this.tokenService.getRefreshToken();
-    if (!refreshToken) {
-      return throwError(() => new Error('No refresh token found'));
-    }
-
-    const headers = { 'X-Refresh-Token': refreshToken };
     return from(this.signalRService.stopConnection()).pipe(
-      switchMap(() => this.http.post<any>(`${AuthUrl}logout`, {}, { headers, withCredentials: true })),
+      switchMap(() => {
+        const refreshToken = this.tokenService.getRefreshToken() || '';
+        const headers = { 'X-Refresh-Token': refreshToken };
+        return this.http.post<any>(`${AuthUrl}logout`, {}, { headers, withCredentials: true });
+      }),
       map(response => {
         this.tokenService.clearTokens();
         return response;
