@@ -27,7 +27,6 @@ export class ChatlistService {
     return this.http.post(`${this.chatRoomUrl}createNewGroup`, data, { withCredentials: true }); 
   }
 
-
   addMemberToGroup(addMember: AddMember): Observable<any> {
     let params = new HttpParams().set('timestamp',new Date().toString());
     return this.http.post(`${this.chatRoomUrl}AddMembersToGroup`, addMember, { withCredentials: true });

@@ -484,15 +484,12 @@ export class ChatHeaderComponent implements OnInit {
         this.groupMembers = groupMembers;
         this.groupMembers = this.groupMembers.filter(member => member.UserId !== this.userId);
         this.groupMemberUserIds = this.groupMembers.map(member => member.UserId);
-        console.log("get current group members", this.groupMemberUserIds);
-
         return this.chatlistService.RetrieveChatListByUser();
       }),
     )
     .subscribe((chats: ChatListVM[]) => {
       this.privateChat = chats.filter(chat => chat.RoomType === false);
       this.friendList = this.privateChat.filter((chat) => !this.groupMemberUserIds.includes(chat.UserId));
-      console.log("Again retrieve chat list", this.friendList);
     });
   }
 }

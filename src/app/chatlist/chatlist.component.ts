@@ -102,9 +102,9 @@ export class ChatlistComponent implements OnInit {
   }
 
   private addNewGroupListener(): void {
-    this.signalRService.addNewGroupListener().subscribe((chatListVM: ChatListVM[]) => {
+    this.signalRService.addNewGroupListener()
+    .subscribe((chatListVM: ChatListVM[]) => {
       const myChats = chatListVM.filter(chat => chat.UserId == this.userId);
-      // Add the new room to the groupChat array
       this.groupChat.push(...myChats);
     });
   }
