@@ -39,7 +39,7 @@ export class TokenService {
   renewToken(): Observable<string | null> {
     const refreshToken = this.localStorageService.getItem('refreshToken');
 
-    // Create a custom http header to pass the refresh token
+    // Create a custom http header
     let headers = new HttpHeaders();
     if (refreshToken) {
       headers = headers.set('X-Refresh-Token', refreshToken);

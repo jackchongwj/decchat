@@ -1,59 +1,60 @@
-import {Injectable} from '@angular/core';
-import {AppComponent} from '../../app.component';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
-class LocalStorage implements Storage {
+class InMemoryStorage implements Storage {
+  private storage = new Map<string, string>();
+
+  get length(): number {
+    return this.storage.size;
+  }
+  clear(): void {
+    this.storage.clear();
+  }
+  getItem(key: string): string | null {
+    return this.storage.get(key) ?? null;
+  }
+  key(index: number): string | null {
+    const keys = Array.from(this.storage.keys());
+    return keys[index] ?? null;
+  }
+  removeItem(key: string): void {
+    this.storage.delete(key);
+  }
+  setItem(key: string, value: string): void {
+    this.storage.set(key, value);
+  }
   [name: string]: any;
-  readonly length!: number;
-  clear(): void {}
-  getItem(key: string): string | null {return null;}
-  key(index: number): string | null {return null;}
-  removeItem(key: string): void {}
-  setItem(key: string, value: string): void {}
 }
-
 
 @Injectable({
   providedIn: 'root'
 })
-export class LocalstorageService implements Storage {
-
+export class LocalstorageService {
   private storage: Storage;
 
-  constructor() {
-    this.storage = new LocalStorage();
-
-    AppComponent.isBrowser.subscribe(isBrowser => {
-      if (isBrowser) {
-        this.storage = localStorage;
-      }
-    });
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.storage = isPlatformBrowser(platformId) ? localStorage : new InMemoryStorage();
   }
-
-  [name: string]: any;
 
   get length(): number {
     return this.storage.length;
-}
-
+  }
   clear(): void {
     this.storage.clear();
   }
-
   getItem(key: string): string | null {
     return this.storage.getItem(key);
   }
-
   key(index: number): string | null {
     return this.storage.key(index);
   }
-
   removeItem(key: string): void {
-    return this.storage.removeItem(key);
+    this.storage.removeItem(key);
   }
-
   setItem(key: string, value: string): void {
-    return this.storage.setItem(key, value);
+    this.storage.setItem(key, value);
   }
+  [name: string]: any;
 
   getUserId():number{
     const token = this.storage.getItem("accessToken");
