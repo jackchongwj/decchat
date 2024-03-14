@@ -3,17 +3,13 @@ import { AuthService } from '../../../Services/Auth/auth.service';
 import { Router } from '@angular/router';
 import {
   AbstractControl,
-  AsyncValidatorFn,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
-  ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { map, Observable } from 'rxjs';
-import { UserService } from '../../../Services/UserService/user.service';
 
 @Component({
   selector: 'app-register',
@@ -36,7 +32,6 @@ export class RegisterComponent {
     private message: NzMessageService, 
     private router: Router, 
     private authService: AuthService, 
-    private userService: UserService
   ) 
   {
     this.registerForm = this.fb.group({
@@ -96,6 +91,9 @@ export class RegisterComponent {
     }
     else if (usernameControl.hasError("maximum")) {
       errors.push("Maximum length (15) reached");
+    }
+    else if (usernameControl.hasError("minimum")) {
+      errors.push("Username must be at least 2 characters long");
     }
 
     return errors;
@@ -175,6 +173,12 @@ export class RegisterComponent {
   
     if (value.length > maxLength) {
       return { maximum: true };
+    }
+
+    const minLength = 2;
+  
+    if (value.length < minLength) {
+      return { minimum: true };
     }
   
     return null;
@@ -288,7 +292,7 @@ export class RegisterComponent {
   
     if (control && control.touched && !this.isLoading) {
       if (controlName === 'username') {
-        if (control.hasError('required') || control.hasError('invalid') || control.hasError('maxLength')) {
+        if (control.hasError('required') || control.hasError('invalid') || control.hasError('maximum') || control.hasError('minimum')) {
           return 'error';
         } else {
           return 'success';

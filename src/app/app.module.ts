@@ -33,7 +33,11 @@ import { SpinComponent } from './Loading/spin/spin.component';
 import { NZ_ICONS, NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { MenuFoldOutline, MenuUnfoldOutline, LockOutline, UserOutline } from '@ant-design/icons-angular/icons';
+import { JwtHelperService, JwtModule } from '@auth0/angular-jwt';
 
+export function tokenGetter() {
+  return localStorage.getItem('accessToken'); // Adjust if your token is stored differently
+}
 const icons: IconDefinition[] = [ MenuFoldOutline, MenuUnfoldOutline ];
 
 registerLocaleData(ms);
@@ -55,11 +59,8 @@ registerLocaleData(ms);
     UserLoginPageComponent,
     ChatHeaderComponent,
     ChatRoomMessageComponent,
-    UserLoginPageComponent,
-    ChatHeaderComponent,
     UserProfileComponent,
     ChangePasswordComponent,
-    ChatRoomMessageComponent,
     MessageExtraFuncComponent,
     SpinComponent
   ],
@@ -72,15 +73,21 @@ registerLocaleData(ms);
     BrowserAnimationsModule,
     ImportNgZorroAntdModule,
     ReactiveFormsModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+      },
+    }),
     NzIconModule
   ],
   
   
   providers: [
     provideClientHydration(),
+    JwtHelperService,
     { provide: NZ_I18N, useValue: en_US },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: NZ_ICONS, useValue: [LockOutline, UserOutline] }
+    { provide: NZ_ICONS, useValue: [LockOutline, UserOutline] },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
