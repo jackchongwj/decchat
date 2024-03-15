@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { TokenService } from '../Token/token.service';
 import { SignalRService } from '../SignalRService/signal-r.service';
 import { PasswordChange } from '../../Models/DTO/User/password-change';
+import { LoadingService } from '../Loading/loading.service';
 
 const AuthUrl: string = environment.apiBaseUrl + 'Auth/'
 
@@ -22,23 +23,37 @@ export class AuthService {
     private http: HttpClient,
     private tokenService: TokenService,
     private signalRService: SignalRService,
-    private jwtHelper: JwtHelperService) { }
-
+    private loadingService: LoadingService,
+    private jwtHelper: JwtHelperService
+    ) { }
 
   register(registrationData: any): Observable<any> {
     return this.http.post<any>(`${AuthUrl}register`, registrationData);
   }
 
   login(loginData: any): Observable<any> {
+    this.loadingService.show(); 
     return this.http.post<any>(`${AuthUrl}login`, loginData, { withCredentials: true }).pipe(
       map(response => {
         this.tokenService.setTokens(response.AccessToken, response.RefreshToken);
+        this.signalRService.startConnection().then(() => {
+          this.loadingService.hide(); 
+        }).catch(error => {
+          console.error('SignalR connection error:', error);
+          this.loadingService.hide(); 
+        });
+  
         return response;
+      }),
+      catchError(error => {
+        this.loadingService.hide(); 
+        return throwError(() => new Error('Login failed'));
       })
     );
   }
 
   logout(): Observable<any> {
+    this.loadingService.show();
     return from(this.signalRService.stopConnection()).pipe(
       switchMap(() => {
         const refreshToken = this.tokenService.getRefreshToken() || '';
@@ -47,6 +62,7 @@ export class AuthService {
       }),
       map(response => {
         this.tokenService.clearTokens();
+        this.loadingService.hide(); 
         return response;
       })
     );
