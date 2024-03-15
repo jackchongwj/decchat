@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ImportNgZorroAntdModule } from '../../ng-zorro-antd.module';
-import { SpinComponent } from './spin.component';
+import { ImportNgZorroAntdModule } from '../ng-zorro-antd.module';
+import { SpinnerComponent } from './spinner.component';
 
-describe('SpinComponent', () => {
-  let component: SpinComponent;
-  let fixture: ComponentFixture<SpinComponent>;
+describe('SpinnerComponent', () => {
+  let component: SpinnerComponent;
+  let fixture: ComponentFixture<SpinnerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpinComponent ],
+      declarations: [ SpinnerComponent ],
       imports: [ ImportNgZorroAntdModule ] // Import the NzSpinModule for the nz-spin component
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SpinComponent);
+    fixture = TestBed.createComponent(SpinnerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
