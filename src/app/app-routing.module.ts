@@ -8,8 +8,8 @@ import { AuthInitGuard } from './Guards/auth-init.guard';
 import { HomepageComponent } from './Pages/Homepage/homepage.component';
 
 const routes: Routes = [
-  { path: '', component : LoginComponent, canActivate : [ AuthInitGuard, AuthGuard ] },
-  { path: 'login', component : LoginComponent, canActivate : [ AuthInitGuard, AuthGuard ] },
+  { path: '', component : LoginComponent, canActivate : [ AuthGuard ] },
+  { path: 'login', component : LoginComponent, canActivate : [ AuthGuard ] },
   { path: 'dashboard', component: HomepageComponent, canActivate : [ AuthInitGuard, AuthGuard ]},
   { path: 'change-password', component: ChangePasswordComponent, canActivate : [ AuthInitGuard, AuthGuard ] },
   { path: 'register', component : RegisterComponent }
