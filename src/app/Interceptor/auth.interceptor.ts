@@ -5,6 +5,7 @@ import { catchError, filter, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../Services/Auth/auth.service';
 import { TokenService } from '../Services/Token/token.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -15,7 +16,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
     private injector: Injector,
-    private _msgBox: NzMessageService) {}
+    private message: NzMessageService,
+    private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (!this.authService) {
@@ -65,15 +67,18 @@ export class AuthInterceptor implements HttpInterceptor {
       switchMap(token => {
         this.isRefreshing.next(false);
         if (token) {
+          // Token renewed successfully, proceed with the request using the new token.
           return next.handle(this.addAuthorizationHeader(request, token));
+        } else {
+          // Token renewal failed, logout and redirect to login.
+          throw new Error('Authentication token could not be renewed.');
         }
-        this.authService.logout();
-        return throwError(new Error('Failed to renew token'));
       }),
       catchError((error) => {
-        this.isRefreshing.next(false);
-        this.authService.logout();
-        return throwError(error);
+        // Error occurred during token renewal or request reattempt, logout and redirect.
+        console.error('Error during token renewal or request reattempt:', error);
+        this.logoutAndRedirect('Failed to renew authentication token.');
+        return throwError(() => new Error('Error during authentication process.'));
       }),
       filter(() => this.isRefreshing.value === false),
       take(1)
@@ -82,6 +87,19 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private handleReturnTooManyRequests()
   {
-    this._msgBox.error("You've made too many requests in a short period. Please wait a moment and try again later.");
+    this.message.error("You've made too many requests in a short period. Please wait a moment and try again later.");
+  }
+
+  private logoutAndRedirect(errorMessage: string) {
+    this.authService.logout().subscribe({
+      next: (res) => {
+        this.router.navigate(['/login']);
+        this.message.error(errorMessage);
+      },
+      error: (e) => {
+        console.error('Logout failed:', e.error);
+        this.message.error('An error occured during logout. Please log in again.');
+      }
+    });
   }
 }

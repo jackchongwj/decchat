@@ -183,7 +183,7 @@ export class UserProfileComponent implements OnInit {
             this.router.navigate(['/login']);
           },
           error: (e) => {
-            this.message.error(e.error.Error || 'Account deletion failed');
+            this.message.error(e.error || 'Account deletion failed');
           }
         });
         this.message.success('Account Deleted');
