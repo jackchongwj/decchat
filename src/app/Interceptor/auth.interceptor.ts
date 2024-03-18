@@ -77,7 +77,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error) => {
         // Error occurred during token renewal or request reattempt, logout and redirect.
         console.error('Error during token renewal or request reattempt:', error);
-        this.logoutAndRedirect('Failed to renew authentication token.');
+        this.logoutAndRedirect('Authentication invalid or expired. Please log in again.');
         return throwError(() => new Error('Error during authentication process.'));
       }),
       filter(() => this.isRefreshing.value === false),
@@ -99,6 +99,7 @@ export class AuthInterceptor implements HttpInterceptor {
       error: (e) => {
         console.error('Logout failed:', e.error);
         this.message.error('An error occured during logout. Please log in again.');
+        this.router.navigate(['/login']);
       }
     });
   }

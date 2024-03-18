@@ -90,17 +90,7 @@ export class SignalRService {
           this.isSignalRConnected = false;
           this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
 
-          this.authService.logout().subscribe({
-            next: () => {
-              this.message.error('Authentication invalid or expired. Please log in again.');
-              this.router.navigate(['/login']);
-            },
-            error: (e) => {
-              console.error(e.error);
-              this.message.error(e.error || 'An error occured during logout. Please log in again.');
-              this.router.navigate(['/login']);
-            }
-          });
+          this.authService.logout().subscribe();
         }
       }
     };
