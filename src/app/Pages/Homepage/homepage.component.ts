@@ -1,4 +1,5 @@
 import { Component,OnInit, OnDestroy} from '@angular/core';
+import { LoadingService } from '../../Services/Loading/loading.service';
 import { LocalstorageService } from '../../Services/LocalStorage/local-storage.service';
 import { DataShareService } from '../../Services/ShareDate/data-share.service';
 import { SignalRService } from '../../Services/SignalRService/signal-r.service';
@@ -10,30 +11,30 @@ import { SignalRService } from '../../Services/SignalRService/signal-r.service';
   styleUrl: './homepage.component.css'
 })
 
-export class HomepageComponent implements OnDestroy,OnInit{
+export class HomepageComponent implements OnInit{
 
   constructor(
     private signalRService: SignalRService,
     private dataShareService: DataShareService,
-    private localStorage: LocalstorageService)
+    private localStorage: LocalstorageService,
+    private loadingService: LoadingService)
   {}
 
-  isSignalRConnection : boolean = false
+  isConnected : boolean = false
   private userId: number = this.localStorage.getUserId();
   
   ngOnInit(): void{
-    
-    if (!isNaN(this.userId) && this.userId != 0){
+    this.isConnected = false;
+
+    if (!isNaN(this.userId) && this.userId != 0) {
       this.signalRService.startConnection();
     }
 
-
-    this.dataShareService.IsSignalRConnection.subscribe(data => {
-      this.isSignalRConnection = data
-    })
-  }
-
-
-  ngOnDestroy(): void {
+    this.dataShareService.IsSignalRConnection.subscribe(isConnected => {
+      this.isConnected = isConnected;
+      if (isConnected) {
+        this.loadingService.hide();
+      }
+    });
   }
 }
