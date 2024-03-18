@@ -179,7 +179,7 @@ export class UserProfileComponent implements OnInit {
         this.showDeleteConfirm = false;
 
         this.authService.logout().subscribe({
-          next: (res) => {
+          next: () => {
             this.router.navigate(['/login']);
           },
           error: (e) => {
