@@ -71,6 +71,7 @@ export class AuthInterceptor implements HttpInterceptor {
           return next.handle(this.addAuthorizationHeader(request, token));
         } else {
           // Token renewal failed, logout and redirect to login.
+          this.logoutAndRedirect('Failed to renew token. Please log in again.');
           throw new Error('Authentication token could not be renewed.');
         }
       }),

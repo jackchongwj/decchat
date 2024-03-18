@@ -1,4 +1,4 @@
-import { Injectable, NgZone, Inject, Injector } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -6,14 +6,10 @@ import { ChatListVM } from '../../Models/DTO/ChatList/chat-list-vm';
 import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommessages';
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
-
 import { UserProfileUpdate } from '../../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
 import { DataShareService } from '../ShareDate/data-share.service';
 import { TokenService } from '../../Services/Token/token.service';
-import { AuthService } from '../Auth/auth.service';
-import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { LoadingService } from '../Loading/loading.service';
 
 @Injectable({
@@ -24,7 +20,6 @@ export class SignalRService {
   isSignalRConnected: boolean = false
   private manualDisconnect: boolean = false;
   private reconnectInterval: any;
-  private _authService?: AuthService;
   https: string = environment.hubBaseUrl;
 
 
@@ -32,19 +27,9 @@ export class SignalRService {
     private ngZone: NgZone,
     private _dataShareService: DataShareService,
     private tokenService: TokenService,
-    private injector: Injector,
-    private router: Router,
-    private message: NzMessageService,
     private loadingService: LoadingService
   ) {
     this.buildConnection();
-  }
-
-  private get authService(): AuthService {
-    if (!this._authService) {
-      this._authService = this.injector.get(AuthService);
-    }
-    return this._authService;
   }
 
   private buildConnection = () => {
@@ -89,8 +74,6 @@ export class SignalRService {
           console.log('Error while starting connection: ' + err);
           this.isSignalRConnected = false;
           this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-
-          this.authService.logout().subscribe();
         }
       }
     };
