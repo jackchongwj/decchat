@@ -29,7 +29,7 @@ import { MessageboxComponent } from './Components/MessageBox/messagebox/messageb
 import { UserProfileComponent } from './UserProfile/user-profile.component';
 import { ChangePasswordComponent } from './ChangePassword/change-password.component';
 import { MessageExtraFuncComponent } from './Components/Message-Additional/message-extra-func/message-extra-func.component';
-import { SpinnerComponent } from './Spinner/spinner.component';
+import { SpinComponent } from './Loading/spin/spin.component';
 import { NZ_ICONS, NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { MenuFoldOutline, MenuUnfoldOutline, LockOutline, UserOutline } from '@ant-design/icons-angular/icons';
@@ -62,7 +62,7 @@ registerLocaleData(ms);
     UserProfileComponent,
     ChangePasswordComponent,
     MessageExtraFuncComponent,
-    SpinnerComponent
+    SpinComponent
   ],
     imports: [
     BrowserModule,

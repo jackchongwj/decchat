@@ -1,1 +1,6 @@
-<app-sidebar></app-sidebar>
+<div *ngIf="isSignalRConnection == false">
+    <app-spin></app-spin>
+</div>
+<div *ngIf="isSignalRConnection == true">
+    <app-sidebar></app-sidebar>
+</div>
