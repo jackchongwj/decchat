@@ -1,4 +1,4 @@
-import { Injectable, NgZone, Inject, Injector} from '@angular/core';
+import { Injectable, NgZone, Inject, Injector } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -7,19 +7,20 @@ import { ChatRoomMessages } from '../../Models/DTO/ChatRoomMessages/chatroommess
 import { TypingStatus } from '../../Models/DTO/TypingStatus/typing-status';
 import { User } from '../../Models/User/user';
 
-import {UserProfileUpdate} from '../../Models/DTO/UserProfileUpdate/user-profile-update';
+import { UserProfileUpdate } from '../../Models/DTO/UserProfileUpdate/user-profile-update';
 import { GroupProfileUpdate } from '../../Models/DTO/GroupProfileUpdate/group-profile-update';
 import { DataShareService } from '../ShareDate/data-share.service';
 import { TokenService } from '../../Services/Token/token.service';
 import { AuthService } from '../Auth/auth.service';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { LoadingService } from '../Loading/loading.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
-  private hubConnection!:signalR.HubConnection; 
+  private hubConnection!: signalR.HubConnection;
   isSignalRConnected: boolean = false
   private manualDisconnect: boolean = false;
   private reconnectInterval: any;
@@ -33,79 +34,84 @@ export class SignalRService {
     private tokenService: TokenService,
     private injector: Injector,
     private router: Router,
-    private message: NzMessageService
-    ) {
-      this.buildConnection();
-    }
+    private message: NzMessageService,
+    private loadingService: LoadingService
+  ) {
+    this.buildConnection();
+  }
 
-    private get authService(): AuthService {
-      if (!this._authService) {
-        this._authService = this.injector.get(AuthService);
-      }
-      return this._authService;
+  private get authService(): AuthService {
+    if (!this._authService) {
+      this._authService = this.injector.get(AuthService);
     }
+    return this._authService;
+  }
 
   private buildConnection = () => {
     const accessToken = this.tokenService.getAccessToken();
     this.hubConnection = new signalR.HubConnectionBuilder()
-                          .configureLogging(signalR.LogLevel.Debug)
-                          .withUrl(`${this.https}?access_token=${accessToken}`, {
-                            skipNegotiation: true,
-                            transport: signalR.HttpTransportType.WebSockets
-                          })
-                          .build();
+      .configureLogging(signalR.LogLevel.Debug)
+      .withUrl(`${this.https}?access_token=${accessToken}`, {
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets
+      })
+      .build();
 
-                          this.hubConnection.onclose((error) => {
-                            console.log('Connection closed', error);
-                            this.isSignalRConnected = false;
-                            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-                            if (!this.manualDisconnect) {
-                              console.log("Attempting to reconnect...");
-                            }
-                          });
+    this.hubConnection.onclose((error) => {
+      this.isSignalRConnected = false;
+      this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+      if (!this.manualDisconnect) {
+        console.log("Attempting to reconnect...");
+      }
+    });
   }
 
   public startConnection(): Promise<void> {
-      this.buildConnection();
+    this.manualDisconnect = false;
+    this.loadingService.show();
+    this.buildConnection();
 
-      const checkAndReconnect = async (): Promise<void> => {
-        //avoid the disconnet reconnect again
-        if (this.manualDisconnect && (this.hubConnection.state === signalR.HubConnectionState.Disconnecting || this.hubConnection.state === signalR.HubConnectionState.Disconnected)) {
-          return;
+    const checkAndReconnect = async (): Promise<void> => {
+      //avoid the disconnet reconnect again
+      if (this.manualDisconnect && (this.hubConnection.state === signalR.HubConnectionState.Disconnecting || this.hubConnection.state === signalR.HubConnectionState.Disconnected)) {
+        return;
+      }
+
+      if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+        try {
+          await this.hubConnection.start();
+          this.isSignalRConnected = true;
+          this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+          this.loadingService.hide();
+          console.log('Connection started');
+        } catch (err) {
+          this.loadingService.hide();
+          console.log('Error while starting connection: ' + err);
+          this.isSignalRConnected = false;
+          this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+
+          this.authService.logout().subscribe({
+            next: () => {
+              this.message.error('Authentication invalid or expired. Please log in again.');
+              this.router.navigate(['/login']);
+            },
+            error: (e) => {
+              console.error(e.error);
+              this.message.error(e.error || 'An error occured during logout. Please log in again.');
+              this.router.navigate(['/login']);
+            }
+          });
         }
+      }
+    };
 
-        if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-          try {
-            await this.hubConnection.start();
-            this.isSignalRConnected = true;
-            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
-            console.log('Connection started');
-          } catch (err) {
-            console.log('Error while starting connection: ' + err);
-            this.isSignalRConnected = false;
-            this._dataShareService.updateSignalRConnectionStatus(this.isSignalRConnected);
+    checkAndReconnect();
 
-            this.authService.logout().subscribe({
-              next: (res) => {
-                this.message.error('Authentication invalid or expired. Please log in again.');
-                this.router.navigate(['/login']);
-              },
-              error: (e) => {
-                console.error(e.error);
-                this.message.error(e.error || 'An error occured during logout. Please log in again.');
-              }
-            });
-          }
-        }
-      };
-
+    this.reconnectInterval = setInterval(() => {
       checkAndReconnect();
+    }, 3000);
 
-      this.reconnectInterval = setInterval(() => {
-        checkAndReconnect();
-      }, 3000);
-
-      return Promise.resolve();
+    return Promise.resolve();
   }
 
   public stopConnection(): Promise<void> {
@@ -114,50 +120,47 @@ export class SignalRService {
 
     // Check if the connection is in a state that allows it to be stopped.
     if (this.hubConnection.state !== signalR.HubConnectionState.Disconnected &&
-        this.hubConnection.state !== signalR.HubConnectionState.Disconnecting) {
-        return this.hubConnection.stop()
-            .then(() => {
-                console.log('SignalR connection closed');
-                this._dataShareService.updateSignalRConnectionStatus(false);
-            })
-            .catch(err => {
-                console.error('Error while closing connection: ', err);
-            })
-            .finally(() => {
-                // Reset manualDisconnect here if you want to allow reconnections in the future.
-                // this.manualDisconnect = false;
-            });
+      this.hubConnection.state !== signalR.HubConnectionState.Disconnecting) {
+      return this.hubConnection.stop()
+        .then(() => {
+          console.log('Connection closed');
+          this._dataShareService.updateSignalRConnectionStatus(false);
+        })
+        .catch(err => {
+          console.error('Error while closing connection: ', err);
+        })
+        .finally(() => {
+          // Reset manualDisconnect here if you want to allow reconnections in the future.
+          // this.manualDisconnect = false;
+        });
     } else {
-        console.log('Connection is already disconnecting or disconnected.');
-        return Promise.resolve(); // Resolve immediately if in an unsuitable state.
+      console.log('Connection is already disconnecting or disconnected.');
+      return Promise.resolve(); // Resolve immediately if in an unsuitable state.
     }
   }
 
-  public InformUserTyping(chatroomId:number, typing:boolean, profilename:string)
-  {
+  public InformUserTyping(chatroomId: number, typing: boolean, profilename: string) {
     this.hubConnection.invoke("CheckUserTyping", chatroomId, typing, profilename)
-    .catch(error => console.error('Error invoking CheckUserTyping:', error));
+      .catch(error => console.error('Error invoking CheckUserTyping:', error));
   }
 
   public UserTypingStatus(): Observable<TypingStatus> {
     return new Observable<TypingStatus>(observer => {
-      if(this.hubConnection)
-      {
-        this.hubConnection.on("UserTyping", (ChatRoomId:number, isTyping:boolean, currentUserProfileName:string) => {
+      if (this.hubConnection) {
+        this.hubConnection.on("UserTyping", (ChatRoomId: number, isTyping: boolean, currentUserProfileName: string) => {
           this.ngZone.run(() => {
-            observer.next({ChatRoomId, isTyping, currentUserProfileName});
+            observer.next({ ChatRoomId, isTyping, currentUserProfileName });
           })
         })
       }
     })
   }
 
-  public getHubConnection(): signalR.HubConnection
-  {
+  public getHubConnection(): signalR.HubConnection {
     return this.hubConnection;
   }
 
-  
+
   updateMessageListener(): Observable<ChatRoomMessages> {
     return new Observable<ChatRoomMessages>(observer => {
       if (this.hubConnection) {
@@ -181,8 +184,8 @@ export class SignalRService {
         });
       }
     });
-  } 
-  
+  }
+
   //friend request signalR
   updateFriendRequestListener(): Observable<User[]> {
     return new Observable<User[]>(observer => {
@@ -219,7 +222,7 @@ export class SignalRService {
       }
     });
   }
-  
+
   //delete friend
   DelteFriend(): Observable<number> {
     return new Observable<number>(observer => {
@@ -251,7 +254,7 @@ export class SignalRService {
     return new Observable<ChatListVM[]>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('Chatlist', (newResults: ChatListVM[]) => {
-          
+
           this.ngZone.run(() => {
             observer.next(newResults);
           });
@@ -264,27 +267,27 @@ export class SignalRService {
     return new Observable<any>(observer => {
       if (this.hubConnection) {
         this.hubConnection.on('NewGroupCreated', (chatListVM: ChatListVM[]) => {
-        this.ngZone.run(() => {
-          observer.next(chatListVM); // Emit the roomName to observers]
-        });       
-        });
-      }
-    });
-  }
-  
-  addNewMemberListener(): Observable<any> {
-    return new Observable<any>(observer => {
-      if (this.hubConnection) {
-        this.hubConnection.on('UserAdded', (memberlist: ChatListVM) => {
-        this.ngZone.run(() => {
-          observer.next(memberlist); 
-        });       
+          this.ngZone.run(() => {
+            observer.next(chatListVM); // Emit the roomName to observers]
+          });
         });
       }
     });
   }
 
-   removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
+  addNewMemberListener(): Observable<any> {
+    return new Observable<any>(observer => {
+      if (this.hubConnection) {
+        this.hubConnection.on('UserAdded', (memberlist: ChatListVM) => {
+          this.ngZone.run(() => {
+            observer.next(memberlist);
+          });
+        });
+      }
+    });
+  }
+
+  removeUserListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
       this.hubConnection.on('UserRemoved', (chatRoomId: number, userId: number) => {
         this.ngZone.run(() => {
@@ -303,7 +306,7 @@ export class SignalRService {
       });
     });
   }
-  
+
   // update group initiator signalR
   updateGroupInitiatorListener(): Observable<{ chatRoomId: number, userId: number }> {
     return new Observable<{ chatRoomId: number, userId: number }>(observer => {
@@ -314,7 +317,7 @@ export class SignalRService {
       });
     });
   }
-  
+
   public profileUpdateListener(): Observable<UserProfileUpdate> {
     return new Observable<UserProfileUpdate>(observer => {
       if (this.hubConnection) {
@@ -331,7 +334,7 @@ export class SignalRService {
     return new Observable<GroupProfileUpdate>(observer => {
 
       if (this.hubConnection) {
-        
+
         this.hubConnection.on('ReceiveGroupProfileUpdate', (updateInfo: GroupProfileUpdate) => {
           this.ngZone.run(() => {
             observer.next(updateInfo);
@@ -351,9 +354,9 @@ export class SignalRService {
     });
   }
 
-  deleteMessageListener():Observable<number>{
-    return new Observable<number >( observer => {
-      this.hubConnection.on("DeleteMessage", (MessageId:number) => {
+  deleteMessageListener(): Observable<number> {
+    return new Observable<number>(observer => {
+      this.hubConnection.on("DeleteMessage", (MessageId: number) => {
         this.ngZone.run(() => {
           observer.next(MessageId);
         });
@@ -362,9 +365,9 @@ export class SignalRService {
     })
   }
 
-  editMessageListener():Observable<ChatRoomMessages>{
-    return new Observable<ChatRoomMessages >( observer => {
-      this.hubConnection.on("EditMessage", (EdittedMessage:ChatRoomMessages) => {
+  editMessageListener(): Observable<ChatRoomMessages> {
+    return new Observable<ChatRoomMessages>(observer => {
+      this.hubConnection.on("EditMessage", (EdittedMessage: ChatRoomMessages) => {
 
         this.ngZone.run(() => {
           observer.next(EdittedMessage);
@@ -376,7 +379,7 @@ export class SignalRService {
 
   invalidFormatUpload(): Observable<number> {
     return new Observable<number>(observer => {
-      this.hubConnection.on('InformWrongFormat', (senderId:number) => {
+      this.hubConnection.on('InformWrongFormat', (senderId: number) => {
         this.ngZone.run(() => {
           observer.next(senderId);
         });
