@@ -48,7 +48,7 @@ describe('HomepageComponent', () => {
   });
 
   it('should identify initial connection is false', () => {
-  expect(component.isSignalRConnection).toBeFalse();
+  expect(component.isConnected).toBeFalse();
   });
 
 
@@ -61,13 +61,13 @@ describe('HomepageComponent', () => {
   it('should update isSignalRConnection based on DataShareService, case: true', () => {
     mockDataShareService.IsSignalRConnection = of(true);
     fixture.detectChanges();
-    expect(component.isSignalRConnection).toBeTrue();
+    expect(component.isConnected).toBeTrue();
   });
 
   it('should update isSignalRConnection based on DataShareService, case: false', () => {
     mockDataShareService.IsSignalRConnection = of(false);
     component.ngOnInit();
-    expect(component.isSignalRConnection).toBeFalse();
+    expect(component.isConnected).toBeFalse();
   });
 
 });

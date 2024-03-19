@@ -19,7 +19,7 @@ export class LogoutComponent {
         this.router.navigate(['/login']);
       },
       error: (e) => {
-        console.error('Logout failed', e);
+        console.error('Logout failed', e.error);
         this.message.error(e.error || 'An error occured during logout. Please log in again.');
         this.router.navigate(['/login']);
       }
