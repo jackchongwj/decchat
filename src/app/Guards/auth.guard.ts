@@ -27,22 +27,29 @@ export class AuthGuard implements CanActivate {
   
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
     return this.authService.isAuthenticated$().pipe(
-      switchMap(isAuthenticated => {
+      map(isAuthenticated => {
         const isLoginPage = state.url.includes('/login') || state.url === '/';
-        if (!isAuthenticated && !isLoginPage) {
-          // Not authenticated and trying to access a protected route
-          this.message.error('Authentication expired. Please log in again.');
-          return from(this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } })).pipe(map(() => false));
-        } else if (isAuthenticated && isLoginPage) {
-          // Authenticated and trying to access the login page
-          this.message.info('Authentication detected. Redirecting to dashboard.');
-          return from(this.router.navigate(['/dashboard'])).pipe(map(() => false));
+        if (!isAuthenticated) {
+          if (!isLoginPage) {
+            // Not authenticated and trying to access a protected route
+            this.message.error('Authentication invalid. Redirecting to login.');
+            this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+            return false; // Prevents access to the route
+          }
+          // Not authenticated but accessing the login page, allow access
+          return true;
         } else {
-          // Authenticated and accessing a protected route
-          // OR not authenticated and accessing the login page
-          return of(true);
+          if (isLoginPage) {
+            // Authenticated and trying to access the login page
+            this.message.info('Authentication detected. Redirecting to dashboard.');
+            this.router.navigate(['/dashboard']);
+            return false; // Redirects authenticated user away from login page
+          }
+          // Authenticated and accessing a protected route, allow access
+          return true;
         }
       })
     );
   }
+  
 }

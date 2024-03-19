@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LocalstorageService } from '../LocalStorage/local-storage.service';
@@ -37,13 +37,10 @@ export class TokenService {
   }
 
   renewToken(): Observable<string | null> {
-    const refreshToken = this.localStorageService.getItem('refreshToken');
+    const refreshToken = this.localStorageService.getItem('refreshToken')!;
 
     // Create a custom http header
-    let headers = new HttpHeaders();
-    if (refreshToken) {
-      headers = headers.set('X-Refresh-Token', refreshToken);
-    }
+    let headers = new HttpHeaders().set('X-Refresh-Token', refreshToken);
 
     return this.http.post<TokenResponse>(`${TokenUrl}RenewToken`, {}, { headers, withCredentials: true })
       .pipe(
@@ -60,5 +57,22 @@ export class TokenService {
           return throwError(() => new Error('Failed to renew token'));
         })
       );
+  }
+
+  validateRefreshToken(): Observable<boolean> {
+    const refreshToken = this.localStorageService.getItem('refreshToken')!;
+    
+    // Create a custom http header
+    let headers = new HttpHeaders().set('X-Refresh-Token', refreshToken);
+
+    return this.http.post(`${TokenUrl}ValidateRefreshToken`, {}, { headers, observe: 'response', withCredentials: true })
+    .pipe(
+      map(response => {
+        return response.status === 200;
+      }),
+      catchError(error => {
+        return of(false);
+      })
+    );
   }
 }

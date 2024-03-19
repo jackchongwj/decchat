@@ -64,18 +64,24 @@ export class AuthService {
       return of(false);
     }
 
-    if (!accessToken || this.jwtHelper.isTokenExpired(accessToken)) {
-      return this.tokenService.renewToken().pipe(
-        map(newToken => {
-          const isAuthenticated = !!newToken;
-          return isAuthenticated;
-        }),
-        catchError(() => {
+    // First validate the refresh token
+    return this.tokenService.validateRefreshToken().pipe(
+      switchMap(isRefreshTokenValid => {
+        if (!isRefreshTokenValid) {
+          // If refresh token is not valid, there's no need to check the access token
           return of(false);
-        })
-      );
-    } else {
-      return of(true);
-    }
+        } else if (!accessToken || this.jwtHelper.isTokenExpired(accessToken)) {
+          // If access token is missing or expired, attempt to renew it
+          return this.tokenService.renewToken().pipe(
+            map(newToken => !!newToken),
+            catchError(() => of(false))
+          );
+        } else {
+          // If refresh token is valid and access token is not expired, authentication is confirmed
+          return of(true);
+        }
+      }),
+      catchError(() => of(false)) // Handle any errors in the entire process
+    );
   }
 }
